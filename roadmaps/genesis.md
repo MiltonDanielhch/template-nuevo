@@ -21,9 +21,8 @@
 | # | Tarea | Destino | Estado |
 |---|-------|---------|--------|
 | 1 | Soberanía Git | `.gitignore` (Rust, Podman, SQLite, Bun) | ✅ |
-| 2 | Estructura Crates | `/proto, /crates/core_logic, /crates/api_server` | ⏳ |
-| 3 | Workspace Cargo | `Cargo.toml` (Raíz con miembros de crates) | ⏳ |
-| 4 | Sintonía de Auditoría | Mover `ver-proyecto.py` a la raíz del Lab | ✅ |
+| 2 | Estructura Crates | `/proto, /crates/core_logic, /crates/api_server` | ✅ |
+| 3 | Workspace Cargo | `Cargo.toml` (Raíz con miembros de crates) | ✅ |
 
 ---
 
@@ -33,8 +32,8 @@
 
 | # | Tarea | Archivo | Descripción | Estado |
 |---|-------|---------|-------------|--------|
-| 1 | Refactor `.cursorrules` | `.cursorrules` | Inyectar reglas de "Sintonía Hexagonal 3026" | 🔄 |
-| 2 | ADN Binario | `proto/auth.proto` | Definir el contrato inicial User/Role | ⏳ |
+| 1 | Refactor `.cursorrules` | `.cursorrules` | Inyectar reglas de "Sintonía Hexagonal 3026" | ✅ |
+| 2 | ADN Binario | `proto/auth.proto` | Definir el contrato inicial User/Role | ✅ |
 
 ---
 
@@ -45,8 +44,8 @@
 | # | Tarea | Archivo | Descripción | Estado |
 |---|-------|---------|-------------|--------|
 | 1 | ADR Update | `docs/DECISIONS.md` | Integrar ADR 0001 y 0002 (Podman + Rust) | ✅ |
-| 2 | Standard Rust | `protocols/RUST_STANDARDS.md` | Reglas de Edition 2024 y Error Handling | ⏳ |
-| 3 | Infra Blueprint | `deploy/Caddyfile` | Configuración de SSL y Proxy para Podman | ⏳ |
+| 2 | Standard Rust | `protocols/RUST_STANDARDS.md` | Reglas de Edition 2024 y Error Handling | ✅ |
+| 3 | Infra Blueprint | `deploy/Caddyfile` | Configuración de SSL y Proxy para Podman | ✅ |
 
 ---
 

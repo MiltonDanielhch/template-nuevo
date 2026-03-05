@@ -1,0 +1,31 @@
+# Código 3026: Infra Blueprint (Caddy v2)
+# Configuración para el despliegue soberano en un VPS de $5 con Podman.
+
+# Sustituye "lab3026.com" con tu dominio real.
+# Caddy obtendrá y renovará automáticamente los certificados SSL/TLS para este dominio.
+lab3026.com {
+    # Activa la compresión Gzip y Brotli para reducir el tamaño de las respuestas.
+    encode zstd gzip
+
+    # --- Cabeceras de Seguridad Esenciales ---
+    # Mejora la seguridad y la privacidad del sitio.
+    header {
+        # Fuerza a los navegadores a usar HTTPS.
+        Strict-Transport-Security "max-age=31536000;"
+        # Previene ataques de clickjacking.
+        X-Frame-Options "DENY"
+        # Previene que el navegador infiera el tipo MIME.
+        X-Content-Type-Options "nosniff"
+        # Activa el filtro XSS del navegador.
+        X-XSS-Protection "1; mode=block"
+        # Controla qué información de referencia se incluye con las solicitudes.
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Elimina la cabecera "Server" para no revelar información del servidor.
+        -Server
+    }
+
+    # --- Proxy Inverso al Contenedor de la App ---
+    # Redirige todo el tráfico al servicio 'app' que corre en el puerto 8080 dentro de la red de Podman.
+    # 'app' es el nombre del servicio definido en podman-compose.yml.
+    reverse_proxy app:8080
+}

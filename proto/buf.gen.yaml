@@ -1,0 +1,15 @@
+# Código 3026: Plantilla de Generación de Código
+# Define qué plugins usar para traducir el ADN .proto a código nativo.
+version: v1
+plugins:
+  # --- Generador para Rust (Backend) ---
+  - plugin: buf.build/community/prost-prost:v0.3.0
+    out: ../crates/core_logic/src/gen # Salida para las estructuras de datos
+    opt:
+      - bytes=.
+  - plugin: buf.build/community/neoeinstein-connect-rust:v0.6.0
+    out: ../crates/core_logic/src/gen # Salida para los servicios ConnectRPC
+
+  # --- Generador para TypeScript (Frontend - se configurará en el futuro) ---
+  # - plugin: buf.build/bufbuild/es:v1.8.0
+  #   out: ../apps/frontend_astro/src/gen

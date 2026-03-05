@@ -1,0 +1,46 @@
+// Código 3026: El ADN de la Identidad
+// Este contrato define la estructura fundamental de usuarios y los servicios de autenticación.
+// Es la fuente de verdad para Rust (backend) y TypeScript (frontend).
+
+syntax = "proto3";
+
+package auth.v1;
+
+import "common.proto";
+import "google/protobuf/timestamp.proto";
+
+// AuthService define los puntos de entrada para la autenticación.
+// Utiliza el protocolo ConnectRPC para ser compatible con Web, Móvil y Servidor.
+service AuthService {
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
+  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse);
+}
+
+// --- Entidades ---
+
+message User {
+  common.v1.Uuid id = 1;
+  string name = 2;
+  string email = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+// --- Mensajes de Petición/Respuesta (DTOs) ---
+
+message RegisterUserRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3; // La contraseña viaja aquí, pero nunca se almacena en el mensaje User.
+}
+
+message RegisterUserResponse { User user = 1; }
+
+message LoginUserRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginUserResponse {
+  string session_token = 1; // Podría ser un JWT o un token de sesión opaco.
+}

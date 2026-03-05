@@ -1,0 +1,9 @@
+// Código 3026: Tipos de Datos Universales
+// Este archivo contiene definiciones compartidas por todos los demás contratos.
+
+syntax = "proto3";
+
+package common.v1;
+
+// Uuid representa un Identificador Único Universal (v7).
+message Uuid { string value = 1; }

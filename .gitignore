@@ -1,0 +1,25 @@
+# --- Rust ---
+/target
+Cargo.lock
+
+# --- Bases de Datos ---
+*.db
+*.db-journal*
+sqlx-data.json
+
+# --- Entorno ---
+.env
+.env.*
+!.env.example
+
+# --- Node / Bun ---
+node_modules
+bun.lockb
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+
+# --- Despliegue ---
+/deploy/kamal-lock.json

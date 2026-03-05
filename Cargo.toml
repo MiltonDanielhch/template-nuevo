@@ -1,0 +1,16 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/api_server",
+    "crates/core_logic",
+    # "crates/infra_db" # Se añadirá en fases futuras
+]
+
+[profile.release]
+# Perfil de Sintonía 3026: Optimizado para VPS de $5
+opt-level = 'z'        # Optimización de tamaño
+lto = true             # Link-Time Optimization
+codegen-units = 1      # Maximiza optimizaciones
+panic = 'abort'        # No desenrollar la pila, ahorra espacio
+strip = true           # Elimina símbolos de depuración del binario final
+

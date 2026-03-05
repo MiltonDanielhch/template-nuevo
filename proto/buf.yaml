@@ -1,0 +1,8 @@
+# Código 3026: Manifiesto del Módulo Protobuf
+version: v1
+name: buf.build/laboratorio3026/genesis
+deps:
+  - buf.build/googleapis/googleapis
+lint:
+  use:
+    - DEFAULT
