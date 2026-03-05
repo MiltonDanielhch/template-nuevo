@@ -4,8 +4,7 @@ use thiserror::Error;
 pub enum DomainError {
     #[error("El email '{0}' no es válido.")]
     InvalidEmail(String),
-    #[error("La contraseña es demasiado débil.")]
-    WeakPassword,
-    #[error("El nombre de usuario no puede estar vacío.")]
-    EmptyName,
+
+    #[error("El hash de la contraseña no es válido: {0}")]
+    InvalidPasswordHash(String),
 }

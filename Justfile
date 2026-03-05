@@ -34,3 +34,15 @@ dev:
 # Compilación Release (Sintonía VPS $5)
 build-release:
     cargo build --release
+
+# Prepara las consultas SQLx para compilación offline
+db-prepare: db-setup
+    cargo sqlx prepare --workspace --database-url "sqlite://backend.db"
+
+# Crea el archivo de la base de datos si no existe
+db-setup:
+    sqlx database create --database-url "sqlite://backend.db"
+
+# Ejecuta las migraciones de la base de datos (depende de db-setup)
+db-migrate: db-setup
+    sqlx migrate run --source crates/infra_db/migrations --database-url "sqlite://backend.db"

@@ -9,11 +9,11 @@
 **Objetivo:** Configurar el entorno de desarrollo multi-crate para máxima modularidad.
 
 | # | Tarea | Ubicación / Comando | Estado |
-|---|-------|---------------------|--------|
-| 1 | Workspace Init | `Cargo.toml` raíz + carpetas `crates/` | ⏳ |
-| 2 | ADN Setup | `proto/auth.proto` + `buf.yaml` | ⏳ |
-| 3 | Just Command | `Justfile` (comandos: audit, gen-proto, migrate) | ⏳ |
-| 4 | Sintonía Release | Perfil `z` (minificación) en `Cargo.toml` raíz | ⏳ |
+|---|-------|---------------------|:------:|
+| 1 | Workspace Init | `Cargo.toml` raíz + carpetas `crates/` | ✅ |
+| 2 | ADN Setup | `proto/auth.proto` + `buf.yaml` | ✅ |
+| 3 | Just Command | `Justfile` (comandos: audit, gen-proto, migrate) | ✅ |
+| 4 | Sintonía Release | Perfil `z` (minificación) en `Cargo.toml` raíz | ✅ |
 
 ---
 
@@ -26,8 +26,8 @@
 Mantenemos SQLite WAL para el VPS de $5.
 
 | # | Tarea | Descripción | Estado |
-|---|-------|-------------|--------|
-| 1 | RBAC Base | Tablas `roles`, `permissions` y `users` (UUIDv7) | ⏳ |
+|---|-------|-------------|:------:|
+| 1 | RBAC Base | Tablas `roles`, `permissions` y `users` (UUIDv7) | 🔄 |
 | 2 | Audit Log | Tabla para trazabilidad total de cambios | ⏳ |
 | 3 | SQLx Prep | Configurar `.env` y preparar `sqlx-data.json` para compilación offline | ⏳ |
 
@@ -37,9 +37,22 @@ Aquí reside la inteligencia pura, sin dependencias de base de datos.
 
 | # | Tarea | Ubicación | Descripción | Estado |
 |---|-------|-----------|-------------|--------|
-| 1 | Value Objects | `core_logic/domain/value_objects` | `Email`, `Password` (validación estricta) | ⏳ |
-| 2 | Domain Traits | `core_logic/domain/interfaces` | Puertos: `IUserRepository`, `IHasher` | ⏳ |
+|---|-------|-----------|-------------|:------:|
+| 1 | Value Objects | `core_logic/domain/value_objects` | `Email`, `Password` (validación estricta) | ✅ |
+| 2 | Domain Traits | `core_logic/domain/interfaces` | Puertos: `IUserRepository`, `IHasher` | 🔄 |
 | 3 | Use Cases | `core_logic/application/use_cases` | Lógica de `RegisterUser`, `LoginUser` | ⏳ |
+
+### 📅 Fase 1.3: El Adaptador Concreto (infra_db)
+
+**Objetivo:** Implementar el primer adaptador de persistencia y asegurar su sintonía.
+
+| # | Tarea | Descripción | Estado |
+|---|-------|-------------|:------:|
+| 1 | Crear Crate `infra_db` | Añadir el crate al workspace y definir sus dependencias (`sqlx`, `core_logic`). | ✅ |
+| 2 | Implementar Repositorio | Crear `SqliteUserRepository` que implemente el trait `IUserRepository`. | ✅ |
+| 3 | Crear DTO de DB | Definir `DbUser` para mapear la tabla `users`, aceptando tipos crudos de la DB. | ✅ |
+| 4 | Implementar Mappers | Crear `from_domain` y `to_domain_user` para traducir entre `User` y `DbUser` de forma explícita. | ✅ |
+| 5 | **Sintonía de Compilación** | **Punto de control:** Ejecutar `just db-prepare` y `just audit` hasta obtener `Finished` sin errores. Consultar `TROUBLESHOOTING.md` para errores comunes. | ✅ |
 
 ---
 

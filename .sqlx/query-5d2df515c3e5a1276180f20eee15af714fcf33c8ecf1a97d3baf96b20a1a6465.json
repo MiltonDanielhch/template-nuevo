@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n            INSERT INTO users (id, email, password_hash, created_at, updated_at)\n            VALUES (?, ?, ?, ?, ?)\n            ON CONFLICT(id) DO UPDATE SET\n                email = EXCLUDED.email,\n                password_hash = EXCLUDED.password_hash,\n                updated_at = EXCLUDED.updated_at\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 5
+    },
+    "nullable": []
+  },
+  "hash": "5d2df515c3e5a1276180f20eee15af714fcf33c8ecf1a97d3baf96b20a1a6465"
+}

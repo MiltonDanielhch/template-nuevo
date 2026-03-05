@@ -3,7 +3,7 @@ resolver = "2"
 members = [
     "crates/api_server",
     "crates/core_logic",
-    # "crates/infra_db" # Se añadirá en fases futuras
+    "crates/infra_db" # Se añadirá en fases futuras
 ]
 
 [profile.release]
