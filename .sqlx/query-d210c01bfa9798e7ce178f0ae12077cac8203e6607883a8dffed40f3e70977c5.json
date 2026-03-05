@@ -1,0 +1,68 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT * FROM users WHERE email = ? AND deleted_at IS NULL",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "username",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "email",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "password_hash",
+        "ordinal": 3,
+        "type_info": "Text"
+      },
+      {
+        "name": "avatar_url",
+        "ordinal": 4,
+        "type_info": "Text"
+      },
+      {
+        "name": "email_verified",
+        "ordinal": 5,
+        "type_info": "Bool"
+      },
+      {
+        "name": "created_at",
+        "ordinal": 6,
+        "type_info": "Datetime"
+      },
+      {
+        "name": "updated_at",
+        "ordinal": 7,
+        "type_info": "Datetime"
+      },
+      {
+        "name": "deleted_at",
+        "ordinal": 8,
+        "type_info": "Datetime"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "d210c01bfa9798e7ce178f0ae12077cac8203e6607883a8dffed40f3e70977c5"
+}

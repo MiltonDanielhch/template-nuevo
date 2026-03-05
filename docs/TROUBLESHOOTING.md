@@ -92,3 +92,35 @@ Este documento es la bitácora de combate del Laboratorio 3026. No documenta el 
     let created_at = DateTime::<Utc>::from_naive_utc_and_offset(db_user.created_at, Utc);
     ```
   - Esto refuerza la Arquitectura Hexagonal: el adaptador es el único responsable de conocer y traducir los detalles "sucios" de la infraestructura.
+
+---
+
+### 5. Error de Migración: `migration ... was previously applied but has been modified`
+
+- **Síntoma:** `just db-migrate` falla porque una migración que ya se había aplicado ha sido modificada.
+
+- **Diagnóstico:** `sqlx` almacena un hash de cada archivo de migración que aplica. Si modificas un archivo que ya fue aplicado, el hash no coincidirá y `sqlx` detendrá el proceso para prevenir la corrupción de la base de datos.
+
+- **Cura (Sintonía 3026):**
+  - **En desarrollo:** La forma más limpia es reiniciar la base de datos.
+    1.  Elimina los archivos `backend.db`, `backend.db-shm`, `backend.db-wal`.
+    2.  Elimina la carpeta `.sqlx` en la raíz del proyecto.
+    3.  Vuelve a ejecutar `just db-migrate`.
+  - **En producción:** NUNCA modifiques una migración aplicada. En su lugar, crea una **nueva migración** que aplique los cambios necesarios (`ALTER TABLE ...`).
+
+---
+
+### 6. Error de Compilación: `unresolved module 'tokio'` y `main is not allowed to be async`
+
+- **Síntoma:** Al intentar usar `#[tokio::main]` en un crate del workspace, el compilador falla porque no encuentra `tokio` y, como consecuencia, no permite que `main` sea `async`.
+
+- **Diagnóstico:** Las dependencias no se comparten globalmente en un workspace. Cada crate (`api_server`, `core_logic`, etc.) tiene su propio `Cargo.toml` y debe declarar explícitamente las dependencias que utiliza.
+
+- **Cura (Sintonía 3026):**
+  - Añade la dependencia necesaria al `Cargo.toml` del crate específico que la está usando. En este caso, `api_server`.
+    ```toml
+    # En crates/api_server/Cargo.toml
+    [dependencies]
+    # ... otras dependencias
+    tokio = { version = "1.36", features = ["full"] }
+    ```

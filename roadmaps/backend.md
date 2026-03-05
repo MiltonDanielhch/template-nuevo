@@ -23,42 +23,50 @@
 
 ### 📅 Fase 1.1: ADN SQL (Migraciones)
 
-Mantenemos SQLite WAL para el VPS de $5.
+**Por qué:** La base de datos es la memoria versionada del sistema. Debe ser tratada como código.
 
 | # | Tarea | Descripción | Estado |
 |---|-------|-------------|:------:|
-| 1 | RBAC Base | Tablas `roles`, `permissions` y `users` (UUIDv7) | 🔄 |
-| 2 | Audit Log | Tabla para trazabilidad total de cambios | ⏳ |
-| 3 | SQLx Prep | Configurar `.env` y preparar `sqlx-data.json` para compilación offline | ⏳ |
+| 1 | Crear RBAC | `0001_create_rbac.sql`: Tablas `roles`, `permissions`, `role_permissions`. | ⏳ |
+| 2 | Crear Usuarios | `0002_create_users.sql`: Tabla `users` con Soft Delete y trigger `updated_at`. | ✅ |
+| 3 | Crear Tokens | `0003_create_tokens.sql`: Tabla `tokens` para verificación y reseteo. | ⏳ |
+| 4 | Crear Auditoría | `0004_create_audit.sql`: Tabla `audit_logs` para trazabilidad. | ⏳ |
+| 5 | Seed de Datos | `0005_seed_system_data.sql`: Roles y permisos por defecto. | ⏳ |
+| 6 | SQLx Prep | `just db-prepare`: Generar `sqlx-data.json` para compilación offline. | ✅ |
+
+**Verificación:** `just db-migrate` se completa sin errores.
 
 ### 📅 Fase 1.2: El Corazón Inmortal (core_logic)
 
-Aquí reside la inteligencia pura, sin dependencias de base de datos.
+**Por qué:** Los `Traits` son contratos. El `core` define "qué" necesita, sin saber "cómo" se implementa. Esto nos da libertad total para cambiar la base de datos en el futuro.
 
 | # | Tarea | Ubicación | Descripción | Estado |
-|---|-------|-----------|-------------|--------|
 |---|-------|-----------|-------------|:------:|
-| 1 | Value Objects | `core_logic/domain/value_objects` | `Email`, `Password` (validación estricta) | ✅ |
-| 2 | Domain Traits | `core_logic/domain/interfaces` | Puertos: `IUserRepository`, `IHasher` | 🔄 |
+| 1 | Value Objects | `core_logic/domain/value_objects` | `UserId`, `Email`, `PasswordHash` con validación estricta. | ✅ |
+| 2 | Domain Traits | `core_logic/domain/interfaces` | Puertos: `IUserRepository` (✅), `IHasher` (⏳) | 🔄 |
 | 3 | Use Cases | `core_logic/application/use_cases` | Lógica de `RegisterUser`, `LoginUser` | ⏳ |
+
+**Verificación:** `cargo check -p core_logic` pasa sin errores.
 
 ### 📅 Fase 1.3: El Adaptador Concreto (infra_db)
 
-**Objetivo:** Implementar el primer adaptador de persistencia y asegurar su sintonía.
+**Por qué:** El adaptador es el traductor. Implementa el `trait` del `core` y sabe hablar el lenguaje específico de SQLite, convirtiendo datos crudos en entidades de dominio ricas.
 
 | # | Tarea | Descripción | Estado |
 |---|-------|-------------|:------:|
-| 1 | Crear Crate `infra_db` | Añadir el crate al workspace y definir sus dependencias (`sqlx`, `core_logic`). | ✅ |
+| 1 | Crear Crate `infra_db` | Añadir el crate al workspace y definir sus dependencias. | ✅ |
 | 2 | Implementar Repositorio | Crear `SqliteUserRepository` que implemente el trait `IUserRepository`. | ✅ |
 | 3 | Crear DTO de DB | Definir `DbUser` para mapear la tabla `users`, aceptando tipos crudos de la DB. | ✅ |
 | 4 | Implementar Mappers | Crear `from_domain` y `to_domain_user` para traducir entre `User` y `DbUser` de forma explícita. | ✅ |
 | 5 | **Sintonía de Compilación** | **Punto de control:** Ejecutar `just db-prepare` y `just audit` hasta obtener `Finished` sin errores. Consultar `TROUBLESHOOTING.md` para errores comunes. | ✅ |
 
+**Verificación:** `just audit` se completa sin errores en todo el workspace.
+
 ---
 
 ## 🔒 BLOQUE II: EL ESCUDO (Seguridad y Protocolo)
 
-**Objetivo:** Implementar ConnectRPC (Protobuf) y Seguridad Rootless.
+**Objetivo:** Implementar hashing Argon2id y un sistema de sesiones seguro.
 
 ### 📅 Fase 2.1: Contratos Binarios
 
@@ -69,10 +77,11 @@ Aquí reside la inteligencia pura, sin dependencias de base de datos.
 
 ### 📅 Fase 2.2: Identidad 3026
 
-| # | Tarea | Descripción | Estado |
-|---|-------|-------------|--------|
-| 1 | Argon2id | Implementación de hashing en `infra_db` | ⏳ |
-| 2 | Session Layer | JWT o Sesiones en SQLite con rotación de llaves | ⏳ |
+| # | Tarea | Ubicación | Descripción | Estado |
+|---|-------|-----------|-------------|--------|
+| 1 | Hashing Service | `infra_db` | Implementar `IHasher` con Argon2id. | ⏳ |
+| 2 | Session Repository | `infra_db` | Crear `SqliteSessionRepository`. | ⏳ |
+| 3 | Cleanup Task | `api_server` | Tarea en background para limpiar sesiones expiradas. | ⏳ |
 
 ---
 
@@ -80,11 +89,12 @@ Aquí reside la inteligencia pura, sin dependencias de base de datos.
 
 **Objetivo:** Exponer el sistema al mundo exterior mediante `api_server`.
 
-| # | Tarea | Descripción | Estado |
-|---|-------|-------------|--------|
-| 1 | Axum Router | Configuración de rutas en `api_server/routes.rs` | ⏳ |
-| 2 | DI Container | Inyección de dependencias en `config/di.rs` (unir Core con Infra) | ⏳ |
-| 3 | Scalar Doc | Documentación automática desde el código | ⏳ |
+| # | Tarea | Ubicación | Descripción | Estado |
+|---|-------|-----------|-------------|--------|
+| 1 | AppState | `api_server` | Struct con `Arc<dyn IUserRepository>`. | ⏳ |
+| 2 | DI Container | `api_server/config/di.rs` | Unir `SqliteUserRepository` con `IUserRepository`. | ⏳ |
+| 3 | Axum Router | `api_server/routes.rs` | Configuración de rutas y `State`. | ⏳ |
+| 4 | Scalar Doc | `api_server` | Documentación de API interactiva y automática. | ⏳ |
 
 ---
 

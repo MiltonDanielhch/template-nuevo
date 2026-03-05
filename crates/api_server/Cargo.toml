@@ -5,5 +5,8 @@ edition = "2024"
 
 [dependencies]
 core_logic = { path = "../core_logic" }
+infra_db = { path = "../infra_db" }
 
+anyhow = "1.0"
+tokio = { version = "1.36", features = ["full"] } # "full" para tener todo lo necesario para Axum
 

@@ -1,7 +1,6 @@
-use crate::domain::{entities::user::User, value_objects::email::Email};
+use crate::domain::{entities::user::User, value_objects::{email::Email, user_id::UserId}};
 use anyhow::Result;
 use async_trait::async_trait;
-use uuid::Uuid;
 
 /// IUserRepository es un Puerto en la Arquitectura Hexagonal.
 ///
@@ -14,6 +13,6 @@ use uuid::Uuid;
 #[async_trait]
 pub trait IUserRepository: Send + Sync {
     async fn save(&self, user: &User) -> Result<()>;
-    async fn find_by_id(&self, id: Uuid) -> Result<Option<User>>;
+    async fn find_by_id(&self, id: &UserId) -> Result<Option<User>>;
     async fn find_by_email(&self, email: &Email) -> Result<Option<User>>;
 }

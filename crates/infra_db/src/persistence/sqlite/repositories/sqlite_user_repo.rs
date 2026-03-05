@@ -1,12 +1,11 @@
 use async_trait::async_trait;
 use sqlx::SqlitePool;
-use uuid::Uuid;
 use chrono::{DateTime, Utc};
 use anyhow::Result;
 
 use core_logic::domain::{
-    entities::user::User,
-    value_objects::email::Email,
+    entities::user::{User, UserPersistenceData},
+    value_objects::{email::Email, user_id::UserId},
     interfaces::user_repo::IUserRepository,
 };
 
@@ -30,22 +29,25 @@ impl SqliteUserRepository {
     /// Convierte un `DbUser` a una entidad de dominio `core_logic::User`.
     /// Este es nuestro "Mapper" de la capa de infraestructura al dominio.
     fn to_domain_user(db_user: DbUser) -> Result<User> {
-        let uuid = Uuid::from_slice(&db_user.id)
-            .map_err(|e| anyhow::anyhow!("Error al parsear UUID desde BLOB: {}", e))?;
-        let user_id = core_logic::domain::value_objects::user_id::UserId::new_from_uuid(uuid)?;
+        let user_id = UserId::new_from_string(db_user.id)?;
         let email = Email::parse(db_user.email)?;
         let password_hash = core_logic::domain::value_objects::password::PasswordHash::new(db_user.password_hash)?;
 
         let created_at = DateTime::<Utc>::from_naive_utc_and_offset(db_user.created_at, Utc);
         let updated_at = DateTime::<Utc>::from_naive_utc_and_offset(db_user.updated_at, Utc);
+        let deleted_at = db_user.deleted_at.map(|dt| DateTime::<Utc>::from_naive_utc_and_offset(dt, Utc));
 
-        Ok(User::new_from_persistence(
-            user_id,
+        Ok(User::new_from_persistence(UserPersistenceData {
+            id: user_id,
             email,
             password_hash,
+            username: db_user.username,
+            avatar_url: db_user.avatar_url,
+            email_verified: db_user.email_verified,
             created_at,
             updated_at,
-        ))
+            deleted_at,
+        }))
     }
 }
 
@@ -56,18 +58,26 @@ impl IUserRepository for SqliteUserRepository {
 
         sqlx::query!(
             r#"
-            INSERT INTO users (id, email, password_hash, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (id, username, email, password_hash, avatar_url, email_verified, created_at, updated_at, deleted_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(id) DO UPDATE SET
+                username = EXCLUDED.username,
                 email = EXCLUDED.email,
                 password_hash = EXCLUDED.password_hash,
-                updated_at = EXCLUDED.updated_at
+                avatar_url = EXCLUDED.avatar_url,
+                email_verified = EXCLUDED.email_verified,
+                updated_at = EXCLUDED.updated_at,
+                deleted_at = EXCLUDED.deleted_at
             "#,
             db_user.id,
+            db_user.username,
             db_user.email,
             db_user.password_hash,
+            db_user.avatar_url,
+            db_user.email_verified,
             db_user.created_at,
             db_user.updated_at,
+            db_user.deleted_at,
         )
         .execute(&self.pool)
         .await?;
@@ -75,11 +85,12 @@ impl IUserRepository for SqliteUserRepository {
         Ok(())
     }
 
-    async fn find_by_id(&self, id: Uuid) -> Result<Option<User>> {
+    async fn find_by_id(&self, id: &UserId) -> Result<Option<User>> {
+        let user_id_str = id.as_str();
         let db_user = sqlx::query_as!(
             DbUser,
-            "SELECT id, email, password_hash, created_at, updated_at FROM users WHERE id = ?",
-            id
+            "SELECT * FROM users WHERE id = ? AND deleted_at IS NULL",
+            user_id_str
         )
         .fetch_optional(&self.pool)
         .await?;
@@ -91,7 +102,7 @@ impl IUserRepository for SqliteUserRepository {
         let email_str = email.as_str();
         let db_user = sqlx::query_as!(
             DbUser,
-            "SELECT id, email, password_hash, created_at, updated_at FROM users WHERE email = ?",
+            "SELECT * FROM users WHERE email = ? AND deleted_at IS NULL",
             email_str
         )
         .fetch_optional(&self.pool)

@@ -28,8 +28,8 @@ proto-gen:
     cd proto; buf generate
 
 # Modo Desarrollo (Watch) - Requiere cargo-watch
-dev:
-    cargo watch -x 'check --workspace'
+dev: # Ejecuta y reinicia el servidor API ante cualquier cambio
+    cargo watch -q -c -w crates/ -x 'run -p api_server'
 
 # Compilación Release (Sintonía VPS $5)
 build-release:
