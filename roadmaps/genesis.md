@@ -64,8 +64,21 @@
 
 ## 📅 Fase G.5: Verificación de Primera Sintonía
 
-| # | Verificación | Comando | Resultado Esperado |
-|---|--------------|---------|-------------------|
-| 1 | Integridad | `python3 ver-proyecto.py` | Detectar nuevas carpetas de crates |
-| 2 | Compilación | `cargo check` | Cero errores en el workspace |
-| 3 | Contratos | `buf lint` | Protobuf válido y sincronizado |
+| # | Verificación | Comando | Resultado Esperado | Estado |
+|---|--------------|---------|-------------------|:------:|
+| 1 | Integridad | `python3 ver-proyecto.py` | Detectar nuevas carpetas de crates | ✅ |
+| 2 | Compilación | `cargo check` | Cero errores en el workspace | ✅ |
+| 3 | Contratos | `buf lint` | Protobuf válido y sincronizado | ✅ |
+
+---
+
+## 📅 Fase G.6: Sintonía del Entorno (DX)
+
+| # | Tarea | Archivo | Descripción | Estado |
+|---|-------|---------|-------------|--------|
+| 1 | Editor Config | `.vscode/extensions.json` | Recomendar extensiones clave (Rust, Biome, Proto) | ✅ |
+| 2 | Env Contract | `.env.example` | Plantilla de variables de entorno requeridas | ✅ |
+
+---
+
+**✅ BLOQUE GÉNESIS COMPLETADO. La arquitectura de intención ha sido materializada.**
