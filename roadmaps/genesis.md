@@ -55,10 +55,10 @@
 
 | # | Tarea | Ubicación | Descripción | Estado |
 |---|-------|-----------|-------------|--------|
-| 1 | Core Entities | `crates/core_logic/src/domain` | Implementar User y Email (Value Object) | ⏳ |
-| 2 | Contracts | `crates/core_logic/src/interfaces` | Definir `IUserRepository` (Trait) | ⏳ |
-| 3 | Just Command | `Justfile` | Comandos `just setup`, `just audit`, `just dev` | ⏳ |
-| 4 | Pre-commit | `.pre-commit-config.yaml` | Bloquear commits que no pasen clippy | ⏳ |
+| 1 | Core Entities | `crates/core_logic/src/domain` | Implementar User y Email (Value Object) | ✅ |
+| 2 | Contracts | `crates/core_logic/src/interfaces` | Definir `IUserRepository` (Trait) | ✅ |
+| 3 | Just Command | `Justfile` | Comandos `just setup`, `just audit`, `just dev` | ✅ |
+| 4 | Pre-commit | `.pre-commit-config.yaml` | Bloquear commits que no pasen clippy | ✅ |
 
 ---
 

@@ -1,0 +1,38 @@
+# Código 3026: El Guardián de la Sintonía
+# Configuración de pre-commit para asegurar la soberanía y calidad del código.
+#
+# Para activar, ejecuta:
+# 1. pip install pre-commit
+# 2. pre-commit install
+
+repos:
+  # --- Guardianes Genéricos ---
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+
+  # --- Guardián de Frontend (Biome: JS/TS/JSON) ---
+  - repo: https://github.com/biomejs/pre-commit
+    rev: v1.7.3
+    hooks:
+      - id: biome
+        args: ["check", "--apply"] # Revisa y aplica correcciones seguras
+
+  # --- Guardianes de Rust (Formato y Auditoría) ---
+  - repo: https://github.com/doublify/pre-commit-rust
+    rev: v1.0
+    hooks:
+      - id: fmt
+      - id: clippy
+        args: ["--workspace", "--", "-D", "warnings"]
+
+  # --- Guardián del ADN (Protobuf) ---
+  - repo: https://github.com/bufbuild/buf
+    rev: v1.32.2
+    hooks:
+      - id: buf-lint
+        args: ['lint', 'proto']
