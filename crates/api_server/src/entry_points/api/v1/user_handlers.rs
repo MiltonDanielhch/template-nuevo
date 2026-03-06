@@ -15,7 +15,11 @@
 use crate::{config::di::AppState, entry_points::api::v1::errors::ApiError};
 use axum::{Json, extract::State};
 use core_logic::{
-    application::use_cases::user::register::RegisterUserCommand, domain::entities::user::User,
+    application::use_cases::user::{
+        login::LoginUserCommand,
+        register::RegisterUserCommand,
+    },
+    domain::entities::user::User,
 };
 use serde::{Deserialize, Serialize};
 
@@ -60,4 +64,39 @@ pub async fn register_user_handler(
     let new_user = state.register_user.execute(command).await?;
 
     Ok(Json(new_user.into()))
+}
+
+#[derive(Deserialize)]
+pub struct LoginRequest {
+    pub email: String,
+    pub password: String,
+}
+
+#[derive(Serialize)]
+pub struct LoginResponse {
+    pub id: String,
+    pub email: String,
+}
+
+impl From<User> for LoginResponse {
+    fn from(user: User) -> Self {
+        Self {
+            id: user.id().to_string(),
+            email: user.email().to_string(),
+        }
+    }
+}
+
+pub async fn login_user_handler(
+    State(state): State<AppState>,
+    Json(payload): Json<LoginRequest>,
+) -> Result<Json<LoginResponse>, ApiError> {
+    let command = LoginUserCommand {
+        email: payload.email,
+        password: payload.password,
+    };
+
+    let user = state.login_user.execute(command).await?;
+
+    Ok(Json(user.into()))
 }

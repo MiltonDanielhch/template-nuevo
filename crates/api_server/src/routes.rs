@@ -4,11 +4,15 @@
 //! Define el router principal de la aplicación Axum y asocia las rutas
 //! con sus respectivos handlers.
 
-use crate::{config::di::AppState, entry_points::api::v1::user_handlers::register_user_handler};
-use axum::routing::{Router, post};
+use crate::{
+    config::di::AppState,
+    entry_points::api::v1::user_handlers::{login_user_handler, register_user_handler},
+};
+use axum::routing::{post, Router};
 
 pub fn create_router(app_state: AppState) -> Router {
     Router::new()
         .route("/register", post(register_user_handler))
+        .route("/login", post(login_user_handler))
         .with_state(app_state)
 }

@@ -62,11 +62,18 @@ async fn setup_test_app() -> Router {
     let user_repo = Arc::new(infra_db::SqliteUserRepository::new(pool.clone()));
     let hasher = Arc::new(infra_db::Argon2idHasher::default());
     let register_user_use_case = Arc::new(
-        core_logic::application::use_cases::user::register::RegisterUser::new(user_repo, hasher),
+        core_logic::application::use_cases::user::register::RegisterUser::new(
+            user_repo.clone(),
+            hasher.clone(),
+        ),
+    );
+    let login_user_use_case = Arc::new(
+        core_logic::application::use_cases::user::login::LoginUser::new(user_repo, hasher),
     );
 
     let app_state = AppState {
         register_user: register_user_use_case,
+        login_user: login_user_use_case,
     };
 
     create_router(app_state)

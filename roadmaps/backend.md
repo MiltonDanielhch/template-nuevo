@@ -44,7 +44,7 @@
 |---|-------|-----------|-------------|:------:|
 | 1 | Value Objects | `core_logic/domain/value_objects` | `UserId`, `Email`, `PasswordHash` con validación estricta y `Display`. | ✅ |
 | 2 | Domain Traits | `core_logic/domain/interfaces` | Puertos: `IUserRepository` (✅), `IHasher` (✅) | ✅ |
-| 3 | Use Cases | `core_logic/application/use_cases` | Lógica de `RegisterUser` (✅), `LoginUser` (⏳) | ✅ |
+| 3 | Use Cases | `core_logic/application/use_cases` | Lógica de `RegisterUser` (✅), `LoginUser` (✅) | ✅ |
 
 **Verificación:** `cargo check -p core_logic` pasa sin errores.
 
@@ -78,10 +78,12 @@
 ### 📅 Fase 2.2: Identidad 3026
 
 | # | Tarea | Ubicación | Descripción | Estado |
-|---|-------|-----------|-------------|--------|
+|---|-------|-----------|-------------|:------:|
 | 1 | Hashing Service | `infra_db` | Implementar `IHasher` con Argon2id. | ✅ |
-| 2 | Session Repository | `infra_db` | Crear `SqliteSessionRepository`. | ⏳ |
-| 3 | Cleanup Task | `api_server` | Tarea en background para limpiar sesiones expiradas. | ⏳ |
+| 2 | LoginUser Use Case | `core_logic/application/use_cases/user/login.rs` | Caso de uso para autenticación con email/password. | ✅ |
+| 3 | Login API Endpoint | `api_server/entry_points/api/v1/user_handlers.rs` | Handler `POST /login`. | ✅ |
+| 4 | Session Repository | `infra_db` | Crear `SqliteSessionRepository`. | ⏳ |
+| 5 | Cleanup Task | `api_server` | Tarea en background para limpiar sesiones expiradas. | ⏳ |
 
 ---
 

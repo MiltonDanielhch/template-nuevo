@@ -4,4 +4,5 @@
 //! Contiene toda la lógica de aplicación relacionada con la entidad `User`,
 //! como el registro, inicio de sesión, actualización de perfil, etc.
 
+pub mod login;
 pub mod register;
