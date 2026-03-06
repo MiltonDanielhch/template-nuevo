@@ -12,23 +12,20 @@
 //! - Se utiliza `tower::ServiceExt` para llamar al `Router` de Axum directamente,
 //!   sin necesidad de levantar un servidor HTTP real, lo que hace los tests más rápidos.
 
-use api_server::{
-    config::di::AppState,
-    routes::create_router,
-};
+use api_server::{config::di::AppState, routes::create_router};
 use axum::{
+    Router,
     body::Body,
     http::{Request, StatusCode},
-    Router,
 };
 use http_body_util::BodyExt; // Para `collect` y `to_bytes`
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sqlx::{migrate::Migrator, sqlite::SqlitePoolOptions};
-use std::{path::Path, sync::Arc};
+use std::env;
 use std::sync::LazyLock;
+use std::{path::Path, sync::Arc};
 use tokio::sync::OnceCell;
 use tower::util::ServiceExt;
-use std::env;
 
 /// Migrador estático para las migraciones de SQLx.
 /// Se inicializa una única vez para cargar las migraciones desde la ruta.
@@ -64,8 +61,9 @@ async fn setup_test_app() -> Router {
     // Crear el AppState con el pool de la base de datos en memoria.
     let user_repo = Arc::new(infra_db::SqliteUserRepository::new(pool.clone()));
     let hasher = Arc::new(infra_db::Argon2idHasher::default());
-    let register_user_use_case =
-        Arc::new(core_logic::application::use_cases::user::register::RegisterUser::new(user_repo, hasher));
+    let register_user_use_case = Arc::new(
+        core_logic::application::use_cases::user::register::RegisterUser::new(user_repo, hasher),
+    );
 
     let app_state = AppState {
         register_user: register_user_use_case,
@@ -109,11 +107,32 @@ async fn register_user_duplicate_email() {
     let app = setup_test_app().await;
 
     let request_body = json!({"email": "duplicate@example.com", "password": "password123"});
-    let response = app.clone().oneshot(Request::builder().method("POST").uri("/register").header("Content-Type", "application/json").body(Body::from(request_body.to_string())).unwrap()).await.unwrap();
+    let response = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/register")
+                .header("Content-Type", "application/json")
+                .body(Body::from(request_body.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
     assert_eq!(response.status(), StatusCode::OK);
 
     // Intentar registrar el mismo usuario de nuevo
-    let response = app.oneshot(Request::builder().method("POST").uri("/register").header("Content-Type", "application/json").body(Body::from(request_body.to_string())).unwrap()).await.unwrap();
+    let response = app
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/register")
+                .header("Content-Type", "application/json")
+                .body(Body::from(request_body.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
 
     assert_eq!(response.status(), StatusCode::CONFLICT);
 

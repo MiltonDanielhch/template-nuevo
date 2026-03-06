@@ -5,9 +5,9 @@
 //! una conversión limpia de errores de aplicación a respuestas HTTP.
 
 use axum::{
+    Json,
     http::StatusCode,
     response::{IntoResponse, Response},
-    Json,
 };
 use core_logic::domain::errors::DomainError;
 use serde_json::json;
@@ -23,7 +23,9 @@ impl IntoResponse for ApiError {
             let (status, error_message) = match domain_error {
                 // Se corrige el patrón para que coincida con la variante que tiene datos.
                 // El `_` ignora el email específico del error, que no necesitamos en la respuesta JSON.
-                DomainError::UserAlreadyExists(_) => (StatusCode::CONFLICT, "El email ya está en uso."),
+                DomainError::UserAlreadyExists(_) => {
+                    (StatusCode::CONFLICT, "El email ya está en uso.")
+                }
                 DomainError::InvalidCredentials => {
                     (StatusCode::UNAUTHORIZED, "Credenciales inválidas.")
                 }
@@ -40,7 +42,8 @@ impl IntoResponse for ApiError {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
             Json(json!({"error": "Ha ocurrido un error interno en el servidor."})),
-        ).into_response()
+        )
+            .into_response()
     }
 }
 

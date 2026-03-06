@@ -5,9 +5,7 @@
 //! con sus respectivos handlers.
 
 use crate::{config::di::AppState, entry_points::api::v1::user_handlers::register_user_handler};
-use axum::{
-    routing::{post, Router},
-};
+use axum::routing::{Router, post};
 
 pub fn create_router(app_state: AppState) -> Router {
     Router::new()

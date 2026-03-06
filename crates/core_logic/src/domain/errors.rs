@@ -16,9 +16,15 @@ use thiserror::Error;
 
 #[derive(Error, Debug, PartialEq)]
 pub enum DomainError {
-    #[error("El email '{0}' no es válido.")]
-    InvalidEmail(String),
+    #[error("El usuario con el email '{0}' ya existe.")]
+    UserAlreadyExists(String),
 
-    #[error("El hash de la contraseña no es válido: {0}")]
-    InvalidPasswordHash(String),
+    #[error("Credenciales de login inválidas.")]
+    InvalidCredentials,
+
+    #[error("Error de validación: {0}")]
+    ValidationError(String),
+
+    #[error("Hash de contraseña inválido.")]
+    InvalidPasswordHash,
 }

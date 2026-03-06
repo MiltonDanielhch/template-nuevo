@@ -22,7 +22,7 @@ pub struct PasswordHash(String);
 impl PasswordHash {
     pub fn new(hash: String) -> Result<Self, DomainError> {
         if hash.trim().is_empty() {
-            return Err(DomainError::InvalidPasswordHash(
+            return Err(DomainError::ValidationError(
                 "El hash de la contraseña no puede estar vacío".to_string(),
             ));
         }

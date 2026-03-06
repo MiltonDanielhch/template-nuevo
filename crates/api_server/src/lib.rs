@@ -1,4 +1,4 @@
-//! crates/api_server/src/lib.rs
+// crates/api_server/src/lib.rs
 //! # Crate `api_server` (Biblioteca)
 //!
 //! Este archivo es la raíz de la biblioteca del crate binario `api_server`.
@@ -15,3 +15,7 @@
 //! - `core_logic`: Para acceder a los casos de uso.
 //! - `infra_db`: Para acceder a las implementaciones concretas de los repositorios.
 //! - `axum`: Para construir el servidor web.
+
+pub mod config;
+pub mod entry_points;
+pub mod routes;

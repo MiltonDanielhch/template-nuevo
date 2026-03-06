@@ -13,7 +13,7 @@
 //! - Serializar la respuesta del caso de uso a JSON.
 
 use crate::{config::di::AppState, entry_points::api::v1::errors::ApiError};
-use axum::{extract::State, Json};
+use axum::{Json, extract::State};
 use core_logic::{
     application::use_cases::user::register::RegisterUserCommand, domain::entities::user::User,
 };
