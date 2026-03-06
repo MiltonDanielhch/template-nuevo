@@ -1,3 +1,21 @@
+# c:\laravel\templates\template1\crates\core_logic\Cargo.toml
+# # Manifiesto del Crate `core_logic`
+#
+# Este crate es el "Núcleo Inmortal" de la aplicación.
+# Contiene toda la lógica de negocio pura (Dominio y Aplicación) y no sabe nada
+# sobre bases de datos, servidores web o detalles de infraestructura.
+#
+# ## Responsabilidades
+# - Definir las Entidades y Value Objects (Capa 1).
+# - Definir los Puertos (Interfaces) para la infraestructura.
+# - Implementar los Casos de Uso (Capa 2).
+#
+# ## Dependencias Clave
+# - `thiserror`: Para definir errores de dominio precisos.
+# - `serde`: Para serializar/deserializar estructuras de dominio.
+# - `async-trait`: Para definir puertos asíncronos (`Send + Sync`).
+# - `uuid`, `chrono`: Tipos base para el modelado de datos.
+
 [package]
 name = "core_logic"
 version = "0.1.0"

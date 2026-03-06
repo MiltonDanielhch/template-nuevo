@@ -1,3 +1,17 @@
+// crates/core_logic/src/domain/value_objects/password_hash.rs
+//! # Value Object: PasswordHash
+//!
+//! Representa un hash de contraseña, no una contraseña en texto plano.
+//! Su propósito es proporcionar seguridad de tipos, evitando que accidentalmente
+//! se pueda usar un hash como si fuera texto plano o viceversa.
+//!
+//! ## Lógica de Negocio
+//! - Un hash de contraseña no puede estar vacío.
+//!
+//! ## Dependencias
+//! - `DomainError`: Para devolver un error de dominio si la validación falla.
+//! - `serde`: Para poder serializar y deserializar el objeto (ej. en APIs).
+
 use crate::domain::errors::DomainError;
 use serde::{Deserialize, Serialize};
 use std::fmt;

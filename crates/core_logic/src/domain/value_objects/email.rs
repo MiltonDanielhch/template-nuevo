@@ -1,3 +1,20 @@
+// crates/core_logic/src/domain/value_objects/email.rs
+//! # Value Object: Email
+//!
+//! Representa una dirección de correo electrónico validada.
+//! Su propósito es garantizar que cualquier `Email` en el sistema
+//! ha pasado las comprobaciones de formato necesarias.
+//!
+//! ## Lógica de Negocio
+//! - No puede estar vacío.
+//! - Debe tener un formato de email válido (comprobado con una expresión regular).
+//!
+//! ## Dependencias
+//! - `DomainError`: Para devolver un error de dominio si la validación falla.
+//! - `regex`: Para la validación del formato.
+//! - `OnceLock`: Para compilar la regex una sola vez y mejorar el rendimiento (Sintonía 3026).
+//! - `serde`: Para poder serializar y deserializar el objeto.
+
 use crate::domain::errors::DomainError;
 use regex::Regex;
 use serde::{Deserialize, Serialize};

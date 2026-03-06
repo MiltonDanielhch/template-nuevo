@@ -1,5 +1,16 @@
 -- 20260305135148_create_users_table.sql
--- Migración inicial para la tabla de usuarios (versión con soft-delete y trigger)
+-- c:\laravel\templates\template1\crates\infra_db\migrations\20260305135148_create_users_table.sql
+--! # Migración: Create Users Table
+--!
+--! Crea la tabla `users` inicial, que es el pilar del sistema de autenticación.
+--!
+--! ## Decisiones de Diseño (Sintonía 3026)
+--! - `id TEXT`: Usamos `TEXT` para almacenar UUIDs (v7) para máxima compatibilidad.
+--! - `deleted_at DATETIME`: Implementa el patrón "Soft Delete". Los usuarios no se borran, se marcan como borrados.
+--! - `idx_users_email_active`: Un índice único PARCIAL. Permite que un nuevo usuario se registre con un email
+--!   que pertenecía a una cuenta borrada, pero no permite emails duplicados entre usuarios activos.
+--! - `trg_users_updated_at`: Un `TRIGGER` que actualiza automáticamente el campo `updated_at` en cada modificación.
+--!   Esto descarga a la lógica de aplicación de esta responsabilidad, garantizando la consistencia.
 
 CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY NOT NULL, -- UUID v4/v7 como texto para flexibilidad

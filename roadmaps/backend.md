@@ -43,8 +43,8 @@
 | # | Tarea | Ubicación | Descripción | Estado |
 |---|-------|-----------|-------------|:------:|
 | 1 | Value Objects | `core_logic/domain/value_objects` | `UserId`, `Email`, `PasswordHash` con validación estricta. | ✅ |
-| 2 | Domain Traits | `core_logic/domain/interfaces` | Puertos: `IUserRepository` (✅), `IHasher` (⏳) | 🔄 |
-| 3 | Use Cases | `core_logic/application/use_cases` | Lógica de `RegisterUser`, `LoginUser` | ⏳ |
+| 2 | Domain Traits | `core_logic/domain/interfaces` | Puertos: `IUserRepository` (✅), `IHasher` (✅) | ✅ |
+| 3 | Use Cases | `core_logic/application/use_cases` | Lógica de `RegisterUser` (✅), `LoginUser` (⏳) | ✅ |
 
 **Verificación:** `cargo check -p core_logic` pasa sin errores.
 
@@ -79,7 +79,7 @@
 
 | # | Tarea | Ubicación | Descripción | Estado |
 |---|-------|-----------|-------------|--------|
-| 1 | Hashing Service | `infra_db` | Implementar `IHasher` con Argon2id. | ⏳ |
+| 1 | Hashing Service | `infra_db` | Implementar `IHasher` con Argon2id. | ✅ |
 | 2 | Session Repository | `infra_db` | Crear `SqliteSessionRepository`. | ⏳ |
 | 3 | Cleanup Task | `api_server` | Tarea en background para limpiar sesiones expiradas. | ⏳ |
 
@@ -88,6 +88,7 @@
 ## ⚙️ BLOQUE III: LA ANTENA (API & Entry Points)
 
 **Objetivo:** Exponer el sistema al mundo exterior mediante `api_server`.
+**Estado:** En Progreso 🔄
 
 | # | Tarea | Ubicación | Descripción | Estado |
 |---|-------|-----------|-------------|--------|

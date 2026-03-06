@@ -1,3 +1,21 @@
+# // c:\laravel\templates\template1\crates\api_server\Cargo.toml
+# //! # Manifiesto del Crate `api_server`
+# //!
+# //! Este es el "Crate Binario" y el punto de entrada principal de la aplicación.
+# //! Actúa como el "Composition Root" y el "Adaptador Primario" en la Arquitectura Hexagonal.
+# //!
+# //! ## Responsabilidades
+# //! - Contener el `main.rs` que inicia el servidor.
+# //! - Definir las dependencias del framework web (Axum).
+# //! - Importar `core_logic` e `infra_db` para conectar las capas.
+# //! - Configurar la inyección de dependencias.
+# //!
+# //! ## Dependencias Clave
+# //! - `core_logic`: Para acceder a los casos de uso y la lógica de negocio.
+# //! - `infra_db`: Para instanciar los adaptadores concretos (repositorios, hashers).
+# //! - `axum`: El framework web para construir la API.
+# //! - `tokio`: El runtime asíncrono sobre el que corre Axum.
+
 [package]
 name = "api_server"
 version = "0.1.0"
@@ -9,4 +27,4 @@ infra_db = { path = "../infra_db" }
 
 anyhow = "1.0"
 tokio = { version = "1.36", features = ["full"] } # "full" para tener todo lo necesario para Axum
-
+axum = "0.7.5"

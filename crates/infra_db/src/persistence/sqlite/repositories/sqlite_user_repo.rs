@@ -1,3 +1,19 @@
+// crates/infra_db/src/persistence/sqlite/repositories/sqlite_user_repo.rs
+//! # Adaptador SqliteUserRepository
+//!
+//! Implementación concreta (Adaptador) del puerto `IUserRepository`.
+//! Es el puente que traduce las necesidades de la lógica de negocio
+//! ("guarda este usuario") a comandos específicos de la base de datos SQLite.
+//!
+//! ## Responsabilidades
+//! - Implementar todos los métodos del trait `IUserRepository`.
+//! - Manejar la conexión con la base de datos a través de un `SqlitePool`.
+//! - Mapear entre las entidades de dominio (`User`) y los modelos de base de datos (`DbUser`).
+//!
+//! ## Dependencias
+//! - `core_logic`: Para acceder a los traits y entidades del dominio.
+//! - `sqlx`: Para interactuar con la base de datos SQLite.
+//! - `anyhow`: Para el manejo de errores.
 use async_trait::async_trait;
 use sqlx::SqlitePool;
 use chrono::{DateTime, Utc};
@@ -5,7 +21,7 @@ use anyhow::Result;
 
 use core_logic::domain::{
     entities::user::{User, UserPersistenceData},
-    value_objects::{email::Email, user_id::UserId},
+    value_objects::{email::Email, password_hash::PasswordHash, user_id::UserId},
     interfaces::user_repo::IUserRepository,
 };
 
@@ -31,7 +47,7 @@ impl SqliteUserRepository {
     fn to_domain_user(db_user: DbUser) -> Result<User> {
         let user_id = UserId::new_from_string(db_user.id)?;
         let email = Email::parse(db_user.email)?;
-        let password_hash = core_logic::domain::value_objects::password::PasswordHash::new(db_user.password_hash)?;
+        let password_hash = PasswordHash::new(db_user.password_hash)?;
 
         let created_at = DateTime::<Utc>::from_naive_utc_and_offset(db_user.created_at, Utc);
         let updated_at = DateTime::<Utc>::from_naive_utc_and_offset(db_user.updated_at, Utc);

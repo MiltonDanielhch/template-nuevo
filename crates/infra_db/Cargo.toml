@@ -1,3 +1,19 @@
+# c:\laravel\templates\template1\crates\infra_db\Cargo.toml
+# # Manifiesto del Crate `infra_db`
+#
+# Este crate contiene la implementación concreta de la infraestructura.
+# Es el "Cuerpo Técnico" que sabe cómo hablar con bases de datos y servicios externos.
+#
+# ## Responsabilidades
+# - Implementar los repositorios definidos en `core_logic` usando SQLx (SQLite).
+# - Implementar servicios externos como el hashing de contraseñas (Argon2).
+# - Definir los modelos de base de datos (DTOs) y migraciones.
+#
+# ## Dependencias Clave
+# - `sqlx`: Para la interacción con SQLite (ORM-like pero seguro).
+# - `argon2`: Para el hashing seguro de contraseñas.
+# - `tokio`: Runtime asíncrono para operaciones I/O no bloqueantes.
+
 [package]
 name = "infra_db"
 version = "0.1.0"
@@ -12,4 +28,5 @@ async-trait = "0.1"
 tokio = { version = "1.36", features = ["macros", "rt-multi-thread"] }
 uuid = { version = "1.7", features = ["v7", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
-
+argon2 = "0.5.3"
+rand = { version = "0.8.5", features = ["std_rng"] }

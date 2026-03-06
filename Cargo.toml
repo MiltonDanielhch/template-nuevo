@@ -1,9 +1,22 @@
+# c:\laravel\templates\template1\Cargo.toml
+# # Workspace de Cargo
+#
+# Este es el archivo de configuración raíz del proyecto. Define el "Workspace",
+# que permite gestionar múltiples crates (librerías y binarios) como una sola unidad.
+#
+# ## Responsabilidades
+# - Centralizar la gestión de dependencias y versiones.
+# - Definir perfiles de compilación optimizados para todos los crates.
+#
+# ## Sintonía 3026
+# - Perfil `release` optimizado para tamaño (`opt-level = 'z'`) y bajo consumo de RAM.
+
 [workspace]
 resolver = "2"
 members = [
     "crates/api_server",
     "crates/core_logic",
-    "crates/infra_db" # Se añadirá en fases futuras
+    "crates/infra_db"
 ]
 
 [profile.release]
@@ -13,4 +26,3 @@ lto = true             # Link-Time Optimization
 codegen-units = 1      # Maximiza optimizaciones
 panic = 'abort'        # No desenrollar la pila, ahorra espacio
 strip = true           # Elimina símbolos de depuración del binario final
-

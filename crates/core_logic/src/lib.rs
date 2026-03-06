@@ -1,5 +1,12 @@
-//! # Core Logic Crate
-//! El corazón inmortal del sistema. Lógica de negocio pura, agnóstica a la base de datos y al framework web.
-//! Contiene el Dominio (Capa 1) y la Aplicación (Capa 2) de la Arquitectura Hexagonal.
+// crates/core_logic/src/lib.rs
 
+//! # Core Logic Crate
+//!
+//! El corazón de la aplicación. Contiene la lógica de negocio pura,
+//! agnóstica a la infraestructura (web, base de datos, etc.).
+//!
+//! Se divide en dos capas principales:
+//! - **Domain**: Entidades, Value Objects, e interfaces (Puertos).
+//! - **Application**: Casos de uso que orquestan la lógica del dominio.
+pub mod application;
 pub mod domain;

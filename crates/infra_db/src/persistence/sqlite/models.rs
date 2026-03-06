@@ -1,3 +1,19 @@
+// crates/infra_db/src/persistence/sqlite/models.rs
+//! # Módulo de Modelos de Base de Datos (SQLite)
+//!
+//! Este módulo define las estructuras que mapean directamente a las tablas
+//! de la base de datos SQLite. A menudo se les llama DTOs (Data Transfer Objects)
+//! de persistencia.
+//!
+//! ## Responsabilidades
+//! - Representar la estructura de una fila de una tabla de la base de datos.
+//! - Derivar `sqlx::FromRow` para permitir el mapeo automático desde los resultados de una consulta.
+//! - Contener la lógica de mapeo para convertir desde una entidad de dominio a este modelo (`from_domain`).
+//!
+//! ## Dependencias
+//! - `chrono`: Para manejar los tipos de fecha/hora `Naive` que vienen de la base de datos.
+//! - `sqlx`: Para el macro `FromRow`.
+
 use chrono::NaiveDateTime;
 use sqlx::FromRow;
 

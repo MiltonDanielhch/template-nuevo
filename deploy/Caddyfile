@@ -1,5 +1,15 @@
-# Código 3026: Infra Blueprint (Caddy v2)
-# Configuración para el despliegue soberano en un VPS de $5 con Podman.
+# c:\laravel\templates\template1\deploy\Caddyfile
+# # Configuración de Caddy (Adaptador de Entrada)
+#
+# Este archivo configura Caddy como nuestro reverse proxy y servidor web.
+# Es un componente clave del "BLOQUE IV: DESPLIEGUE SOBERANO".
+#
+# ## Responsabilidades
+# - **Terminación SSL/TLS:** Obtiene y renueva automáticamente certificados SSL de Let's Encrypt.
+# - **Reverse Proxy:** Redirige el tráfico del dominio público al contenedor de la aplicación Rust.
+# - **Compresión:** Comprime las respuestas (Brotli/Gzip) para ahorrar ancho de banda.
+# - **Seguridad:** Aplica cabeceras HTTP de seguridad por defecto.
+# - **HTTP/3:** Habilita el protocolo más moderno para una menor latencia.
 
 # Sustituye "lab3026.com" con tu dominio real.
 # Caddy obtendrá y renovará automáticamente los certificados SSL/TLS para este dominio.

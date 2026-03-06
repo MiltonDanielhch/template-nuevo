@@ -1,4 +1,19 @@
-use crate::domain::value_objects::{email::Email, password::PasswordHash, user_id::UserId};
+// crates/core_logic/src/domain/entities/user.rs
+//! # Entidad: User
+//!
+//! Representa un usuario en el núcleo del dominio. Es el agregado principal
+//! para la lógica relacionada con usuarios.
+//!
+//! ## Responsabilidades
+//! - Mantener la consistencia de sus datos a través de sus métodos.
+//! - Encapsular las reglas de negocio (ej. cómo se crea un nuevo usuario).
+//! - Exponer sus datos de forma controlada a través de getters.
+//!
+//! ## Dependencias
+//! - `Value Objects`: `UserId`, `Email`, `PasswordHash` para garantizar la validez de sus atributos.
+//! - `chrono`: Para manejar las marcas de tiempo `created_at` y `updated_at`.
+
+use crate::domain::value_objects::{Email, PasswordHash, UserId};
 use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone)]
