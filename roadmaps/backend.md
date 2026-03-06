@@ -80,10 +80,12 @@
 | # | Tarea | Ubicación | Descripción | Estado |
 |---|-------|-----------|-------------|:------:|
 | 1 | Hashing Service | `infra_db` | Implementar `IHasher` con Argon2id. | ✅ |
-| 2 | LoginUser Use Case | `core_logic/application/use_cases/user/login.rs` | Caso de uso para autenticación con email/password. | ✅ |
-| 3 | Login API Endpoint | `api_server/entry_points/api/v1/user_handlers.rs` | Handler `POST /login`. | ✅ |
-| 4 | Session Repository | `infra_db` | Crear `SqliteSessionRepository`. | ⏳ |
-| 5 | Cleanup Task | `api_server` | Tarea en background para limpiar sesiones expiradas. | ⏳ |
+| 2 | RegisterUser Use Case | `core_logic/application/use_cases/user/register.rs` | Caso de uso para registro con verificación de email duplicado. | ✅ |
+| 3 | Register API Endpoint | `api_server/entry_points/api/v1/user_handlers.rs` | Handler `POST /register`. | ✅ |
+| 4 | LoginUser Use Case | `core_logic/application/use_cases/user/login.rs` | Caso de uso para autenticación con email/password. | ✅ |
+| 5 | Login API Endpoint | `api_server/entry_points/api/v1/user_handlers.rs` | Handler `POST /login`. | ✅ |
+| 6 | Tests de Integración | `api_server/tests/integration_tests.rs` | Tests para register y login. | ✅ |
+| 7 | Session Tokens | `infra_db` + `core_logic` | Sistema de tokens de sesión (⏳ PRÓXIMO) | ⏳ |
 
 ---
 
@@ -105,7 +107,26 @@
 
 ---
 
-## 📡 BLOQUE IV: DESPLIEGUE SOBERANO
+## 🔐 BLOQUE IV: SESIONES Y AUTH
+
+**Objetivo:** Implementar sistema de tokens para mantener autenticación entre requests.
+**Estado:** ⏳ Pendiente (PRÓXIMO)
+
+| # | Tarea | Ubicación | Descripción | Estado |
+|---|-------|-----------|-------------|--------|
+| 1 | Migración Tokens | `infra_db/migrations` | Tabla `tokens` con user_id, token, expires_at. | ⏳ |
+| 2 | Value Object SessionToken | `core_logic/domain/value_objects` | Token con validación y expiración. | ⏳ |
+| 3 | ISessionRepository | `core_logic/domain/interfaces` | Trait para persistencia de sesiones. | ⏳ |
+| 4 | SqliteSessionRepository | `infra_db/persistence` | Implementación SQLite. | ⏳ |
+| 5 | CreateSession Use Case | `core_logic/application/use_cases` | Generar token al hacer login. | ⏳ |
+| 6 | ValidateSession Use Case | `core_logic/application/use_cases` | Validar token en requests. | ⏳ |
+| 7 | Logout Use Case | `core_logic/application/use_cases` | Invalidar sesión. | ⏳ |
+| 8 | Auth Middleware | `api_server/entry_points` | Extractor CurrentUser. | ⏳ |
+| 9 | Protected Routes | `api_server/routes.rs` | Rutas que requieren auth. | ⏳ |
+
+---
+
+## 📡 BLOQUE V: DESPLIEGUE SOBERANO
 
 **Objetivo:** Poner el laboratorio en órbita en el VPS de $5.
 
