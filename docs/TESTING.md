@@ -195,14 +195,56 @@ curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d 
 
 ## 🎯 Casos de Prueba Resumidos
 
-| # | Escenario | Input | Output Esperado |
-|---|-----------|-------|-----------------|
-| 1 | Registro exitoso | email + password válidos | 200 + {id, email} |
-| 2 | Registro email duplicado | email ya usado | 409 Conflict |
-| 3 | Login exitoso | credenciales válidas | 200 + {id, email} |
-| 4 | Login email no existe | email no registrado | 401 Unauthorized |
-| 5 | Login password incorrecto | password wrong | 401 Unauthorized |
-| 6 | Registro email inválido | email sin @ | 400 Bad Request |
+| # | Escenario | Input | Output Esperado | Probado |
+|---|-----------|-------|----------------|:-------:|
+| 1 | Registro exitoso | email + password válidos | 200 + {id, email} | ✅ |
+| 2 | Registro email duplicado | email ya usado | 409 Conflict | ✅ |
+| 3 | Login exitoso | credenciales válidas | 200 + {id, email} | ✅ |
+| 4 | Login email no existe | email no registrado | 401 Unauthorized | ✅ |
+| 5 | Login password incorrecto | password wrong | 401 Unauthorized | ✅ |
+| 6 | Registro email inválido | email sin @ | 400 Bad Request | ✅ |
+
+---
+
+## ✅ Pruebas Manuales Realizadas
+
+¡Todas las pruebas pasaron! Aquí están los comandos y resultados:
+
+### Registro Exitoso
+```bash
+curl -X POST http://localhost:8080/register -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
+```
+**Resultado:**
+```json
+{"id":"019cc4e8-b041-7dd5-8747-1734e2a2fb42","email":"test@test.com"}
+```
+
+### Login Exitoso
+```bash
+curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
+```
+**Resultado:**
+```json
+{"id":"019cc4e8-b041-7dd5-8747-1734e2a2fb42","email":"test@test.com"}
+```
+
+### Login con Password Incorrecto
+```bash
+curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"WRONG\"}"
+```
+**Resultado:**
+```json
+{"error":"Credenciales inválidas."}
+```
+
+### Verificar en Base de Datos
+```bash
+sqlite3 backend.db "SELECT id, email, email_verified, created_at FROM users;"
+```
+**Resultado:**
+```
+019cc4e8-b041-7dd5-8747-1734e2a2fb42|test@test.com|0|2026-03-06 20:48:29.761951200
+```
 
 ---
 

@@ -147,3 +147,164 @@ async fn register_user_duplicate_email() {
     let json_body: Value = serde_json::from_slice(&body).unwrap();
     assert_eq!(json_body["error"], "El email ya está en uso.");
 }
+
+#[tokio::test]
+async fn register_user_invalid_email() {
+    let app = setup_test_app().await;
+
+    let request_body = json!({
+        "email": "no-es-valido",
+        "password": "password123"
+    });
+
+    let response = app
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/register")
+                .header("Content-Type", "application/json")
+                .body(Body::from(request_body.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    let body = response.into_body().collect().await.unwrap().to_bytes();
+    let json_body: Value = serde_json::from_slice(&body).unwrap();
+    let error_msg = json_body["error"].as_str().unwrap();
+    assert!(
+        error_msg.contains("no es válido") 
+        || error_msg.contains("Error de validación")
+        || error_msg.contains("Error en los datos"),
+        "Error msg: {}",
+        error_msg
+    );
+}
+
+#[tokio::test]
+async fn login_user_success() {
+    let app = setup_test_app().await;
+
+    // Primero registrar un usuario
+    let register_body = json!({
+        "email": "login@test.com",
+        "password": "password123"
+    });
+    let _ = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/register")
+                .header("Content-Type", "application/json")
+                .body(Body::from(register_body.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    // Ahora hacer login con credenciales válidas
+    let login_body = json!({
+        "email": "login@test.com",
+        "password": "password123"
+    });
+
+    let response = app
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/login")
+                .header("Content-Type", "application/json")
+                .body(Body::from(login_body.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let body = response.into_body().collect().await.unwrap().to_bytes();
+    let json_body: Value = serde_json::from_slice(&body).unwrap();
+
+    assert!(json_body["id"].is_string());
+    assert_eq!(json_body["email"], "login@test.com");
+}
+
+#[tokio::test]
+async fn login_user_email_not_found() {
+    let app = setup_test_app().await;
+
+    let request_body = json!({
+        "email": "noexiste@test.com",
+        "password": "password123"
+    });
+
+    let response = app
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/login")
+                .header("Content-Type", "application/json")
+                .body(Body::from(request_body.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+
+    let body = response.into_body().collect().await.unwrap().to_bytes();
+    let json_body: Value = serde_json::from_slice(&body).unwrap();
+    assert_eq!(json_body["error"], "Credenciales inválidas.");
+}
+
+#[tokio::test]
+async fn login_user_wrong_password() {
+    let app = setup_test_app().await;
+
+    // Primero registrar un usuario
+    let register_body = json!({
+        "email": "wrongpass@test.com",
+        "password": "correctpassword"
+    });
+    let _ = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/register")
+                .header("Content-Type", "application/json")
+                .body(Body::from(register_body.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    // Ahora hacer login con contraseña incorrecta
+    let login_body = json!({
+        "email": "wrongpass@test.com",
+        "password": "WRONGPASSWORD"
+    });
+
+    let response = app
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/login")
+                .header("Content-Type", "application/json")
+                .body(Body::from(login_body.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+
+    let body = response.into_body().collect().await.unwrap().to_bytes();
+    let json_body: Value = serde_json::from_slice(&body).unwrap();
+    assert_eq!(json_body["error"], "Credenciales inválidas.");
+}
