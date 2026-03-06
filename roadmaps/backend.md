@@ -42,7 +42,7 @@
 
 | # | Tarea | Ubicación | Descripción | Estado |
 |---|-------|-----------|-------------|:------:|
-| 1 | Value Objects | `core_logic/domain/value_objects` | `UserId`, `Email`, `PasswordHash` con validación estricta. | ✅ |
+| 1 | Value Objects | `core_logic/domain/value_objects` | `UserId`, `Email`, `PasswordHash` con validación estricta y `Display`. | ✅ |
 | 2 | Domain Traits | `core_logic/domain/interfaces` | Puertos: `IUserRepository` (✅), `IHasher` (✅) | ✅ |
 | 3 | Use Cases | `core_logic/application/use_cases` | Lógica de `RegisterUser` (✅), `LoginUser` (⏳) | ✅ |
 
@@ -88,14 +88,18 @@
 ## ⚙️ BLOQUE III: LA ANTENA (API & Entry Points)
 
 **Objetivo:** Exponer el sistema al mundo exterior mediante `api_server`.
-**Estado:** En Progreso 🔄
+**Estado:** ✅ Completado
 
 | # | Tarea | Ubicación | Descripción | Estado |
-|---|-------|-----------|-------------|--------|
-| 1 | AppState | `api_server` | Struct con `Arc<dyn IUserRepository>`. | ⏳ |
-| 2 | DI Container | `api_server/config/di.rs` | Unir `SqliteUserRepository` con `IUserRepository`. | ⏳ |
-| 3 | Axum Router | `api_server/routes.rs` | Configuración de rutas y `State`. | ⏳ |
-| 4 | Scalar Doc | `api_server` | Documentación de API interactiva y automática. | ⏳ |
+|---|-------|-----------|-------------|:------:|
+| 1 | AppState | `api_server` | Struct con `Arc<dyn IUserRepository>`. | ✅ |
+| 2 | DI Container | `api_server/config/di.rs` | Unir `SqliteUserRepository` con `IUserRepository`. | ✅ |
+| 3 | Axum Router | `api_server/routes.rs` | Configuración de rutas y `State`. | ✅ |
+| 4 | Handlers | `api_server/entry_points/api/v1/user_handlers.rs` | Handler `POST /register`. | ✅ |
+| 5 | Value Object Display | `core_logic/domain/value_objects` | Implementar `Display` para `UserId`, `Email`. | ✅ |
+| 6 | DomainError | `core_logic/domain/errors` | Variante `UserAlreadyExists`. | ✅ |
+| 7 | Email Duplicate Check | `core_logic/application/use_cases/user/register.rs` | Verificar email antes de guardar. | ✅ |
+| 8 | Tests de Integración | `api_server/tests/integration_tests.rs` | Tests `register_user_success` y `register_user_duplicate_email`. | ✅ |
 
 ---
 

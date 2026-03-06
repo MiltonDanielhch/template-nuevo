@@ -21,6 +21,7 @@
 
 use crate::domain::{
     entities::user::User,
+    errors::DomainError,
     interfaces::{IHasher, IUserRepository},
     value_objects::Email,
 };
@@ -52,23 +53,28 @@ impl RegisterUser {
         let email =
             Email::parse(command.email).context("Error al parsear el email en el caso de uso")?;
 
-        // 2. Hashear la contraseña
+        // 2. Verificar que el email no esté ya en uso
+        if self.user_repo.find_by_email(&email).await?.is_some() {
+            return Err(DomainError::UserAlreadyExists(email.as_str().to_string()).into());
+        }
+
+        // 3. Hashear la contraseña
         let password_hash = self
             .hasher
             .hash(&command.password)
             .await
             .context("Error al hashear la contraseña")?;
 
-        // 3. Crear la entidad de dominio User
+        // 4. Crear la entidad de dominio User
         let new_user = User::new(email, password_hash);
 
-        // 4. Guardar el usuario usando el repositorio
+        // 5. Guardar el usuario usando el repositorio
         self.user_repo
             .save(&new_user)
             .await
             .context("Error al guardar el usuario en la base de datos")?;
 
-        // 5. Devolver la entidad creada (o un DTO de respuesta si se prefiere)
+        // 6. Devolver la entidad creada (o un DTO de respuesta si se prefiere)
         Ok(new_user)
     }
 }

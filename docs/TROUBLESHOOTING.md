@@ -69,8 +69,170 @@ Este documento es la bitácora de combate del Laboratorio 3026. No documenta el 
     let db_user = sqlx::query_as!(..., email.as_str()).await?;
 
     // CORRECTO (Sintonía 3026)
-    let email_str = email.as_str();
-    let db_user = sqlx::query_as!(..., email_str).await?;
+      let email_str = email.as_str();
+      let db_user = sqlx::query_as!(..., email_str).await?;
+      ```
+
+---
+
+### 9. Error de Privacidad: `field is private`
+
+- **Síntoma:** Intentas acceder a un campo de un struct (ej. `user.email`) y el compilador te detiene.
+  ```text
+  error[E0616]: field `email` of struct `User` is private
+  ```
+
+- **Diagnóstico:** En la Arquitectura Hexagonal, las entidades de dominio (`User`) deben proteger su estado interno para garantizar la validez de los datos. Por eso sus campos no son `pub`.
+
+- **Cura (Sintonía 3026):**
+  1. **No hagas los campos públicos.** Eso rompería el encapsulamiento.
+  2. **Usa Getters:** Define métodos públicos en tu entidad que devuelvan referencias a los datos.
+      ```rust
+      // En User
+      pub fn email(&self) -> &Email { &self.email }
+      // En el Handler
+      let email_str = user.email().as_str();
+      ```
+
+---
+
+### 10. Error de Display: `method `to_string` exists but its trait bounds were not satisfied`
+
+- **Síntoma:** Cuando intentas convertir un Value Object a String en un handler o test.
+  ```text
+  error[E0599]: the method `to_string` exists for reference `&Email`, but its trait bounds were not satisfied
+    --> crates\api_server\src\entry_points\api\v1\user_handlers.rs:42:33
+  ```
+
+- **Diagnóstico:** Los Value Objects (`UserId`, `Email`, `PasswordHash`) son wrappers alrededor de `String`. Aunque tienen el método `as_str()`, no implementan `Display`, por lo que no puedes usar `.to_string()` directamente.
+
+- **Cura (Sintonía 3026):**
+  - Implementa `Display` en tus Value Objects:
+    ```rust
+    // En email.rs o user_id.rs
+    use std::fmt::{Display, Formatter};
+
+    impl Display for Email {
+        fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{}", self.0)
+        }
+    }
+    ```
+  - Ahora puedes usar `.to_string()` en handlers:
+    ```rust
+    let email_string = user.email().to_string();
+    ```
+
+---
+
+### 11. Error de Tests: `use of moved value: app` (Router en Tests)
+
+- **Síntoma:** Al intentar usar el router dos veces en un test de integración.
+  ```text
+  error[E0382]: use of moved value: `app`
+    --> crates\api_server\tests\integration_tests.rs:114:20
+  ```
+
+- **Diagnóstico:** El método `oneshot` consume el Router (toma `self`), por lo que no puedes reutilizarlo para múltiples requests en el mismo test sin clonarlo.
+
+- **Cura (Sintonía 3026):**
+  - Clona el router antes del segundo request:
+    ```rust
+    let response = app.clone().oneshot(...).await?;
+    let response = app.oneshot(...).await?;
+    ```
+
+---
+
+### 12. Error de Tests: `OnceCell::new()` en Contexto Estático
+
+- **Síntoma:** No puedes usar `OnceCell::new()` en un `static`.
+  ```text
+  error[E0015]: cannot call non-const associated function `tokio::sync::OnceCell::<Migrator>::new` in statics
+  ```
+
+- **Diagnóstico:** `OnceCell::new()` no es una función const, no puede usarse en la inicialización de estáticos.
+
+- **Cura (Sintonía 3026):**
+  - Usa `LazyLock` en vez de `OnceCell`:
+    ```rust
+    use std::sync::LazyLock;
+
+    static MIGRATOR: LazyLock<OnceCell<Migrator>> = LazyLock::new(OnceCell::new);
+    ```
+
+---
+
+### 13. Error de Tests: `oneshot` method not found
+
+- **Síntoma:** El método `oneshot` no existe en el Router.
+  ```text
+  error[E0599]: no method named `oneshot` found for struct `Router<S>`
+  ```
+
+- **Diagnóstico:** El trait `ServiceExt` de `tower` proporciona el método `oneshot`, pero no está en scope.
+
+- **Cura (Sintonía 3026):**
+  - Añade el import:
+    ```rust
+    use tower::util::ServiceExt;
+    ```
+
+---
+
+### 14. Error de Tests: Migration path not found
+
+- **Síntoma:** El migrador no encuentra la ruta de las migraciones.
+  ```text
+  Failed to create migrator: Source(Os { code: 3, kind: NotFound, message: "El sistema no puede encontrar la ruta especificada." })
+  ```
+
+- **Diagnóstico:** La ruta relativa `./crates/infra_db/migrations` no funciona correctamente cuando se ejecutan tests desde el workspace.
+
+- **Cura (Sintonía 3026):**
+  - Usa `CARGO_MANIFEST_DIR` para obtener la ruta correcta:
+    ```rust
+    use std::env;
+
+    let manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+    let migrations_path = Path::new(&manifest_dir).join("../infra_db/migrations");
+    ```
+
+---
+
+### 15. Error de Tests: `Argon2idHasher::new()` not found
+
+- **Síntoma:** No existe el método `new()` en `Argon2idHasher`.
+  ```text
+  error[E0599]: no function or associated item named `new` found for struct `Argon2idHasher`
+  ```
+
+- **Diagnóstico:** `Argon2idHasher` usa `#[derive(Default)]`, no tiene un constructor `new()`.
+
+- **Cura (Sintonía 3026):**
+  - Usa `default()` en vez de `new()`:
+    ```rust
+    let hasher = Arc::new(infra_db::Argon2idHasher::default());
+    ```
+
+---
+
+### 16. Error de Negocio: Email duplicado devuelve 500 en vez de 409
+
+- **Síntoma:** El test de email duplicado falla porque devuelve 500 Internal Server Error en vez de 409 Conflict.
+
+- **Diagnóstico:** El caso de uso `RegisterUser` no verificaba si el email ya existía antes de intentar guardar. El repositorio hacía `ON CONFLICT` pero no devolvía un error claro.
+
+- **Cura (Sintonía 3026):**
+  - Añade la verificación en el caso de uso antes de guardar:
+    ```rust
+    // En register.rs
+    use crate::domain::errors::DomainError;
+
+    // En execute():
+    if self.user_repo.find_by_email(&email).await?.is_some() {
+        return Err(DomainError::UserAlreadyExists(email.as_str().to_string()).into());
+    }
     ```
 
 ---
@@ -124,3 +286,56 @@ Este documento es la bitácora de combate del Laboratorio 3026. No documenta el 
     # ... otras dependencias
     tokio = { version = "1.36", features = ["full"] }
     ```
+
+---
+
+### 7. Error de Compilación: `file not found for module 'test'` (Estructura de Tests)
+
+- **Síntoma:** El compilador lanza errores `E0583` indicando que no encuentra módulos como `config` o `entry_points`, y a veces muestra errores extraños sobre módulos duplicados.
+  ```text
+  error[E0583]: file not found for module `config`
+  --> crates\api_server\src\lib.rs:19:1
+  ```
+
+- **Diagnóstico:** Rust tiene una convención estricta para los tests de integración. Deben residir en una carpeta llamada **`tests`** (en plural) en la raíz del crate, no dentro de `src/`. Si creas una carpeta `src/test/` o `src/tests/`, el compilador se confunde al intentar resolver los módulos, rompiendo la visibilidad de todo el proyecto.
+
+- **Cura (Sintonía 3026):**
+  1.  **Mover:** Mueve tus tests de integración de `src/test/` a `crates/tu_crate/tests/`.
+  2.  **Limpiar:** Elimina cualquier archivo `mod.rs` dentro de la nueva carpeta `tests/`. Cargo descubre los archivos de test automáticamente.
+  3.  **Importar:** En tus tests, importa tu crate como una librería externa (`use api_server::...`) en lugar de usar `crate::...`.
+
+---
+
+### 8. Error de Compilación: `variant or associated item not found in DomainError`
+
+- **Síntoma:** El compilador se queja de que una variante de un enum no existe, aunque jurarías haberla visto en el código.
+  ```text
+  error[E0599]: no variant or associated item named `UserAlreadyExists` found for enum `DomainError`
+  ```
+
+- **Diagnóstico:** Esto ocurre cuando `core_logic` (donde se define el error) y `api_server` (donde se usa) están desincronizados. Puede ser que hayas actualizado la definición del enum en `core_logic` pero no hayas guardado el archivo, o que estés intentando usar una variante antigua que fue refactorizada (ej. cambiar `InvalidEmail` por un `ValidationError` más genérico).
+
+- **Cura (Sintonía 3026):**
+  1.  **Verificar Definición:** Revisa `core_logic/src/domain/errors.rs` y asegúrate de que las variantes coincidan exactamente con lo que esperas.
+  2.  **Actualizar Usos:** Si refactorizaste (ej. eliminaste `InvalidEmail`), busca todas las referencias en tu código (Value Objects, Handlers) y actualízalas a la nueva variante (`ValidationError`).
+
+---
+
+### 9. Error de Privacidad: `field is private`
+
+- **Síntoma:** Intentas acceder a un campo de un struct (ej. `user.email`) y el compilador te detiene.
+  ```text
+  error[E0616]: field `email` of struct `User` is private
+  ```
+
+- **Diagnóstico:** En la Arquitectura Hexagonal, las entidades de dominio (`User`) deben proteger su estado interno para garantizar la validez de los datos. Por eso sus campos no son `pub`.
+
+- **Cura (Sintonía 3026):**
+  1.  **No hagas los campos públicos.** Eso rompería el encapsulamiento.
+  2.  **Usa Getters:** Define métodos públicos en tu entidad que devuelvan referencias a los datos.
+      ```rust
+      // En User
+      pub fn email(&self) -> &Email { &self.email }
+      // En el Handler
+      let email_str = user.email().as_str();
+      ```

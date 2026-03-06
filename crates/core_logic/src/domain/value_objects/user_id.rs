@@ -15,12 +15,20 @@
 //! - `uuid`: Para la generación y manipulación de UUIDs.
 //! - `serde`: Para poder serializar y deserializar el objeto.
 
+use std::fmt::{Display, Formatter};
+
 use crate::domain::errors::DomainError;
 use serde::{Deserialize, Serialize};
 use uuid::{Timestamp, Uuid};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct UserId(String);
+
+impl Display for UserId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
 
 impl UserId {
     pub fn new() -> Self {

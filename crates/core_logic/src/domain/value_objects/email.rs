@@ -15,18 +15,26 @@
 //! - `OnceLock`: Para compilar la regex una sola vez y mejorar el rendimiento (Sintonía 3026).
 //! - `serde`: Para poder serializar y deserializar el objeto.
 
+use std::fmt::{Display, Formatter};
+use std::sync::OnceLock;
+
 use crate::domain::errors::DomainError;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::sync::OnceLock;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Email(String);
 
+impl Display for Email {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
 impl Email {
     pub fn parse(value: String) -> Result<Self, DomainError> {
         if value.trim().is_empty() {
-            return Err(DomainError::InvalidEmail("Email vacío".to_string()));
+            return Err(DomainError::ValidationError("Email vacío".to_string()));
         }
 
         // Regex compilado una sola vez para rendimiento (Sintonía 3026)
@@ -36,7 +44,10 @@ impl Email {
         });
 
         if !regex.is_match(&value) {
-            return Err(DomainError::InvalidEmail(value));
+            return Err(DomainError::ValidationError(format!(
+                "El email '{}' no es válido.",
+                value
+            )));
         }
 
         Ok(Self(value))
