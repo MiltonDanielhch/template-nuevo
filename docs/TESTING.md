@@ -4,7 +4,7 @@
 
 **Requisitos previos:**
 - Servidor corriendo en `http://localhost:8080`
-- Base de datos SQLite inicializada
+- Base de datos SQLite: `backend.db`
 
 ---
 
@@ -203,3 +203,113 @@ curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d 
 | 4 | Login email no existe | email no registrado | 401 Unauthorized |
 | 5 | Login password incorrecto | password wrong | 401 Unauthorized |
 | 6 | Registro email inválido | email sin @ | 400 Bad Request |
+
+---
+
+## 🗄️ Verificar Base de Datos SQLite
+
+Los datos se guardan en `backend.db`. Aquí hay varias formas de verificar:
+
+### Opción 1: Ver archivo directamente con SQLite CLI
+
+```bash
+# Ver todos los usuarios registrados
+sqlite3 backend.db "SELECT id, email, email_verified, created_at FROM users;"
+```
+
+**Resultado esperado:**
+```
+01HV...|test@test.com|0|2026-03-06 12:00:00
+```
+
+---
+
+### Opción 2: Ver estructura de la tabla
+
+```bash
+sqlite3 backend.db ".schema users"
+```
+
+---
+
+### Opción 3: Contar registros
+
+```bash
+sqlite3 backend.db "SELECT COUNT(*) FROM users;"
+```
+
+---
+
+### Opción 4: Ver información detallada de un usuario
+
+```bash
+sqlite3 backend.db "SELECT * FROM users WHERE email = 'test@test.com';"
+```
+
+---
+
+### Opción 5: Usar DBeaver o SQLite Viewer (GUI)
+
+Abre el archivo `backend.db` con:
+- **DBeaver** (recomendado)
+- **SQLite Browser** (https://sqlitebrowser.org/)
+- **VS Code** + extensión "SQLite"
+
+---
+
+## 🔍 Otras Formas de Probar el Proyecto
+
+### Tests de integración (ya configurados)
+```bash
+cargo test --workspace
+```
+
+### Ver logs del servidor
+```bash
+# Con debug
+RUST_LOG=debug cargo run -p api_server
+
+# Solo errores
+RUST_LOG=error cargo run -p api_server
+```
+
+### Probar con HTTPie (alternativa a curl)
+```bash
+# Instalar: pip install httpie
+
+# Registrar
+http POST localhost:8080/register email="test2@test.com" password="password123"
+
+# Login
+http POST localhost:8080/login email="test2@test.com" password="password123"
+```
+
+### Probar con Postman
+
+1. Descarga Postman
+2. Crea una nueva colección
+3. Añade requests:
+   - `POST localhost:8080/register` (Body: JSON)
+   - `POST localhost:8080/login` (Body: JSON)
+4. Envía y verifica respuestas
+
+---
+
+## 🚀 Flujo Completo de Prueba (Recomendado)
+
+```bash
+# 1. Iniciar servidor (terminal 1)
+just dev
+
+# 2. Registrar usuario (terminal 2)
+curl -X POST http://localhost:8080/register -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
+
+# 3. Verificar que se guardó en la base de datos
+sqlite3 backend.db "SELECT id, email, created_at FROM users;"
+
+# 4. Login exitoso
+curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
+
+# 5. Login con contraseña incorrecta
+curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"WRONG\"}"
+```
