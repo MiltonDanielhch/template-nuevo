@@ -295,21 +295,75 @@ http POST localhost:8080/login email="test2@test.com" password="password123"
 
 ---
 
-## 🚀 Flujo Completo de Prueba (Recomendado)
+## 🎬 Scripts de Prueba Automatizados
+
+Hemos creado scripts para facilitar las pruebas en diferentes sistemas operativos.
+
+### Windows (CMD o PowerShell)
 
 ```bash
-# 1. Iniciar servidor (terminal 1)
+# Ejecutar el script
+test-api.bat
+```
+
+### Linux / Mac / Git Bash
+
+```bash
+# Ejecutar el script
+chmod +x test-api.sh && ./test-api.sh
+```
+
+---
+
+## ⚡ Guía Rápida de Uso
+
+### Paso 1: Iniciar el servidor
+
+```bash
+# En terminal 1
 just dev
+```
 
-# 2. Registrar usuario (terminal 2)
-curl -X POST http://localhost:8080/register -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
+Deberás ver:
+```
+🚀 Servidor API 3026 listo para la sintonía en 0.0.0.0:8080
+```
 
-# 3. Verificar que se guardó en la base de datos
-sqlite3 backend.db "SELECT id, email, created_at FROM users;"
+### Paso 2: Ejecutar pruebas
 
-# 4. Login exitoso
+**Windows:** Abre una nueva terminal y ejecuta:
+```bash
+test-api.bat
+```
+
+**Linux/Mac/Git Bash:**
+```bash
+./test-api.sh
+```
+
+### Paso 3: Ver resultados esperados
+
+| Acción | Output Esperado |
+|--------|----------------|
+| Registro | `{"id":"...","email":"test@test.com"}` |
+| Login exitoso | `{"id":"...","email":"test@test.com"}` |
+| Login wrong password | `{"error":"Credenciales inválidas."}` |
+
+---
+
+## 🔧 Comandos Individuales (Si prefieres manual)
+
+Si no quieres usar los scripts, aquí están los comandos individuales (en una sola línea):
+
+```bash
+# Registro
+curl -X POST http://localhost:8080/register -H "Content-Type: application/json" -d "{\"email\":\"test2@test.com\",\"password\":\"password123\"}"
+
+# Login
 curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
 
-# 5. Login con contraseña incorrecta
+# Login con password incorrecto
 curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"WRONG\"}"
 ```
+
+**⚠️ Nota importante:** En Git Bash/MINGW64 NO uses el continuador `^` para multilínea. Usa una sola línea como se muestra arriba.
