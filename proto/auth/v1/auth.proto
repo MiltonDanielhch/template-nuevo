@@ -6,32 +6,30 @@ syntax = "proto3";
 
 package auth.v1;
 
-import "common.proto";
+import "common/v1/common.proto";
 import "google/protobuf/timestamp.proto";
 
-// AuthService define los puntos de entrada para la autenticación.
-// Utiliza el protocolo ConnectRPC para ser compatible con Web, Móvil y Servidor.
 service AuthService {
   rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
   rpc LoginUser(LoginUserRequest) returns (LoginUserResponse);
 }
 
-// --- Entidades ---
-
 message User {
   common.v1.Uuid id = 1;
-  string name = 2;
+  string username = 2;
   string email = 3;
-  google.protobuf.Timestamp created_at = 4;
-  google.protobuf.Timestamp updated_at = 5;
+  string password_hash = 4;
+  string avatar_url = 5;
+  bool email_verified = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  google.protobuf.Timestamp deleted_at = 9;
 }
 
-// --- Mensajes de Petición/Respuesta (DTOs) ---
-
 message RegisterUserRequest {
-  string name = 1;
+  string username = 1;
   string email = 2;
-  string password = 3; // La contraseña viaja aquí, pero nunca se almacena en el mensaje User.
+  string password = 3;
 }
 
 message RegisterUserResponse { User user = 1; }
@@ -42,5 +40,6 @@ message LoginUserRequest {
 }
 
 message LoginUserResponse {
-  string session_token = 1; // Podría ser un JWT o un token de sesión opaco.
+  string session_token = 1;
+  User user = 2;
 }

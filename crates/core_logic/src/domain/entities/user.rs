@@ -75,13 +75,31 @@ impl User {
         }
     }
 
-    pub fn id(&self) -> &UserId { &self.id }
-    pub fn email(&self) -> &Email { &self.email }
-    pub fn username(&self) -> &Option<String> { &self.username }
-    pub fn password_hash(&self) -> &PasswordHash { &self.password_hash }
-    pub fn avatar_url(&self) -> &Option<String> { &self.avatar_url }
-    pub fn is_email_verified(&self) -> bool { self.email_verified }
-    pub fn created_at(&self) -> &DateTime<Utc> { &self.created_at }
-    pub fn updated_at(&self) -> &DateTime<Utc> { &self.updated_at }
-    pub fn deleted_at(&self) -> &Option<DateTime<Utc>> { &self.deleted_at }
+    pub fn id(&self) -> &UserId {
+        &self.id
+    }
+    pub fn email(&self) -> &Email {
+        &self.email
+    }
+    pub fn username(&self) -> &Option<String> {
+        &self.username
+    }
+    pub fn password_hash(&self) -> &PasswordHash {
+        &self.password_hash
+    }
+    pub fn avatar_url(&self) -> &Option<String> {
+        &self.avatar_url
+    }
+    pub fn is_email_verified(&self) -> bool {
+        self.email_verified
+    }
+    pub fn created_at(&self) -> &DateTime<Utc> {
+        &self.created_at
+    }
+    pub fn updated_at(&self) -> &DateTime<Utc> {
+        &self.updated_at
+    }
+    pub fn deleted_at(&self) -> &Option<DateTime<Utc>> {
+        &self.deleted_at
+    }
 }

@@ -1,7 +1,7 @@
 ## Objetivo
 Herramienta final para convertirte en maestro. Cada vez que la IA termine un punto o fase, no solo lo leas, sino que lo **integres** en tu cerebro usando el método de Feynman adaptado al Código 3026.
 
-> "Actúa como un Mentor de Ingeniería de Software experto en la metodología de Feynman. 
+> "Actúa como un Mentor de Ingeniería de Software experto en la metodología de Feynman.
 
 ## Los 5 Niveles del Método 3026
 

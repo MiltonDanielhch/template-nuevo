@@ -14,8 +14,8 @@
 
 use anyhow::Result;
 use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordVerifier,
+    password_hash::{PasswordHasher, SaltString, rand_core::OsRng},
 };
 use async_trait::async_trait;
 use core_logic::domain::interfaces::IHasher;
@@ -52,8 +52,11 @@ impl IHasher for Argon2idHasher {
         let is_valid = tokio::task::spawn_blocking(move || -> Result<bool> {
             let parsed_hash = argon2::PasswordHash::new(&hash_str)
                 .map_err(|e| anyhow::anyhow!("Error al parsear el hash de la contraseña: {}", e))?;
-            Ok(Argon2::default().verify_password(&password_bytes, &parsed_hash).is_ok())
-        }).await??;
+            Ok(Argon2::default()
+                .verify_password(&password_bytes, &parsed_hash)
+                .is_ok())
+        })
+        .await??;
 
         Ok(is_valid)
     }

@@ -12,8 +12,8 @@
 //! - Exponer públicamente las implementaciones concretas (structs) para que el
 //!   `Composition Root` en `api_server` pueda construirlas e inyectarlas.
 
-pub mod persistence;
 pub mod external_services;
+pub mod persistence;
 
 // Exponemos públicamente el repositorio concreto para que el 'Composition Root' (en api_server) pueda instanciarlo.
 pub use persistence::sqlite::repositories::sqlite_user_repo::SqliteUserRepository;

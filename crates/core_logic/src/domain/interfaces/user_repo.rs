@@ -16,7 +16,10 @@
 //! - `async_trait`: Para permitir métodos `async` en el trait.
 //! - Tipos del dominio: `User`, `UserId`, `Email`.
 
-use crate::domain::{entities::user::User, value_objects::{email::Email, user_id::UserId}};
+use crate::domain::{
+    entities::user::User,
+    value_objects::{email::Email, user_id::UserId},
+};
 use anyhow::Result;
 use async_trait::async_trait;
 

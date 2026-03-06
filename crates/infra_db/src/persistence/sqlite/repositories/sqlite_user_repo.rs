@@ -14,15 +14,15 @@
 //! - `core_logic`: Para acceder a los traits y entidades del dominio.
 //! - `sqlx`: Para interactuar con la base de datos SQLite.
 //! - `anyhow`: Para el manejo de errores.
-use async_trait::async_trait;
-use sqlx::SqlitePool;
-use chrono::{DateTime, Utc};
 use anyhow::Result;
+use async_trait::async_trait;
+use chrono::{DateTime, Utc};
+use sqlx::SqlitePool;
 
 use core_logic::domain::{
     entities::user::{User, UserPersistenceData},
-    value_objects::{email::Email, password_hash::PasswordHash, user_id::UserId},
     interfaces::user_repo::IUserRepository,
+    value_objects::{email::Email, password_hash::PasswordHash, user_id::UserId},
 };
 
 use crate::persistence::sqlite::models::DbUser;
@@ -51,7 +51,9 @@ impl SqliteUserRepository {
 
         let created_at = DateTime::<Utc>::from_naive_utc_and_offset(db_user.created_at, Utc);
         let updated_at = DateTime::<Utc>::from_naive_utc_and_offset(db_user.updated_at, Utc);
-        let deleted_at = db_user.deleted_at.map(|dt| DateTime::<Utc>::from_naive_utc_and_offset(dt, Utc));
+        let deleted_at = db_user
+            .deleted_at
+            .map(|dt| DateTime::<Utc>::from_naive_utc_and_offset(dt, Utc));
 
         Ok(User::new_from_persistence(UserPersistenceData {
             id: user_id,

@@ -49,16 +49,24 @@ impl RegisterUser {
     /// Ejecuta el caso de uso.
     pub async fn execute(&self, command: RegisterUserCommand) -> Result<User> {
         // 1. Validar y crear Value Objects
-        let email = Email::parse(command.email).context("Error al parsear el email en el caso de uso")?;
+        let email =
+            Email::parse(command.email).context("Error al parsear el email en el caso de uso")?;
 
         // 2. Hashear la contraseña
-        let password_hash = self.hasher.hash(&command.password).await.context("Error al hashear la contraseña")?;
+        let password_hash = self
+            .hasher
+            .hash(&command.password)
+            .await
+            .context("Error al hashear la contraseña")?;
 
         // 3. Crear la entidad de dominio User
         let new_user = User::new(email, password_hash);
 
         // 4. Guardar el usuario usando el repositorio
-        self.user_repo.save(&new_user).await.context("Error al guardar el usuario en la base de datos")?;
+        self.user_repo
+            .save(&new_user)
+            .await
+            .context("Error al guardar el usuario en la base de datos")?;
 
         // 5. Devolver la entidad creada (o un DTO de respuesta si se prefiere)
         Ok(new_user)

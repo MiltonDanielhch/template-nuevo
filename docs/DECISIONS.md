@@ -263,10 +263,10 @@ Escribe tus `entities.rs` y `value_objects.rs`.
 
 Escribe `register_user.rs`.
 
-**Acción:** Define los pasos: 
-1. Validar datos → 
-2. Verificar si existe en el Repo → 
-3. Encriptar password → 
+**Acción:** Define los pasos:
+1. Validar datos →
+2. Verificar si existe en el Repo →
+3. Encriptar password →
 4. Guardar.
 
 ---

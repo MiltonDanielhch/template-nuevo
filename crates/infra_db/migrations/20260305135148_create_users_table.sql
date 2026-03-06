@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Índice parcial: Permite re-usar el email si la cuenta anterior fue "borrada" (Soft Delete)
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email_active 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email_active
 ON users(email) WHERE deleted_at IS NULL;
 
 -- Trigger para auto-actualizar updated_at en la tabla users

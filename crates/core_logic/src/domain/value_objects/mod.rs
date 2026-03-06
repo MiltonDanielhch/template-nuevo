@@ -9,8 +9,8 @@
 //! No tiene dependencias externas, solo depende de otros módulos del dominio si es necesario.
 
 pub mod email;
-pub mod user_id;
 pub mod password_hash;
+pub mod user_id;
 
 // Re-exportamos los tipos para facilitar su importación en otras partes del crate.
 // Ejemplo: `use crate::domain::value_objects::Email` en lugar de `use crate::domain::value_objects::email::Email`.

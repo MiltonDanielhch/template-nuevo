@@ -1,0 +1,14 @@
+// Código 3026: Tipos de Datos Universales
+// Este archivo contiene definiciones compartidas por todos los demás contratos.
+
+syntax = "proto3";
+
+package common.v1;
+
+import "google/protobuf/timestamp.proto";
+
+message Uuid { string value = 1; }
+
+message Timestamp { google.protobuf.Timestamp value = 1; }
+
+message OptionalTimestamp { google.protobuf.Timestamp value = 1; }
