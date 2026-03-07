@@ -1,25 +1,40 @@
 # --- Rust ---
 /target
-Cargo.lock
+# Cargo.lock NO debe ignorarse en aplicaciones binarias para garantizar reproducibilidad
+# Cargo.lock
 
-# --- Bases de Datos ---
+# --- Bases de Datos (SQLite) ---
 *.db
-*.db-journal*
-sqlx-data.json
+*.db-shm
+*.db-wal
+.sqlx/
 
-# --- Entorno ---
+# --- Entorno y Secretos ---
 .env
 .env.*
 !.env.example
+# Certificados SSL locales
+*.pem
+*.key
 
-# --- Node / Bun ---
+# --- Node / Bun / Frontend ---
 node_modules
 bun.lockb
+dist/
+.astro/
 
 # --- IDE / OS ---
 .vscode/
 .idea/
 .DS_Store
+Thumbs.db
 
 # --- Despliegue ---
-/deploy/kamal-lock.json
+/deploy/data/
+/deploy/caddy_data/
+/deploy/caddy_config/
+
+# --- Python (Scripts de utilidad) ---
+__pycache__/
+*.py[cod]
+venv/
