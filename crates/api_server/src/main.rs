@@ -16,7 +16,10 @@
 //!   esencial (como la URL de la base de datos o el puerto) falla, la aplicación
 //!   no puede arrancar y debe entrar en pánico inmediatamente.
 
-use api_server::{config::di::create_app_state, routes::create_router};
+use api_server::{
+    config::{di::create_app_state, env::ServerConfig},
+    routes::create_router,
+};
 use dotenvy::dotenv;
 use tokio::net::TcpListener;
 
@@ -24,6 +27,9 @@ use tokio::net::TcpListener;
 async fn main() {
     // Carga las variables de entorno desde el archivo .env
     dotenv().ok();
+
+    // Cargar configuración del servidor (Puerto y Host)
+    let config = ServerConfig::from_env();
 
     // 1. Construir el AppState (Inyección de Dependencias)
     let app_state = create_app_state()
@@ -34,9 +40,11 @@ async fn main() {
     let app = create_router(app_state);
 
     // 3. Iniciar el servidor
-    let listener = TcpListener::bind("0.0.0.0:8080")
-        .await
-        .expect("Error Crítico: No se pudo enlazar al puerto 8080.");
+    let addr = format!("{}:{}", config.host, config.port);
+    let listener = TcpListener::bind(&addr).await.unwrap_or_else(|e| {
+        panic!("Error Crítico: No se pudo enlazar a {}: {}", addr, e);
+    });
+
     println!(
         "🚀 Servidor API 3026 listo para la sintonía en {}",
         listener.local_addr().unwrap()
