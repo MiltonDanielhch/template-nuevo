@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Servicio Backend (Nuestra API en Rust)
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: lab3026_api
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=sqlite:///app/data/backend.db
+      - RUST_LOG=info
+      - HOST=0.0.0.0
+      - PORT=8080
+    volumes:
+      # Persistencia de SQLite (WAL)
+      - backend_data:/app/data
+    networks:
+      - lab3026_net
+
+  # Servicio Reverse Proxy (Caddy)
+  caddy:
+    image: caddy:2-alpine
+    container_name: lab3026_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - lab3026_net
+    depends_on:
+      - app
+
+volumes:
+  backend_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  lab3026_net:
+    driver: bridge

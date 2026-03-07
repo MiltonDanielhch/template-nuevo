@@ -1,174 +1,157 @@
 # 🧪 Manual de Pruebas - API 3026
 
-**Objetivo:** Documentar todos los comandos para probar los endpoints de la API.
-
-**Requisitos:**
-- Servidor corriendo en `http://localhost:8080`
-- Base de datos: `backend.db`
+**Objetivo:** Guía maestra para validar cada capa del sistema, desde el código hasta el despliegue en producción.
 
 ---
 
-## 📋 Endpoints
+## 🏗️ Nivel 1: Pruebas de Código (Unitarias e Integración)
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/register` | Registrar usuario |
-| POST | `/login` | Autenticar (retorna token) |
-| GET | `/me` | Datos del usuario autenticado |
-| POST | `/logout` | Cerrar sesión |
+Antes de levantar cualquier servidor, el código debe probarse a sí mismo.
 
----
-
-## ✅ Tests Automatizados
-
+### Comando Maestro
 ```bash
 cargo test --workspace
 ```
 
-**Resultado:**
-```
-running 6 tests
-test login_user_email_not_found ... ok
+**Qué verifica:**
+1.  **Dominio:** Que las reglas de negocio (emails válidos, contraseñas fuertes) se cumplan.
+2.  **Casos de Uso:** Que el flujo de registro y login funcione en memoria.
+3.  **Integración API:** Levanta un servidor Axum efímero y lanza peticiones reales contra una base de datos SQLite en memoria o archivo temporal.
+
+**Resultado Esperado:**
+```text
+running 11 tests
 test login_user_success ... ok
-test login_user_wrong_password ... ok
-test register_user_duplicate_email ... ok
-test register_user_invalid_email ... ok
 test register_user_success ... ok
-
-test result: ok. 6 passed; 0 failed
+test auth_middleware_rejects_no_token ... ok
+...
+test result: ok. 11 passed; 0 failed
 ```
 
 ---
 
-## 🔧 Comandos cURL (todos probados)
+## � Nivel 2: Pruebas de API en Local (Dev Server)
 
-### 1. Registro
-```bash
-curl -X POST http://localhost:8080/register -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
-```
-**Resultado:** `{"id":"...","email":"test@test.com"}`
+Validación manual de los endpoints con el servidor corriendo en tu máquina.
 
-### 2. Login (ahora retorna token)
+**Requisitos:**
+- Servidor corriendo: `just dev` (o `cargo run -p api_server`)
+- URL: `http://localhost:8080`
+
+### 🔧 Flujo de Autenticación Completo (cURL)
+
+**1. Registro de Usuario**
 ```bash
-curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
+curl -v -X POST http://localhost:8080/register \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"admin@lab3026.com\",\"password\":\"SecurePass123!\"}"
 ```
-**Resultado:** `{"id":"...","email":"test@test.com","token":"uuid-v7"}`
+✅ **201 Created**: `{"id":"...","email":"admin@lab3026.com"}`
+
+**2. Login (Obtener Token)**
+```bash
+# Guardamos el token en una variable (PowerShell)
+$response = curl -s -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"admin@lab3026.com\",\"password\":\"SecurePass123!\"}"
+$token = ($response | ConvertFrom-Json).token
+echo "Token: $token"
+```
+✅ **200 OK**: `{"token":"uuid-v7-token", ...}`
+
+**3. Acceso Protegido (/me)**
+```bash
+curl -v -X GET http://localhost:8080/me \
+  -H "Authorization: Bearer $token"
+```
+✅ **200 OK**: `{"id":"...","email":"admin@lab3026.com", ...}`
+
+**4. Acceso Denegado (Sin Token)**
+```bash
+curl -v -X GET http://localhost:8080/me
+```
+❌ **401 Unauthorized**: `{"error":"Token de autorización requerido"}`
+
+**5. Cerrar Sesión (Logout)**
+```bash
+curl -v -X POST http://localhost:8080/logout \
+  -H "Authorization: Bearer $token"
+```
+✅ **200 OK**: (Sin contenido o mensaje de éxito)
+
+**6. Acceso Revocado (Token Expirado/Revocado)**
+```bash
+curl -v -X GET http://localhost:8080/me \
+  -H "Authorization: Bearer $token"
+```
+❌ **401 Unauthorized**: `{"error":"Token inválido o expirado"}`
 
 ---
 
-## 🗄️ Ver Base de Datos
+## 🚀 Nivel 3: Pruebas de Despliegue (Producción Simulada)
 
+Validación del contenedor Docker/Podman y el proxy Caddy.
+
+**Requisitos:**
+- Docker o Podman instalado.
+- Puertos 80 y 443 libres.
+
+### 1. Levantar la Infraestructura
 ```bash
-sqlite3 backend.db "SELECT id, user_id, session_token, expires_at FROM sessions;"
+cd deploy
+podman-compose up --build -d
 ```
 
-## 🔧 Comandos cURL (todos probados)
-
-**⚠️ IMPORTANTE:** Usar una sola línea (NO usar `^` para continuar).
-
-### 1. Registro
+### 2. Verificar Contenedores
 ```bash
-curl -X POST http://localhost:8080/register -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
+podman ps
 ```
-**Resultado:** `{"id":"01HV...","email":"test@test.com"}`
+✅ Debes ver `lab3026_api` (Backend) y `lab3026_caddy` (Proxy).
 
-### 2. Email Duplicado
-```bash
-curl -X POST http://localhost:8080/register -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
-```
-**Resultado:** `{"error":"El email ya está en uso."}`
+### 3. Prueba de Conectividad HTTPS
+Caddy genera un certificado autofirmado para `localhost`. Debes usar `-k` (insecure) en curl localmente.
 
-### 3. Login Exitoso
 ```bash
-curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
+curl -k -v https://localhost/me
 ```
-**Resultado:** `{"id":"01HV...","email":"test@test.com"}`
+✅ **401 Unauthorized** (Esto es bueno, significa que Caddy recibió la petición HTTPS y se la pasó a Rust, quien la rechazó por falta de token).
 
-### 4. Login Email No Existe
-```bash
-curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"noexiste@test.com\",\"password\":\"password123\"}"
-```
-**Resultado:** `{"error":"Credenciales inválidas."}`
+### 4. Prueba de Persistencia (Resiliencia)
+Si reinicias el contenedor, los usuarios NO deben borrarse.
 
-### 5. Login Password Incorrecto
-```bash
-curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"WRONG\"}"
-```
-**Resultado:** `{"error":"Credenciales inválidas."}`
-
-### 6. Email Inválido
-```bash
-curl -X POST http://localhost:8080/register -H "Content-Type: application/json" -d "{\"email\":\"no-es-valido\",\"password\":\"password123\"}"
-```
-**Resultado:** `{"error":"Error en los datos proporcionados."}`
-
-### 7. GET /me (Con token)
-```bash
-curl -X GET http://localhost:8080/me -H "Authorization: Bearer <TOKEN>"
-```
-**Resultado:** `{"id":"...","email":"test@test.com","username":null,"email_verified":false}`
-
-### 8. GET /me (Sin token)
-```bash
-curl -X GET http://localhost:8080/me
-```
-**Resultado:** `{"error":"Token de autorización requerido"}`
-
-### 9. Logout
-```bash
-curl -X POST http://localhost:8080/logout -H "Authorization: Bearer <TOKEN>"
-```
-**Resultado:** 204 No Content
+1. Registra un usuario (ver paso 1 arriba).
+2. Reinicia el pod: `podman-compose restart`
+3. Intenta hacer login con ese usuario.
+✅ **200 OK**: Si funciona, el volumen de SQLite está montado correctamente.
 
 ---
 
-## 🗄️ Ver Base de Datos
+## 🗄️ Comandos de Diagnóstico (Forensics)
 
+Si algo falla, usa esto para mirar dentro del cerebro del sistema.
+
+**Ver Logs en Vivo:**
 ```bash
-sqlite3 backend.db "SELECT id, email, email_verified, created_at FROM users;"
+podman-compose logs -f
 ```
 
-**Resultado:** `01HV...|test@test.com|0|2026-03-06 20:48:29`
-
----
-
-## 🎬 Scripts
-
-### Windows
+**Inspeccionar Base de Datos (Local):**
 ```bash
-test-api.bat
+sqlite3 backend.db "SELECT * FROM users;"
+sqlite3 backend.db "SELECT * FROM sessions;"
 ```
 
-### Linux/Mac/Git Bash
+**Inspeccionar Base de Datos (Dentro del Contenedor):**
 ```bash
-chmod +x test-api.sh && ./test-api.sh
-```
-
----
-
-## 🚀 Iniciar Servidor
-
-```bash
-just dev
-```
-
-**Output esperado:**
-```
-🚀 Servidor API 3026 listo para la sintonía en 0.0.0.0:8080
+podman exec -it lab3026_api sqlite3 /app/data/backend.db "SELECT count(*) FROM users;"
 ```
 
 ---
 
-## 📊 Resumen de Casos
+## 📊 Matriz de Errores Comunes
 
-| # | Escenario | Output |
-|---|-----------|--------|
-| 1 | Registro exitoso | 200 + {id, email} |
-| 2 | Email duplicado | 409 Conflict |
-| 3 | Login exitoso | 200 + {id, email, token} |
-| 4 | Email no existe | 401 Unauthorized |
-| 5 | Password incorrecto | 401 Unauthorized |
-| 6 | Email inválido | 400 Bad Request |
-| 7 | GET /me con token | 200 + {id, email, username, email_verified} |
-| 8 | GET /me sin token | 401 Unauthorized |
-| 9 | Logout | 204 No Content |
+| Código | Mensaje | Causa Probable | Solución |
+|--------|---------|----------------|----------|
+| **400** | `Error en los datos` | JSON malformado o email inválido. | Revisa el cuerpo del request. |
+| **401** | `Token inválido` | Token expirado, manipulado o inexistente. | Haz login de nuevo. |
+| **409** | `El email ya existe` | Intentas registrar un email duplicado. | Usa otro email o haz login. |
+| **500** | `Internal Server Error` | Pánico en Rust o fallo de DB. | Revisa `cargo run` logs o `podman logs`. |
+| **502** | `Bad Gateway` | Caddy no puede conectar con Rust. | El contenedor de Rust se cayó o no ha iniciado. |

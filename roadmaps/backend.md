@@ -130,15 +130,32 @@
 
 ---
 
-## 📡 BLOQUE V: DESPLIEGUE SOBERANO
+## 📡 BLOQUE V: DESPLIEGUE SOBERANO (MVP)
 
-**Objetivo:** Poner el laboratorio en órbita en el VPS de $5.
+**Objetivo:** Poner el laboratorio en órbita en el VPS de $5 (Solo Auth).
+**Estado:** ✅ Completado
 
 | # | Tarea | Ubicación | Descripción | Estado |
-|---|-------|-----------|-------------|--------|
-| 1 | Podman Pod | `deploy/podman-compose.yml` | Orquestación Rootless (App + Caddy) | ⏳ |
-| 2 | Kamal Config | `config/deploy.yml` | Automatización del despliegue | ⏳ |
-| 3 | Caddy SSL | `deploy/Caddyfile` | HTTPS automático con HTTP/3 | ⏳ |
+|---|-------|-----------|-------------|:------:|
+| 1 | Podman Pod | `deploy/podman-compose.yml` | Orquestación Rootless (App + Caddy). | ✅ |
+| 2 | Dockerfile | `deploy/Dockerfile` | Multi-stage build con cargo-chef. | ✅ |
+| 3 | Caddy SSL | `deploy/Caddyfile` | HTTPS automático con HTTP/3. | ✅ |
+| 4 | Kamal Config | `config/deploy.yml` | Automatización del despliegue. | ⏳ |
+
+---
+
+## 🛡️ BLOQUE VI: GESTIÓN DE ACCESO (RBAC)
+
+**Objetivo:** Implementar la lógica de Roles y Permisos (ya existen en DB).
+**Estado:** ⏳ Pendiente
+
+| # | Tarea | Ubicación | Descripción | Estado |
+|---|-------|-----------|-------------|:------:|
+| 1 | Entidades Dominio | `core_logic/domain/entities` | `Role`, `Permission` | ⏳ |
+| 2 | Repositorio Roles | `core_logic` + `infra_db` | `IRoleRepository` y `SqliteRoleRepository` | ⏳ |
+| 3 | Casos de Uso | `core_logic/application` | `CreateRole`, `AssignRoleToUser` | ⏳ |
+| 4 | Middleware RBAC | `api_server/entry_points` | Extractor `RequirePermission<P>` | ⏳ |
+| 5 | API Endpoints | `api_server/api/v1` | CRUD de Roles y asignación | ⏳ |
 
 ---
 

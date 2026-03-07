@@ -1,41 +1,30 @@
-# c:\laravel\templates\template1\deploy\Caddyfile
-# # Configuración de Caddy (Adaptador de Entrada)
-#
-# Este archivo configura Caddy como nuestro reverse proxy y servidor web.
-# Es un componente clave del "BLOQUE IV: DESPLIEGUE SOBERANO".
-#
-# ## Responsabilidades
-# - **Terminación SSL/TLS:** Obtiene y renueva automáticamente certificados SSL de Let's Encrypt.
-# - **Reverse Proxy:** Redirige el tráfico del dominio público al contenedor de la aplicación Rust.
-# - **Compresión:** Comprime las respuestas (Brotli/Gzip) para ahorrar ancho de banda.
-# - **Seguridad:** Aplica cabeceras HTTP de seguridad por defecto.
-# - **HTTP/3:** Habilita el protocolo más moderno para una menor latencia.
+# Caddyfile - Configuración del Proxy Inverso
+# Sintonía de Seguridad: HTTPS Automático y Headers Seguros
 
-# Sustituye "lab3026.com" con tu dominio real.
-# Caddy obtendrá y renovará automáticamente los certificados SSL/TLS para este dominio.
-lab3026.com {
-    # Activa la compresión Gzip y Brotli para reducir el tamaño de las respuestas.
+# Dominio (Reemplazar con tu dominio real en producción, ej: api.midominio.com)
+# Para local usamos localhost
+localhost {
+    # Proxy inverso hacia el contenedor de la API (nombre del servicio en compose:puerto)
+    reverse_proxy app:8080
+
+    # Compresión Gzip/Zstd para velocidad
     encode zstd gzip
 
-    # --- Cabeceras de Seguridad Esenciales ---
-    # Mejora la seguridad y la privacidad del sitio.
+    # Headers de Seguridad (Best Practices)
     header {
-        # Fuerza a los navegadores a usar HTTPS.
-        Strict-Transport-Security "max-age=31536000;"
-        # Previene ataques de clickjacking.
+        # Habilitar HSTS (Strict Transport Security)
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Prevenir que la web sea embebida en iframes (Clickjacking)
         X-Frame-Options "DENY"
-        # Previene que el navegador infiera el tipo MIME.
+        # Prevenir sniffing de contenido
         X-Content-Type-Options "nosniff"
-        # Activa el filtro XSS del navegador.
+        # Protección XSS básica
         X-XSS-Protection "1; mode=block"
-        # Controla qué información de referencia se incluye con las solicitudes.
-        Referrer-Policy "strict-origin-when-cross-origin"
-        # Elimina la cabecera "Server" para no revelar información del servidor.
-        -Server
     }
 
-    # --- Proxy Inverso al Contenedor de la App ---
-    # Redirige todo el tráfico al servicio 'app' que corre en el puerto 8080 dentro de la red de Podman.
-    # 'app' es el nombre del servicio definido en podman-compose.yml.
-    reverse_proxy app:8080
+    # Logs estructurados
+    log {
+        output stdout
+        format json
+    }
 }
