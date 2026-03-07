@@ -14,7 +14,7 @@ pub struct ServerConfig {
 impl ServerConfig {
     /// Carga la configuración desde variables de entorno con valores por defecto seguros
     pub fn from_env() -> Self {
-        let port = env::var("PORT")
+        let port = env::var("SERVER_PORT")
             .ok()
             .and_then(|p| p.parse().ok())
             .unwrap_or(8080); // Puerto por defecto: 8080
