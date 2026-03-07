@@ -13,11 +13,10 @@
 //! - Serializar la respuesta del caso de uso a JSON.
 
 use crate::{config::di::AppState, entry_points::api::v1::errors::ApiError};
-use axum::{Json, extract::State};
+use axum::{extract::State, Json};
 use core_logic::{
     application::use_cases::user::{
-        login::LoginUserCommand,
-        register::RegisterUserCommand,
+        login::LoginUserCommand, register::RegisterUserCommand,
     },
     domain::entities::user::User,
 };
@@ -76,13 +75,15 @@ pub struct LoginRequest {
 pub struct LoginResponse {
     pub id: String,
     pub email: String,
+    pub token: String,
 }
 
-impl From<User> for LoginResponse {
-    fn from(user: User) -> Self {
+impl LoginResponse {
+    pub fn from_user_and_token(user: User, token: String) -> Self {
         Self {
             id: user.id().to_string(),
             email: user.email().to_string(),
+            token,
         }
     }
 }
@@ -98,5 +99,7 @@ pub async fn login_user_handler(
 
     let user = state.login_user.execute(command).await?;
 
-    Ok(Json(user.into()))
+    let token = state.create_session.execute(user.clone(), None, None).await?;
+
+    Ok(Json(LoginResponse::from_user_and_token(user, token.to_string())))
 }

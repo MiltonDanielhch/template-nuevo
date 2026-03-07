@@ -13,7 +13,7 @@
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
 | POST | `/register` | Registrar usuario |
-| POST | `/login` | Autenticar usuario |
+| POST | `/login` | Autenticar (retorna token) |
 
 ---
 
@@ -37,6 +37,28 @@ test result: ok. 6 passed; 0 failed
 ```
 
 ---
+
+## 🔧 Comandos cURL (todos probados)
+
+### 1. Registro
+```bash
+curl -X POST http://localhost:8080/register -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
+```
+**Resultado:** `{"id":"...","email":"test@test.com"}`
+
+### 2. Login (ahora retorna token)
+```bash
+curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -d "{\"email\":\"test@test.com\",\"password\":\"password123\"}"
+```
+**Resultado:** `{"id":"...","email":"test@test.com","token":"uuid-v7"}`
+
+---
+
+## 🗄️ Ver Base de Datos
+
+```bash
+sqlite3 backend.db "SELECT id, user_id, session_token, expires_at FROM sessions;"
+```
 
 ## 🔧 Comandos cURL (todos probados)
 

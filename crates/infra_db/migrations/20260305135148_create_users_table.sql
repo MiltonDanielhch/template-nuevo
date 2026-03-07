@@ -35,3 +35,13 @@ FOR EACH ROW
 BEGIN
     UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
 END;
+
+-- Tabla intermedia para Usuarios y Roles (SOPORTE ESCALABILIDAD N:M)
+CREATE TABLE IF NOT EXISTS user_roles (
+    user_id TEXT NOT NULL,
+    role_id TEXT NOT NULL,
+    assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+);

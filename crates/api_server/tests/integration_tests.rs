@@ -60,6 +60,7 @@ async fn setup_test_app() -> Router {
 
     // Crear el AppState con el pool de la base de datos en memoria.
     let user_repo = Arc::new(infra_db::SqliteUserRepository::new(pool.clone()));
+    let session_repo = Arc::new(infra_db::SqliteSessionRepository::new(pool.clone()));
     let hasher = Arc::new(infra_db::Argon2idHasher::default());
     let register_user_use_case = Arc::new(
         core_logic::application::use_cases::user::register::RegisterUser::new(
@@ -70,10 +71,14 @@ async fn setup_test_app() -> Router {
     let login_user_use_case = Arc::new(
         core_logic::application::use_cases::user::login::LoginUser::new(user_repo, hasher),
     );
+    let create_session_use_case = Arc::new(
+        core_logic::application::use_cases::user::CreateSession::new(session_repo),
+    );
 
     let app_state = AppState {
         register_user: register_user_use_case,
         login_user: login_user_use_case,
+        create_session: create_session_use_case,
     };
 
     create_router(app_state)

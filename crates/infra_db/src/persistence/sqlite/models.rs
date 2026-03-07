@@ -50,3 +50,16 @@ impl DbUser {
         }
     }
 }
+
+#[derive(Debug, Clone, FromRow)]
+pub struct DbSession {
+    pub id: String,
+    pub user_id: String,
+    pub session_token: String,
+    pub ip_address: Option<String>,
+    pub user_agent: Option<String>,
+    pub expires_at: Option<NaiveDateTime>,
+    pub created_at: Option<NaiveDateTime>,
+    pub last_activity_at: Option<NaiveDateTime>,
+    pub is_revoked: Option<bool>,
+}

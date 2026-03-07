@@ -10,4 +10,8 @@
 //! ## Dependencias
 //! - `sqlite_user_repo`: La implementación para `IUserRepository`.
 
+pub mod sqlite_session_repo;
 pub mod sqlite_user_repo;
+
+pub use sqlite_session_repo::SqliteSessionRepository;
+pub use sqlite_user_repo::SqliteUserRepository;

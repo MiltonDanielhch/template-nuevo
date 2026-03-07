@@ -4,5 +4,10 @@
 //! Contiene toda la lógica de aplicación relacionada con la entidad `User`,
 //! como el registro, inicio de sesión, actualización de perfil, etc.
 
+pub mod create_session;
 pub mod login;
 pub mod register;
+
+pub use create_session::CreateSession;
+pub use login::LoginUser;
+pub use register::RegisterUser;

@@ -17,10 +17,10 @@
 
 use anyhow::Result;
 use core_logic::{
-    application::use_cases::user::{login::LoginUser, register::RegisterUser},
-    domain::interfaces::{IHasher, IUserRepository},
+    application::use_cases::user::{login::LoginUser, register::RegisterUser, CreateSession},
+    domain::interfaces::{IHasher, ISessionRepository, IUserRepository},
 };
-use infra_db::{Argon2idHasher, SqliteUserRepository};
+use infra_db::{Argon2idHasher, SqliteSessionRepository, SqliteUserRepository};
 use sqlx::SqlitePool;
 use std::sync::Arc;
 
@@ -31,6 +31,7 @@ use std::sync::Arc;
 pub struct AppState {
     pub register_user: Arc<RegisterUser>,
     pub login_user: Arc<LoginUser>,
+    pub create_session: Arc<CreateSession>,
 }
 
 /// Construye y devuelve el estado de la aplicación (`AppState`).
@@ -43,16 +44,19 @@ pub async fn create_app_state() -> Result<AppState> {
     let pool = SqlitePool::connect(&database_url).await?;
 
     // 3. Instanciar adaptadores de infraestructura (implementaciones concretas)
-    let user_repo: Arc<dyn IUserRepository> = Arc::new(SqliteUserRepository::new(pool));
+    let user_repo: Arc<dyn IUserRepository> = Arc::new(SqliteUserRepository::new(pool.clone()));
+    let session_repo: Arc<dyn ISessionRepository> = Arc::new(SqliteSessionRepository::new(pool));
     let hasher: Arc<dyn IHasher> = Arc::new(Argon2idHasher {});
 
     // 4. Instanciar casos de uso de la aplicación, inyectando las dependencias
     let register_user = Arc::new(RegisterUser::new(user_repo.clone(), hasher.clone()));
-    let login_user = Arc::new(LoginUser::new(user_repo, hasher));
+    let login_user = Arc::new(LoginUser::new(user_repo.clone(), hasher.clone()));
+    let create_session = Arc::new(CreateSession::new(session_repo));
 
     // 5. Construir y devolver el estado de la aplicación
     Ok(AppState {
         register_user,
         login_user,
+        create_session,
     })
 }
