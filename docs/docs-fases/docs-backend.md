@@ -67,7 +67,21 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 
 ---
 
+### 🧠 Integración: Fase 1.2 - Migraciones del Sistema (RBAC, Sessions, Audit)
+
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Conjunto de migraciones SQL que crean la infraestructura completa del sistema: RBAC (roles y permisos), Usuarios, Tokens, Auditoría y Sesiones. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Sirve para tener un sistema completo de autenticación y autorización desde el inicio. El desastre que evita es tener que agregar tablas después de que la aplicación esté en producción. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | **0001 RBAC:** `roles`, `permissions`, `role_permissions`.<br>**0002 Users:** `users` (Soft Delete), `user_roles` (N:M), trigger `updated_at`.<br>**0003 Tokens:** `tokens` para verificación/reset.<br>**0004 Audit:** `audit_logs` para trazabilidad.<br>**0005 Seed:** Datos iniciales (Admin, User, permisos).<br>**0006 Sessions:** `sessions` con expiry, IP, user-agent. |
+| **4** | **Ejemplo Práctico 3026** | Ejecutar migraciones:<br><br> ```bash just db-migrate ```<br><br> **Resultado:**<br> `Applied 20260305135148/migrate create users table`<br>`Applied 20260305135149/migrate create rbac`<br>`Applied 20260305135150/migrate create tokens`<br>`Applied 20260305135151/migrate create audit`<br>`Applied 20260305135152/migrate seed system data`<br>`Applied 20260305135153/migrate create sessions` |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Escalabilidad:** El sistema N:M de roles permite infinitas combinaciones de permisos.<br><br> **Seguridad:** Soft Delete + Audit Logs + sesiones con IP/UA = trazabilidad completa.<br><br> **Mantenimiento:** Cada migración es idempotente y versionada. Si algo falla, sabemos exactamente qué tabla causó el problema. |
+
+---
+
 ### 🧠 Integración: Fase 1.2 - El Corazón Inmortal (Adaptador de Repositorio)
+
+### 🧠 Integración: Fase 1.2b - Migraciones del Sistema (RBAC, Sessions, Audit)
 
 | Nivel | Nombre | Descripción |
 |-------|--------|-------------|
@@ -128,3 +142,15 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 | **3** | **¿Cómo funciona?** (La Anatomía) | 1. El handler recibe `LoginUserCommand` con email y password. <br> 2. Se parsea el email como Value Object. <br> 3. Se busca el usuario por email en el repositorio. Si no existe, se devuelve `InvalidCredentials`. <br> 4. Se usa `IHasher::verify()` para comparar la contraseña con el hash almacenado. <br> 5. Si la verificación falla, se devuelve `InvalidCredentials`. <br> 6. Si es exitosa, se devuelve la entidad `User`. |
 | **4** | **Ejemplo Práctico 3026** | El caso de uso `LoginUser` vive en `crates/core_logic/src/application/use_cases/user/login.rs`. Para probarlo, necesitas primero tener un usuario registrado (usando `/register`), luego hacer login: <br><br> ```bash # 1. Registrar usuario curl -X POST http://localhost:8080/register \ -H "Content-Type: application/json" \ -d '{"email":"test@test.com","password":"password123"}' # 2. Login con mismas credenciales curl -X POST http://localhost:8080/login \ -H "Content-Type: application/json" \ -d '{"email":"test@test.com","password":"password123"}' ``` |
 | **5** | **¿Por qué es vital para nuestro sistema?** | **Seguridad:** Al usar el mismo `IHasher` que `RegisterUser`, garantizamos consistencia en el almacenamiento de contraseñas. <br><br> **Arquitectura Hexagonal:** El caso de uso no sabe cómo se verifican las contraseñas (Argon2id, bcrypt, etc.). Solo conoce el puerto `IHasher`. Si mañana cambiamos el algoritmo, solo modificamos el adaptador, no la lógica de negocio. |
+
+---
+
+### 🧠 Integración: Fase 3.3 - Sistema de Sesiones (Tokens)
+
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Un sistema de sesiones que genera tokens UUIDv7 al hacer login y los almacena en la tabla `sessions` de SQLite. Cada sesión tiene expiry, IP y user agent para trazabilidad. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Sirve para mantener la autenticación entre requests. El usuario recibe un token al hacer login y lo envía en cada petición subsiguiente. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. El handler `login_user_handler` recibe credenciales. <br> 2. `LoginUser` verifica email y password. <br> 3. `CreateSession` genera un UUIDv7 como token. <br> 4. Se guarda la sesión en la DB con expiry (7 días). <br> 5. El handler retorna el token en la respuesta. <br> 6. El cliente envía el token en el header `Authorization: Bearer <token>`. |
+| **4** | **Ejemplo Práctico 3026** | **Login retorna token:**<br><br> ```bash curl -X POST http://localhost:8080/login \ -H "Content-Type: application/json" \ -d '{"email":"test@test.com","password":"password123"}' ```<br><br> **Respuesta:**<br> `{"id":"...","email":"test@test.com","token":"uuid-v7"}`<br><br> **Ver sesiones en DB:**<br> `sqlite3 backend.db "SELECT id, user_id, session_token, expires_at FROM sessions;"` |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Trazabilidad:** Al guardar IP y user agent, podemos detectar sesiones sospechosas. <br><br> **Revocación:** Podemos invalidar sesiones específicas (logout) sin afectar otras. <br><br> **Escalabilidad:** La tabla sessions soporta millones de registros con índices optimizados (`idx_sessions_token`, `idx_sessions_expiry`). |
