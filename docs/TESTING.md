@@ -14,6 +14,8 @@
 |--------|----------|-------------|
 | POST | `/register` | Registrar usuario |
 | POST | `/login` | Autenticar (retorna token) |
+| GET | `/me` | Datos del usuario autenticado |
+| POST | `/logout` | Cerrar sesión |
 
 ---
 
@@ -100,6 +102,24 @@ curl -X POST http://localhost:8080/register -H "Content-Type: application/json" 
 ```
 **Resultado:** `{"error":"Error en los datos proporcionados."}`
 
+### 7. GET /me (Con token)
+```bash
+curl -X GET http://localhost:8080/me -H "Authorization: Bearer <TOKEN>"
+```
+**Resultado:** `{"id":"...","email":"test@test.com","username":null,"email_verified":false}`
+
+### 8. GET /me (Sin token)
+```bash
+curl -X GET http://localhost:8080/me
+```
+**Resultado:** `{"error":"Token de autorización requerido"}`
+
+### 9. Logout
+```bash
+curl -X POST http://localhost:8080/logout -H "Authorization: Bearer <TOKEN>"
+```
+**Resultado:** 204 No Content
+
 ---
 
 ## 🗄️ Ver Base de Datos
@@ -145,7 +165,10 @@ just dev
 |---|-----------|--------|
 | 1 | Registro exitoso | 200 + {id, email} |
 | 2 | Email duplicado | 409 Conflict |
-| 3 | Login exitoso | 200 + {id, email} |
+| 3 | Login exitoso | 200 + {id, email, token} |
 | 4 | Email no existe | 401 Unauthorized |
 | 5 | Password incorrecto | 401 Unauthorized |
 | 6 | Email inválido | 400 Bad Request |
+| 7 | GET /me con token | 200 + {id, email, username, email_verified} |
+| 8 | GET /me sin token | 401 Unauthorized |
+| 9 | Logout | 204 No Content |

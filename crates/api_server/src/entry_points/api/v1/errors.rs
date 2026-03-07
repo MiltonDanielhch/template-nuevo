@@ -14,7 +14,7 @@ use serde_json::json;
 
 /// Estructura de error unificada para la API.
 /// Esto nos permite convertir diferentes tipos de errores en respuestas HTTP consistentes.
-pub struct ApiError(anyhow::Error);
+pub struct ApiError(pub anyhow::Error);
 
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
@@ -29,6 +29,8 @@ impl IntoResponse for ApiError {
                 DomainError::InvalidCredentials => {
                     (StatusCode::UNAUTHORIZED, "Credenciales inválidas.")
                 }
+                DomainError::Unauthorized(msg) => (StatusCode::UNAUTHORIZED, msg.as_str()),
+                DomainError::NotFound(msg) => (StatusCode::NOT_FOUND, msg.as_str()),
                 _ => (
                     StatusCode::BAD_REQUEST,
                     "Error en los datos proporcionados.",

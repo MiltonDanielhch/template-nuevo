@@ -21,13 +21,16 @@ impl SqliteSessionRepository {
     }
 
     fn to_domain_session(db: DbSession) -> Result<Session> {
-        let expires_at = db.expires_at
-            .map(|dt| DateTime::<Utc>::from_naive_utc_and_offset(dt, Utc))
-            .unwrap_or_else(|| Utc::now());
-        let created_at = db.created_at
+        let expires_at = db
+            .expires_at
             .map(|dt| DateTime::<Utc>::from_naive_utc_and_offset(dt, Utc))
             .unwrap_or_else(Utc::now);
-        let last_activity_at = db.last_activity_at
+        let created_at = db
+            .created_at
+            .map(|dt| DateTime::<Utc>::from_naive_utc_and_offset(dt, Utc))
+            .unwrap_or_else(Utc::now);
+        let last_activity_at = db
+            .last_activity_at
             .map(|dt| DateTime::<Utc>::from_naive_utc_and_offset(dt, Utc))
             .unwrap_or_else(Utc::now);
         let is_revoked = db.is_revoked.unwrap_or(false);
@@ -97,10 +100,7 @@ impl ISessionRepository for SqliteSessionRepository {
         .fetch_all(&self.pool)
         .await?;
 
-        sessions
-            .into_iter()
-            .map(Self::to_domain_session)
-            .collect()
+        sessions.into_iter().map(Self::to_domain_session).collect()
     }
 
     async fn revoke(&self, token: &SessionToken) -> Result<()> {

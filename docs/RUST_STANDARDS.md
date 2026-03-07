@@ -51,6 +51,7 @@ El código Rust en el Laboratorio 3026 debe ser **Soberano, Seguro y Eficiente**
 
 ### 2.4. Concurrencia y Asincronía
 - **Runtime:** El runtime estándar es **Tokio**.
+- **Traits Asíncronos:** Con Rust 2024 y Axum 0.8, preferimos `async fn` nativo en traits. Evitar la macro `#[async_trait]` a menos que sea estrictamente necesario por compatibilidad con librerías legacy.
 - **Sincronización:** Utilizar las primitivas de sincronización de Tokio (`Mutex`, `RwLock`, `Semaphore`). El `Mutex` de la librería estándar de Rust es bloqueante y no debe usarse en código asíncrono.
 
 ---

@@ -42,8 +42,7 @@ impl LoginUser {
     }
 
     pub async fn execute(&self, command: LoginUserCommand) -> Result<User, DomainError> {
-        let email = Email::parse(command.email)
-            .map_err(|_| DomainError::InvalidCredentials)?;
+        let email = Email::parse(command.email).map_err(|_| DomainError::InvalidCredentials)?;
 
         let user = self
             .user_repo

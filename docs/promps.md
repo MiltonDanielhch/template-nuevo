@@ -59,15 +59,15 @@ crates/
 
 Ahora que tenemos el sistema de sesiones:
 
-1. **Middleware de Autenticación**
+1. **Middleware de Autenticación** ✅
    - Crear extractor `CurrentUser`
    - Extraer token del header `Authorization: Bearer <token>`
    - Validar contra `ISessionRepository`
 
-2. **Rutas Protegidas**
+2. **Rutas Protegidas** ✅
    - `GET /me` - Datos del usuario logueado
 
-3. **Logout**
+3. **Logout** ✅
    - `POST /logout` - Invalidar sesión
 
 ---

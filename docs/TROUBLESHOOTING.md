@@ -319,23 +319,63 @@ Este documento es la bitácora de combate del Laboratorio 3026. No documenta el 
   1.  **Verificar Definición:** Revisa `core_logic/src/domain/errors.rs` y asegúrate de que las variantes coincidan exactamente con lo que esperas.
   2.  **Actualizar Usos:** Si refactorizaste (ej. eliminaste `InvalidEmail`), busca todas las referencias en tu código (Value Objects, Handlers) y actualízalas a la nueva variante (`ValidationError`).
 
----
+### 17. Error de Compilación: `unresolved import 'axum'`
 
-### 9. Error de Privacidad: `field is private`
-
-- **Síntoma:** Intentas acceder a un campo de un struct (ej. `user.email`) y el compilador te detiene.
+- **Síntoma:** El compilador indica que no puede encontrar el crate `axum` o sus módulos, sugiriendo `cargo add axum`.
   ```text
-  error[E0616]: field `email` of struct `User` is private
+  error[E0433]: failed to resolve: use of unresolved module or unlinked crate `axum`
   ```
 
-- **Diagnóstico:** En la Arquitectura Hexagonal, las entidades de dominio (`User`) deben proteger su estado interno para garantizar la validez de los datos. Por eso sus campos no son `pub`.
+- **Diagnóstico:** Has actualizado tu código o herramientas, pero el `Cargo.toml` del crate específico (`api_server`) no tiene declarada la dependencia `axum`. En un workspace, las dependencias no se heredan automáticamente desde la raíz.
 
 - **Cura (Sintonía 3026):**
-  1.  **No hagas los campos públicos.** Eso rompería el encapsulamiento.
-  2.  **Usa Getters:** Define métodos públicos en tu entidad que devuelvan referencias a los datos.
-      ```rust
-      // En User
-      pub fn email(&self) -> &Email { &self.email }
-      // En el Handler
-      let email_str = user.email().as_str();
-      ```
+  - Agrega explícitamente la dependencia al crate que la necesita:
+    ```bash
+    cargo add axum -p api_server
+    ```
+
+### 18. Error de Compilación: `unresolved import ... OsRng`
+
+- **Síntoma:** Al compilar `infra_db`, aparece el error: `no OsRng in the root`.
+  ```text
+  error[E0432]: unresolved import `argon2::password_hash::rand_core::OsRng`
+  ```
+
+- **Diagnóstico:** La librería `argon2` reexporta tipos, pero si la dependencia subyacente `rand_core` no tiene activadas ciertas features (como `std` o `getrandom`), estos tipos no están disponibles.
+
+- **Cura (Sintonía 3026):**
+  - Agrega explícitamente `rand_core` con la feature `std` en tu `Cargo.toml`:
+    ```toml
+    # En infra_db/Cargo.toml
+    rand_core = { version = "0.6", features = ["std"] }
+    ```
+
+### 19. Error de Compilación: `unresolved import axum::async_trait`
+
+- **Síntoma:** Después de actualizar a Axum 0.8, el compilador falla en `use axum::async_trait`.
+  ```text
+  error[E0432]: unresolved import `axum::async_trait`
+  ```
+
+- **Diagnóstico:** Axum 0.8 y versiones modernas de Rust soportan `async fn` nativamente en traits. La macro `#[async_trait]` ya no es necesaria ni exportada por Axum para sus extractores.
+
+- **Cura (Sintonía 3026):**
+  1.  Elimina el import `use axum::async_trait;`.
+  2.  Elimina la macro `#[async_trait]` encima de tu `impl FromRequestParts`.
+  3.  Disfruta de un código más limpio y estándar.
+
+### 20. Error de Sistema: `OS Error 112` / `no space on device`
+
+- **Síntoma:** `cargo test` o `cargo build` fallan repentinamente con errores de I/O indicando falta de espacio, aunque creas tener suficiente.
+  ```text
+  rustc-LLVM ERROR: IO failure on output stream: no space on device
+  ```
+
+- **Diagnóstico:** Los artefactos de compilación de Rust (`target/`) pueden crecer enormemente (varios GBs) rápidamente, especialmente en un workspace con múltiples crates y dependencias.
+
+- **Cura (Sintonía 3026):**
+  - Ejecuta una limpieza profunda para recuperar espacio:
+    ```bash
+    cargo clean
+    ```
+  - Esto borra la carpeta `target/`. La próxima compilación será más lenta, pero habrás recuperado gigabytes de espacio vital.

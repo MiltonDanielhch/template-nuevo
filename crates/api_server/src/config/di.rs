@@ -17,7 +17,9 @@
 
 use anyhow::Result;
 use core_logic::{
-    application::use_cases::user::{login::LoginUser, register::RegisterUser, CreateSession},
+    application::use_cases::user::{
+        CreateSession, get_user_by_id::GetUserById, login::LoginUser, register::RegisterUser,
+    },
     domain::interfaces::{IHasher, ISessionRepository, IUserRepository},
 };
 use infra_db::{Argon2idHasher, SqliteSessionRepository, SqliteUserRepository};
@@ -32,6 +34,8 @@ pub struct AppState {
     pub register_user: Arc<RegisterUser>,
     pub login_user: Arc<LoginUser>,
     pub create_session: Arc<CreateSession>,
+    pub session_repo: Arc<dyn ISessionRepository>,
+    pub get_user_by_id: Arc<GetUserById>,
 }
 
 /// Construye y devuelve el estado de la aplicación (`AppState`).
@@ -51,12 +55,15 @@ pub async fn create_app_state() -> Result<AppState> {
     // 4. Instanciar casos de uso de la aplicación, inyectando las dependencias
     let register_user = Arc::new(RegisterUser::new(user_repo.clone(), hasher.clone()));
     let login_user = Arc::new(LoginUser::new(user_repo.clone(), hasher.clone()));
-    let create_session = Arc::new(CreateSession::new(session_repo));
+    let create_session = Arc::new(CreateSession::new(session_repo.clone()));
+    let get_user_by_id = Arc::new(GetUserById::new(user_repo.clone()));
 
     // 5. Construir y devolver el estado de la aplicación
     Ok(AppState {
         register_user,
         login_user,
         create_session,
+        session_repo,
+        get_user_by_id,
     })
 }

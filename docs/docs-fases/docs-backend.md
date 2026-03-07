@@ -45,7 +45,7 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 
 | Nivel | Nombre | Descripción |
 |-------|--------|-------------|
-| **1** | **¿Qué es?** (Definición Técnica) | **Pre-commit** es un framework que permite ejecutar scripts automáticamente antes de cada commit de Git.在我们的项目中, usamos **buf** (paraProtobuf) y otras herramientas para validar el código. |
+| **1** | **¿Qué es?** (Definición Técnica) | **Pre-commit** es un framework que permite ejecutar scripts automáticamente antes de cada commit de Git. Usamos **buf** (para Protobuf) y otras herramientas para validar el código. |
 | **2** | **¿Para qué sirve?** (El Propósito) | Sirve para detectar y bloquear errores *antes* de que lleguen al repositorio remoto. El desastre que evita es enviar código malformado, protos inválidos o estilos inconsistentes que rompan el build para todos los demás. |
 | **3** | **¿Cómo funciona?** (La Anatomía) | 1. Define hooks en `.pre-commit-config.yaml`. <br> 2. Cada hook especifica un repo (ej: `bufbuild/buf`) y qué verificar. <br> 3. Cuando ejecutas `git commit`, pre-commit corre cada hook en orden. <br> 4. Si uno falla, el commit se cancela. <br> 5. Puedes ejecutar `pre-commit run --all-files` para verificar todo sin commitear. |
 | **4** | **Ejemplo Práctico 3026** | Para verificar que todo está en orden antes de commitear, ejecuta: <br><br> ```bash # Verificar todo el código pre-commit run --all-files ``` <br> **Implementación:** Nuestro `.pre-commit-config.yaml` incluye: <br> - `trailing-whitespace` y `end-of-file-fixer` (limpieza básica) <br> - `biome-check` (Frontend) <br> - `cargo fmt` y `cargo clippy` (Rust) <br> - `buf lint` (Protobuf) |
@@ -53,8 +53,19 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 
 ---
 
-## 🏗️ BLOQUE I: FUNDACIÓN (Persistencia y Dominio)
+### 🧠 Integración: Fase G.4 - Mantenimiento y Modernización (Dependencias)
 
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Es el proceso continuo de mantener los `crates` externos del proyecto actualizados a sus versiones estables más recientes. Involucra revisar `Cargo.toml`, ajustar versiones (ej. `tokio = "1.43"`, `axum = "0.8"`) y corregir el código para adaptarse a cambios disruptivos (breaking changes). |
+| **2** | **¿Para qué sirve?** (El Propósito) | Sirve para garantizar que el sistema se beneficie de parches de seguridad, mejoras de rendimiento (gratis) y nuevas capacidades del lenguaje. El desastre que evita es la **Deuda Técnica**: quedarse atrapado en versiones obsoletas que ya no reciben soporte, haciendo que futuras actualizaciones sean imposibles o extremadamente costosas. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Identificar:** Se revisan versiones con `cargo outdated` o manualmente. <br> 2. **Actualizar:** Se edita `Cargo.toml` con las nuevas versiones. <br> 3. **Corregir:** Se ejecuta `cargo check` para encontrar errores de compilación causados por cambios en las librerías. <br> 4. **Limpiar:** Se ejecuta `cargo clean` si hay conflictos de caché. <br> 5. **Verificar:** Se corren tests para asegurar que la lógica sigue intacta. |
+| **4** | **Ejemplo Práctico 3026** | Recientemente actualizamos a **Axum 0.8**, lo que nos permitió eliminar la macro `#[async_trait]` gracias a que Rust ahora soporta `async fn` en traits de forma nativa. <br><br> **Antes (Axum 0.7):** <br> ```rust #[async_trait] impl FromRequestParts for User { ... } ``` <br> **Ahora (Sintonía 3026 / Axum 0.8):** <br> ```rust impl FromRequestParts for User { ... } // ¡Más limpio y rápido! ``` <br> También solucionamos un error de `OsRng` en `infra_db` añadiendo explícitamente `rand_core` con la feature `std`. |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Rendimiento Gratuito:** Las nuevas versiones de `tokio` y `serde` suelen incluir optimizaciones que hacen que nuestro código corra más rápido sin que nosotros cambiemos una sola línea. <br><br> **Seguridad:** Las vulnerabilidades en dependencias (supply chain attacks) se parchean en versiones nuevas. Mantenerse al día es la primera línea de defensa. <br><br> **Simplicidad:** Como vimos con Axum, las actualizaciones modernas tienden a simplificar el código, eliminando macros complejas y haciendo que el código sea más legible y fácil de mantener. |
+
+---
+
+## 🏗️ BLOQUE I: FUNDACIÓN (Persistencia y Dominio)
 ### 🧠 Integración: Fase 1.1 - ADN SQL (Migraciones con SQLx)
 
 | Nivel | Nombre | Descripción |
@@ -154,3 +165,12 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 | **3** | **¿Cómo funciona?** (La Anatomía) | 1. El handler `login_user_handler` recibe credenciales. <br> 2. `LoginUser` verifica email y password. <br> 3. `CreateSession` genera un UUIDv7 como token. <br> 4. Se guarda la sesión en la DB con expiry (7 días). <br> 5. El handler retorna el token en la respuesta. <br> 6. El cliente envía el token en el header `Authorization: Bearer <token>`. |
 | **4** | **Ejemplo Práctico 3026** | **Login retorna token:**<br><br> ```bash curl -X POST http://localhost:8080/login \ -H "Content-Type: application/json" \ -d '{"email":"test@test.com","password":"password123"}' ```<br><br> **Respuesta:**<br> `{"id":"...","email":"test@test.com","token":"uuid-v7"}`<br><br> **Ver sesiones en DB:**<br> `sqlite3 backend.db "SELECT id, user_id, session_token, expires_at FROM sessions;"` |
 | **5** | **¿Por qué es vital para nuestro sistema?** | **Trazabilidad:** Al guardar IP y user agent, podemos detectar sesiones sospechosas. <br><br> **Revocación:** Podemos invalidar sesiones específicas (logout) sin afectar otras. <br><br> **Escalabilidad:** La tabla sessions soporta millones de registros con índices optimizados (`idx_sessions_token`, `idx_sessions_expiry`). |
+
+### 🧠 Integración: Fase 4.1 - Middleware de Autenticación (CurrentUser Extractor)
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Un **Extractor de Axum** que implementa el trait `FromRequestParts`. Extrae el usuario actual desde el header `Authorization: Bearer <token>` y valida la sesión en la base de datos. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Sirve para proteger rutas de la API. El desastre que evita es que endpoints sensibles (`/me`, `/logout`) sean accesibles sin autenticación. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. El usuario envía el token en el header `Authorization: Bearer <token>`. <br> 2. El extractor `CurrentUser` parsea el token. <br> 3. Busca la sesión en `ISessionRepository`. <br> 4. Si existe y no está expirada, busca el usuario con `GetUserById`. <br> 5. Pasa el usuario al handler como parámetro. |
+| **4** | **Ejemplo Práctico 3026** | El extractor vive en `crates/api_server/src/entry_points/auth.rs`. Para probarlo:<br><br> ```bash # 1. Login para obtener token TOKEN=$(curl -s -X POST http://localhost:8080/login \ -H "Content-Type: application/json" \ -d '{"email":"test@test.com","password":"password123"}' | jq -r '.token') # 2. GET /me con token curl -X GET http://localhost:8080/me \ -H "Authorization: Bearer $TOKEN" # 3. Logout curl -X POST http://localhost:8080/logout \ -H "Authorization: Bearer $TOKEN" ``` |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Seguridad:** Cada ruta protegida valida el token antes de permitir acceso.<br><br> **Arquitectura Hexagonal:** El extractor usa los puertos `ISessionRepository` y `GetUserById`, manteniéndose agnóstico de la implementación.<br><br> **UX:** El usuario puede ver sus datos con `/me` y cerrar sesión con `/logout`. |

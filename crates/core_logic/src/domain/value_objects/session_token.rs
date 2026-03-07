@@ -14,7 +14,9 @@ pub struct SessionToken(String);
 impl SessionToken {
     pub fn new(token: String) -> Result<Self, DomainError> {
         if token.trim().is_empty() {
-            return Err(DomainError::ValidationError("Token no puede estar vacío".to_string()));
+            return Err(DomainError::ValidationError(
+                "Token no puede estar vacío".to_string(),
+            ));
         }
         if token.len() < 32 {
             return Err(DomainError::ValidationError("Token muy corto".to_string()));

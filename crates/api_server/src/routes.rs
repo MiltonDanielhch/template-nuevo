@@ -6,13 +6,17 @@
 
 use crate::{
     config::di::AppState,
-    entry_points::api::v1::user_handlers::{login_user_handler, register_user_handler},
+    entry_points::api::v1::user_handlers::{
+        login_user_handler, logout_handler, me_handler, register_user_handler,
+    },
 };
-use axum::routing::{post, Router};
+use axum::routing::{Router, get, post};
 
 pub fn create_router(app_state: AppState) -> Router {
     Router::new()
         .route("/register", post(register_user_handler))
         .route("/login", post(login_user_handler))
+        .route("/me", get(me_handler))
+        .route("/logout", post(logout_handler))
         .with_state(app_state)
 }

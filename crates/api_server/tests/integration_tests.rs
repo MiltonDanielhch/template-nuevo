@@ -60,7 +60,8 @@ async fn setup_test_app() -> Router {
 
     // Crear el AppState con el pool de la base de datos en memoria.
     let user_repo = Arc::new(infra_db::SqliteUserRepository::new(pool.clone()));
-    let session_repo = Arc::new(infra_db::SqliteSessionRepository::new(pool.clone()));
+    let session_repo: Arc<dyn core_logic::domain::interfaces::ISessionRepository> =
+        Arc::new(infra_db::SqliteSessionRepository::new(pool.clone()));
     let hasher = Arc::new(infra_db::Argon2idHasher::default());
     let register_user_use_case = Arc::new(
         core_logic::application::use_cases::user::register::RegisterUser::new(
@@ -69,16 +70,24 @@ async fn setup_test_app() -> Router {
         ),
     );
     let login_user_use_case = Arc::new(
-        core_logic::application::use_cases::user::login::LoginUser::new(user_repo, hasher),
+        core_logic::application::use_cases::user::login::LoginUser::new(
+            user_repo.clone(),
+            hasher.clone(),
+        ),
     );
     let create_session_use_case = Arc::new(
-        core_logic::application::use_cases::user::CreateSession::new(session_repo),
+        core_logic::application::use_cases::user::CreateSession::new(session_repo.clone()),
+    );
+    let get_user_by_id_use_case = Arc::new(
+        core_logic::application::use_cases::user::GetUserById::new(user_repo),
     );
 
     let app_state = AppState {
         register_user: register_user_use_case,
         login_user: login_user_use_case,
         create_session: create_session_use_case,
+        session_repo,
+        get_user_by_id: get_user_by_id_use_case,
     };
 
     create_router(app_state)
@@ -182,9 +191,9 @@ async fn register_user_invalid_email() {
     let json_body: Value = serde_json::from_slice(&body).unwrap();
     let error_msg = json_body["error"].as_str().unwrap();
     assert!(
-        error_msg.contains("no es válido") 
-        || error_msg.contains("Error de validación")
-        || error_msg.contains("Error en los datos"),
+        error_msg.contains("no es válido")
+            || error_msg.contains("Error de validación")
+            || error_msg.contains("Error en los datos"),
         "Error msg: {}",
         error_msg
     );

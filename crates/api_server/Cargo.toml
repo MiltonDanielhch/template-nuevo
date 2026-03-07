@@ -1,4 +1,3 @@
-# c:\laravel\templates\template1\crates\api_server\Cargo.toml
 # //! # Manifiesto del Crate `api_server`
 # //!
 # //! Este es el "Crate Binario" y el punto de entrada principal de la aplicación.
@@ -26,16 +25,17 @@ core_logic = { path = "../core_logic" }
 infra_db = { path = "../infra_db" }
 
 anyhow = "1.0"
-tokio = { version = "1.36", features = ["full"] } # "full" para tener todo lo necesario para Axum
-axum = "0.7.5"
+tokio = { version = "1.43", features = ["full"] } # "full" para para Axum
+axum = "0.8"
+async-trait = "0.1"
 dotenvy = "0.15"
 serde = { version = "1.0", features = ["derive"] }
-sqlx = { version = "0.7", features = ["runtime-tokio", "sqlite"] }
+sqlx = { version = "0.8", features = ["runtime-tokio", "sqlite"] }
 serde_json = "1.0"
 
 [dev-dependencies]
 tokio-test = "0.4"
-tower = { version = "0.4", features = ["full"] }
+tower = { version = "0.5", features = ["full"] }
 http-body-util = "0.1"
 serde_json = "1.0"
-sqlx = { version = "0.7", features = ["runtime-tokio", "sqlite", "migrate"] } # Añadimos "migrate" para tests
+sqlx = { version = "0.8", features = ["runtime-tokio", "sqlite", "migrate"] } # Añadimos "migrate" para tests

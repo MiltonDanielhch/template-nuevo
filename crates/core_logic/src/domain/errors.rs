@@ -27,4 +27,10 @@ pub enum DomainError {
 
     #[error("Hash de contraseña inválido.")]
     InvalidPasswordHash,
+
+    #[error("No autorizado: {0}")]
+    Unauthorized(String),
+
+    #[error("Recurso no encontrado: {0}")]
+    NotFound(String),
 }

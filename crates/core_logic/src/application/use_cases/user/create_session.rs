@@ -21,7 +21,12 @@ impl CreateSession {
         Self { session_repo }
     }
 
-    pub async fn execute(&self, user: User, ip_address: Option<String>, user_agent: Option<String>) -> Result<SessionToken> {
+    pub async fn execute(
+        &self,
+        user: User,
+        ip_address: Option<String>,
+        user_agent: Option<String>,
+    ) -> Result<SessionToken> {
         let token = Self::generate_token();
         let now = Utc::now();
         let expires = now + Duration::days(7);
@@ -39,7 +44,7 @@ impl CreateSession {
         };
 
         self.session_repo.save(&session).await?;
-        
+
         Ok(token)
     }
 

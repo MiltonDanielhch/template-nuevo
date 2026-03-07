@@ -1,6 +1,6 @@
 # 🛠️ ROADMAP: BACKEND 3026 (Versión Workspace & Hexagonal)
 
-**Stack:** Rust 2024 | Axum | SQLx (SQLite) | Protobuf (ConnectRPC) | Podman
+**Stack:** Rust 2024 | Axum 0.8 | SQLx 0.8 (SQLite) | Protobuf (ConnectRPC) | Podman
 
 ---
 
@@ -14,6 +14,7 @@
 | 2 | ADN Setup | `proto/auth.proto` + `buf.yaml` | ✅ |
 | 3 | Just Command | `Justfile` (comandos: audit, gen-proto, migrate) | ✅ |
 | 4 | Sintonía Release | Perfil `z` (minificación) en `Cargo.toml` raíz | ✅ |
+| 5 | Modernización | Update Axum 0.8, Tokio 1.43, SQLx 0.8 | ✅ |
 
 ---
 
@@ -27,11 +28,11 @@
 
 | # | Tarea | Descripción | Estado |
 |---|-------|-------------|:------:|
-| 1 | Crear RBAC | `0001_create_rbac.sql`: Tablas `roles`, `permissions`, `role_permissions`. | ⏳ |
+| 1 | Crear RBAC | `0001_create_rbac.sql`: Tablas `roles`, `permissions`, `role_permissions`. | ✅ |
 | 2 | Crear Usuarios | `0002_create_users.sql`: Tabla `users` con Soft Delete y trigger `updated_at`. | ✅ |
-| 3 | Crear Tokens | `0003_create_tokens.sql`: Tabla `tokens` para verificación y reseteo. | ⏳ |
-| 4 | Crear Auditoría | `0004_create_audit.sql`: Tabla `audit_logs` para trazabilidad. | ⏳ |
-| 5 | Seed de Datos | `0005_seed_system_data.sql`: Roles y permisos por defecto. | ⏳ |
+| 3 | Crear Tokens | `0003_create_tokens.sql`: Tabla `tokens` para verificación y reseteo. | ✅ |
+| 4 | Crear Auditoría | `0004_create_audit.sql`: Tabla `audit_logs` para trazabilidad. | ✅ |
+| 5 | Seed de Datos | `0005_seed_system_data.sql`: Roles y permisos por defecto. | ✅ |
 | 6 | SQLx Prep | `just db-prepare`: Generar `sqlx-data.json` para compilación offline. | ✅ |
 
 **Verificación:** `just db-migrate` se completa sin errores.
@@ -111,7 +112,7 @@
 ## 🔐 BLOQUE IV: SESIONES Y AUTH
 
 **Objetivo:** Implementar sistema de tokens para mantener autenticación entre requests.
-**Estado:** ✅ Parcial (Migraciones y CreateSession listos)
+**Estado:** ✅ Completado
 
 | # | Tarea | Ubicación | Descripción | Estado |
 |---|-------|-----------|-------------|:------:|
@@ -121,8 +122,11 @@
 | 4 | SqliteSessionRepository | `infra_db/persistence` | Implementación SQLite. | ✅ |
 | 5 | CreateSession Use Case | `core_logic/application/use_cases` | Generar token al hacer login. | ✅ |
 | 6 | Login retorna Token | `api_server/entry_points` | `POST /login` retorna token. | ✅ |
-| 7 | Auth Middleware | `api_server/entry_points` | Extractor CurrentUser. | ⏳ |
-| 8 | Logout | `api_server/routes.rs` | `POST /logout`. | ⏳ |
+| 7 | Auth Middleware | `api_server/entry_points/auth.rs` | Extractor CurrentUser sin macro async_trait. | ✅ |
+| 8 | GetUserById Use Case | `core_logic/application/use_cases` | Caso de uso para buscar usuario por ID. | ✅ |
+| 9 | GET /me | `api_server/routes.rs` | Ruta protegida que retorna datos del usuario. | ✅ |
+| 10 | Logout | `api_server/routes.rs` | `POST /logout`. | ✅ |
+| 11 | Tests de Integración | `api_server/tests/integration_tests.rs` | Tests para /me y /logout. | ✅ |
 
 ---
 
