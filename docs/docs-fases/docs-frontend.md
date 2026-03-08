@@ -21,6 +21,31 @@ Aquí tienes el desglose pedagógico de lo que acabamos de ejecutar: **La Estruc
 
 ---
 
+## 🏛️ Integración: Fase 5 - Modales Reactivos con Alpine.js (Creación de Usuarios)
+
+| Nivel | Nombre | Descripción |
+| --- | --- | --- |
+| **1** | **¿Qué es?** (Definición Técnica) | Implementación de diálogos modales interactivos que utilizan **Alpine.js** para el estado de la UI y **HTMX** para el envío asíncrono de datos. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Permite realizar acciones complejas (como crear un usuario) sin perder el contexto de la página actual ni recargar el navegador, mejorando la **velocidad percibida**. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Estado Local:** Alpine gestiona `openModal: true/false`. <br> 2. **Envío:** El formulario usa `hx-post` y `hx-swap="afterbegin"` para insertar el nuevo registro al inicio de la tabla. <br> 3. **Cierre Automático:** El servidor envía una cabecera `HX-Trigger: user-created`, que Alpine escucha para cerrar el modal automáticamente. |
+| **4** | **Ejemplo Práctico 3026** | **Modal Trigger:**
+```astro
+<div x-data="{ openModal: false }" @user-created.window="openModal = false">
+  <Button @click="openModal = true">Nuevo Usuario</Button>
+</div>
+```
+
+**Respuesta del Servidor:**
+```typescript
+return new Response(html, {
+  headers: { "HX-Trigger": "user-created" }
+});
+```
+
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Interactividad Ligera:** Obtenemos una experiencia similar a una SPA (Single Page Application) sin el peso de React o Vue, manteniendo el renderizado en el servidor. |
+
+---
+
 ## 🏛️ Integración: Fase 4 - Soberanía de Datos (CRUD de Usuarios con HTMX)
 
 | Nivel | Nombre | Descripción |

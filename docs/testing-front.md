@@ -280,7 +280,27 @@ Validación de la gestión administrativa y búsqueda dinámica.
 
 ---
 
-## 🔧 Nivel 11: Comandos de Diagnóstico (Forensics)
+## 👥 Nivel 11: Pruebas de Creación de Usuarios (Modal + HTMX)
+
+Validación de la creación de registros sin recarga.
+
+### 🧪 Flujo de Creación
+
+**1. Abrir Modal**
+1.  En `http://localhost:4321/users`, haz clic en el botón "Nuevo Usuario".
+2.  Verifica que aparece el modal con el formulario.
+
+**2. Crear Usuario**
+1.  Rellena el nombre, email y selecciona un rol.
+2.  Haz clic en "Guardar Usuario".
+3.  Verifica que:
+    - El modal se cierra automáticamente.
+    - El nuevo usuario aparece al inicio de la tabla con una animación.
+    - El formulario se resetea para la próxima vez.
+
+---
+
+## 🔧 Nivel 12: Comandos de Diagnóstico (Forensics)
 
 ### Ver errores en tiempo real
 ```bash

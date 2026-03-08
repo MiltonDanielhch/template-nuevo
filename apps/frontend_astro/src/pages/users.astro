@@ -6,6 +6,8 @@ import Navbar from "@/presentation/components/shared/Navbar.astro";
 import Sidebar from "@/presentation/components/shared/Sidebar.astro";
 import MainLayout from "@/presentation/layouts/MainLayout.astro";
 
+export const prerender = false;
+
 // Por defecto Astro cargará la lista inicial en el servidor
 const allUsers = [
   {
@@ -23,7 +25,7 @@ const allUsers = [
 ---
 
 <MainLayout title="Gestión de Usuarios">
-  <div class="flex h-screen flex-col">
+  <div class="flex h-screen flex-col" x-data="{ openModal: false }" @user-created.window="openModal = false">
     <Navbar />
     <div class="flex flex-1 overflow-hidden">
       <Sidebar />
@@ -34,7 +36,7 @@ const allUsers = [
               <h1 class="text-3xl font-bold tracking-tight text-foreground">Usuarios</h1>
               <p class="text-muted-foreground">Gestiona los accesos y roles del sistema</p>
             </div>
-            <Button variant="default" size="sm" class="gap-2">
+            <Button variant="default" size="sm" class="gap-2" @click="openModal = true">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
               Nuevo Usuario
             </Button>
@@ -109,6 +111,72 @@ const allUsers = [
           </Card>
         </div>
       </main>
+    </div>
+
+    <!-- Modal para Nuevo Usuario -->
+    <div
+      x-show="openModal"
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="transition ease-in duration-200"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+      @click.self="openModal = false"
+      style="display: none;"
+    >
+      <div
+        x-show="openModal"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+        class="w-full max-w-md overflow-hidden rounded-xl border border-border bg-card shadow-2xl"
+      >
+        <div class="flex items-center justify-between border-b border-border p-4">
+          <h2 class="text-lg font-semibold">Crear Nuevo Usuario</h2>
+          <button @click="openModal = false" class="text-muted-foreground hover:text-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <form
+          hx-post="/api/users/create"
+          hx-target="#users-table-body"
+          hx-swap="afterbegin"
+          class="p-4 space-y-4"
+          @submit="setTimeout(() => $el.reset(), 100)"
+        >
+          <div class="space-y-2">
+            <label for="name" class="text-sm font-medium">Nombre Completo</label>
+            <Input id="name" name="name" placeholder="Ej: Juan Pérez" required />
+          </div>
+
+          <div class="space-y-2">
+            <label for="email" class="text-sm font-medium">Correo Electrónico</label>
+            <Input id="email" name="email" type="email" placeholder="ejemplo@test.com" required />
+          </div>
+
+          <div class="space-y-2">
+            <label for="role" class="text-sm font-medium">Rol del Usuario</label>
+            <select
+              id="role"
+              name="role"
+              class="flex h-9 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              required
+            >
+              <option value="Usuario">Usuario</option>
+              <option value="Editor">Editor</option>
+              <option value="Administrador">Administrador</option>
+            </select>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-4">
+            <Button type="button" variant="outline" @click="openModal = false">Cancelar</Button>
+            <Button type="submit">Guardar Usuario</Button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </MainLayout>

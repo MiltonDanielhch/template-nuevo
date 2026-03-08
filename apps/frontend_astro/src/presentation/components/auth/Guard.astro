@@ -1,0 +1,16 @@
+---
+interface Props {
+  roles?: string[];
+}
+
+const { roles = [] } = Astro.props;
+const token = Astro.cookies.get("auth_token")?.value;
+
+// En un entorno real, decodificaríamos el token para obtener el rol del usuario
+// Por ahora simulamos que si hay token, el usuario es Admin
+const userRole = token ? "Administrador" : null;
+
+const isAuthorized = roles.length === 0 || (userRole && roles.includes(userRole));
+---
+
+{isAuthorized && <slot />}

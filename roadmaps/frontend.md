@@ -62,7 +62,7 @@
 
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
-| 1 | Role Guard | `presentation/components/auth/Guard.astro`: Control de visibilidad del lado servidor. | ⏳ |
+| 1 | Role Guard | `presentation/components/auth/Guard.astro`: Control de visibilidad del lado servidor. | ✅ |
 | 2 | Admin Panel | `presentation/pages/admin/`: CRUD de gestión de sintonía de usuarios. | ✅ |
 
 ---
@@ -74,5 +74,5 @@ BLOQUE I: ████████████ 100% (7/7 completados)
 BLOQUE II: ████████████ 100% (6/6 completados)
 BLOQUE III: ████████████ 100% (5/5 completados)
 BLOQUE IV: ██░░░░░░░░░░ 0% (0/2 completados)
-BLOQUE V: ██░░░░░░░░░░ 0% (0/2 completados)
+BLOQUE V: ████████████ 100% (2/2 completados)
 ```
