@@ -326,6 +326,8 @@ ls -la apps/frontend_astro/dist/client/
 | Error | Causa Probable | Solución |
 |-------|----------------|----------|
 | **Build fail** | Dependencias faltantes | `bun install` |
+| **HTMX error** | `ajaxPrefilter is not a function` | Cambiar a `htmx:configRequest` en `MainLayout.astro` |
+| **Modal no abre** | Error de JS global o Alpine no cargado | Verificar consola (F12) por errores de tipo o carga de scripts |
 | **HTMX no funciona** | Script no cargado | Verificar CDN en MainLayout |
 | **Alpine no funciona** | Error en `alpine.ts` | Revisar sintaxis TypeScript |
 | **Shadcn/ui no funciona** | Falta `client:load` | Agregar directiva de hydatation |

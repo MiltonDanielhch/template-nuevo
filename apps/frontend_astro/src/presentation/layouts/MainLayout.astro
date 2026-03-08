@@ -48,14 +48,13 @@ const { title } = Astro.props;
           htmx.config.defaultSettleDelay = 0;
           htmx.config.historyCacheSize = 0;
           htmx.config.refreshOnHistoryMiss = false;
+        }
+      });
 
-          htmx.ajaxPrefilter((options) => {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            if (csrfToken) {
-              options.headers = options.headers || {};
-              options.headers['X-CSRF-Token'] = csrfToken;
-            }
-          });
+      document.addEventListener('htmx:configRequest', (e) => {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (csrfToken) {
+          e.detail.headers['X-CSRF-Token'] = csrfToken;
         }
       });
 
