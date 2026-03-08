@@ -8,7 +8,23 @@ import { Button } from "@/components/ui/button";
       <span class="text-primary-600">Lab</span>3026
     </a>
 
-    <div class="flex-1"></div>
+    <div class="flex-1 max-w-md px-4">
+      <button
+        class="flex h-9 w-full items-center justify-between rounded-md border border-input bg-muted/50 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        @click="$store.commandPalette.toggle()"
+      >
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          Buscar...
+        </div>
+        <kbd class="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+          <span class="text-xs">⌘</span>K
+        </kbd>
+      </button>
+    </div>
 
     <div class="flex items-center gap-2">
       <Button variant="ghost" size="sm" onclick="Alpine.store('theme').toggle()">

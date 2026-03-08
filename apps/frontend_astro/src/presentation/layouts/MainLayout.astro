@@ -1,5 +1,6 @@
 ---
 import "../../styles/global.css";
+import CommandPalette from "../components/command/CommandPalette.astro";
 
 interface Props {
   title: string;
@@ -96,6 +97,7 @@ const { title } = Astro.props;
     </script>
   </head>
   <body class="min-h-screen bg-background text-text transition-colors duration-200">
+    <CommandPalette />
     <div id="app">
       <slot />
     </div>

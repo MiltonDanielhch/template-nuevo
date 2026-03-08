@@ -21,6 +21,31 @@ Aquí tienes el desglose pedagógico de lo que acabamos de ejecutar: **La Estruc
 
 ---
 
+## 🏛️ Integración: Fase 3 - Command Palette & Health Monitor
+
+| Nivel | Nombre | Descripción |
+| --- | --- | --- |
+| **1** | **¿Qué es?** (Definición Técnica) | Implementación de una **Command Palette** (buscador global) y un **Health Monitor** (indicador de latencia) usando Alpine.js para interactividad instantánea. |
+| **2** | **¿Para qué sirve?** (El Propósito) | La Command Palette mejora drásticamente la **UX** permitiendo navegación rápida via teclado. El Health Monitor proporciona **feedback en tiempo real** sobre la conectividad con el servidor. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Command Palette:** Store global de Alpine con lógica de filtrado y atajos de teclado (`Ctrl+K`). <br> 2. **Health Monitor:** Polling asíncrono hacia `/api/health` con indicadores visuales de color según la latencia (Verde < 100ms, Amarillo < 300ms, Rojo > 300ms). |
+| **4** | **Ejemplo Práctico 3026** | Archivos creados: <br>
+
+<br> **Command Palette Component (`src/presentation/components/command/CommandPalette.astro`):**
+```astro
+<div x-data @keydown.window.prevent.ctrl.k="$store.commandPalette.toggle()">
+  <!-- UI del buscador -->
+</div>
+```
+
+<br> **Health Logic en Dashboard:**
+```javascript
+setInterval(() => {
+  Alpine.store('dashboard').updateLatency();
+}, 5000);
+```
+
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Eficiencia:** Reduce clics innecesarios y proporciona transparencia técnica al usuario, alineado con el rendimiento extremo. |
+
 ## 🏛️ Integración: Fase 2 - Integración Backend + Dashboard
 
 | Nivel | Nombre | Descripción |

@@ -56,7 +56,17 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                 </svg>
               </CardHeader>
               <CardContent>
-                <div class="text-2xl font-bold" x-text="$store.dashboard.latency">--</div>
+                <div class="flex items-baseline gap-2">
+                  <div class="text-2xl font-bold" x-text="$store.dashboard.latency">--</div>
+                  <div
+                    class="h-2 w-2 rounded-full"
+                    :class="{
+                      'bg-green-500': $store.dashboard.latency < 100,
+                      'bg-yellow-500': $store.dashboard.latency >= 100 && $store.dashboard.latency < 300,
+                      'bg-red-500': $store.dashboard.latency >= 300 || $store.dashboard.latency === 'Error'
+                    }"
+                  ></div>
+                </div>
                 <p class="text-xs text-muted-foreground">ms de latencia</p>
               </CardContent>
             </Card>

@@ -49,4 +49,30 @@ export default (Alpine: Alpine) => {
       }
     },
   } as AuthStore);
+
+  Alpine.store("commandPalette", {
+    open: false,
+    query: "",
+    items: [
+      { label: "Ir al Dashboard", href: "/dashboard", icon: "dashboard" },
+      { label: "Ver Usuarios", href: "/users", icon: "users" },
+      { label: "Configuración", href: "/settings", icon: "settings" },
+      { label: "Cerrar Sesión", href: "/logout", icon: "logout" },
+    ],
+    get filteredItems() {
+      if (!this.query) return this.items;
+      return this.items.filter((item) =>
+        item.label.toLowerCase().includes(this.query.toLowerCase()),
+      );
+    },
+    toggle() {
+      this.open = !this.open;
+      if (this.open) {
+        this.query = "";
+        setTimeout(() => {
+          document.getElementById("command-input")?.focus();
+        }, 50);
+      }
+    },
+  });
 };
