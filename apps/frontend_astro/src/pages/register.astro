@@ -101,7 +101,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
     document.addEventListener('htmx:afterRequest', (e) => {
       if (e.detail.successful) {
         const response = e.detail.xhr;
-        if (response.status === 201) {
+        if (response.status === 200 || response.status === 201) {
           window.location.href = '/dashboard';
         }
       }
