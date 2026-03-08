@@ -29,5 +29,17 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 
 ---
 
+### 🧠 Integración: Fase 5.2 - Corrección de Inyección de Dependencias (Auth Extractor)
+
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Una corrección en la implementación del trait `FromRequestParts` en Axum 0.8 para el extractor `CurrentUser`. Cambiamos la forma de obtener el estado de la aplicación (`AppState`) desde `parts.extensions` (método antiguo) a inyección directa en la firma de la función (método moderno). |
+| **2** | **¿Para qué sirve?** (El Propósito) | Sirve para que el middleware de autenticación tenga acceso a la base de datos. El desastre que evita es el error **"Estado no disponible"** (Error 500) cuando un usuario intenta acceder a rutas protegidas como `/me` o `/logout`. Sin esto, la autenticación era imposible. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Antes (Axum 0.7 legacy):** Intentábamos buscar el estado manualmente en un mapa de extensiones (`parts.extensions.get::<AppState>()`). Esto fallaba porque Axum 0.8 gestiona el estado de forma diferente. <br> 2. **Ahora (Axum 0.8 way):** Definimos `impl FromRequestParts<AppState> for CurrentUser`. Axum inyecta automáticamente el `AppState` como segundo argumento (`state: &AppState`). <br> 3. **Resultado:** El extractor tiene acceso inmediato y garantizado al repositorio de sesiones sin búsquedas falibles. |
+| **4** | **Ejemplo Práctico 3026** | El archivo corregido es `crates/api_server/src/entry_points/auth.rs`. <br><br> **Código Corregido:** <br> ```rust impl FromRequestParts<AppState> for CurrentUser { async fn from_request_parts(parts: &mut Parts, state: &AppState) -> Result<Self, Self::Rejection> { // Ahora 'state' ya es nuestro AppState válido. ¡Magia! let session_repo = &state.session_repo; // ... validación del token ... } } ``` |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Estabilidad:** Elimina una fuente de pánicos en tiempo de ejecución. Si el servidor compila, la inyección de dependencias funciona. <br><br> **Simplicidad:** El código es más limpio y fácil de leer, eliminando "ruido" de infraestructura innecesario. |
+
+---
+
 ## 🔐 BLOQUE IV: SESIONES Y AUTH
 ... (resto del contenido anterior)

@@ -44,7 +44,7 @@ Validación manual de los endpoints con el servidor corriendo en tu máquina.
 ```bash
 curl -v -X POST http://localhost:8080/register \
   -H "Content-Type: application/json" \
-  -d "{\"email\":\"admin@lab3026.com\",\"password\":\"SecurePass123!\"}"
+  -d "{\"email\":\"dani@lab3026.com\",\"password\":\"SecurePass123!\"}"
 ```
 ✅ **201 Created**: `{"id":"...","email":"admin@lab3026.com"}`
 

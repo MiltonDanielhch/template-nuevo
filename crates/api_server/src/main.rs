@@ -54,7 +54,9 @@ async fn main() {
     } else if Path::new("crates/infra_db/migrations").exists() {
         Path::new("crates/infra_db/migrations")
     } else {
-        panic!("Error Crítico: No se encontraron las migraciones. Se buscaron en './migrations' (Docker) y 'crates/infra_db/migrations' (Local).");
+        panic!(
+            "Error Crítico: No se encontraron las migraciones. Se buscaron en './migrations' (Docker) y 'crates/infra_db/migrations' (Local)."
+        );
     };
 
     let migrator = Migrator::new(migrations_path)
@@ -90,8 +92,12 @@ async fn main() {
     socket
         .set_reuseaddr(true)
         .expect("No se pudo configurar SO_REUSEADDR");
-    socket.bind(socket_addr).unwrap_or_else(|e| panic!("Error Crítico: No se pudo enlazar a {}: {}", addr, e));
-    let listener = socket.listen(1024).expect("No se pudo escuchar en el socket");
+    socket
+        .bind(socket_addr)
+        .unwrap_or_else(|e| panic!("Error Crítico: No se pudo enlazar a {}: {}", addr, e));
+    let listener = socket
+        .listen(1024)
+        .expect("No se pudo escuchar en el socket");
 
     println!(
         "🚀 Servidor API 3026 listo para la sintonía en {}",

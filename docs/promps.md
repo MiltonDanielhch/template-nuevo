@@ -12,12 +12,17 @@ Estamos construyendo un sistema de autenticación y gestión de usuarios con una
 | **API** | Axum 0.8 |
 | **Base de Datos** | SQLite (WAL) |
 | **Hashing** | Argon2id |
+| **Despliegue** | Podman (Rootless) + Caddy |
 
-### Estado Actual - ¡Ya Completado!
+### Estado Actual - ¡Todo Completado y Verificado!
 
-✅ **Base de Datos Completa**: Todas las migraciones (RBAC, Audit, Users, Sessions) están creadas y listas para correr.
-✅ **Auth Funcional**: Registro, Login, Sessions, Logout y `/me` están implementados en código.
-✅ **Infraestructura Core**: Workspace, DI, Error Handling y configuración listos.
+✅ **Base de Datos Completa**: Todas las migraciones (RBAC, Audit, Users, Sessions) están listas.
+✅ **Auth Funcional**: Registro, Login, Sessions, Logout y `/me` funcionan correctamente.
+✅ **Corrección Crítica**: El extractor `CurrentUser` (Axum 0.8) ya recibe correctamente el `AppState`, solucionando el error "Estado no disponible".
+✅ **Despliegue Soberano**:
+   - `Dockerfile` optimizado (cargo-chef + distroless).
+   - `podman-compose` con persistencia de datos.
+   - `Caddy` como proxy inverso con HTTPS automático.
 
 ### Estado Pendiente - Lógica Faltante (Bloque VI)
 
@@ -40,59 +45,30 @@ crates/
     ├── config/di.rs      # Composition Root
     ├── entry_points/
     │   ├── api/v1/       # Handlers (Solo Users)
-    │   └── auth.rs       # Middleware (Extractor)
+    │   └── auth.rs       # Middleware (Extractor) - ¡Corregido!
     └── routes.rs         # Router Definition
 ```
 
-### Migraciones Creadas (Completas)
-
-- 0001: RBAC (Roles, Permissions) - *Sin lógica asociada aún*
-- 0002: Users
-- 0003: Tokens
-- 0004: Audit Logs
-- 0005: Seed Data
-- 0006: Sessions
-
 ---
 
-## Próximo Paso: Bloque V - Despliegue Soberano (MVP Auth)
+## Próximo Paso: Bloque VI - Gestión de Acceso (RBAC)
 
-Vamos a desplegar el MVP de Autenticación para validar la arquitectura en producción antes de implementar la complejidad de RBAC.
+Ahora que tenemos una base sólida y desplegada, vamos a implementar la lógica de roles.
 
-1. **Containerización (Podman/Docker)** ⏳
-   - Crear `Dockerfile` optimizado para Rust (Multi-stage build).
-   - Usar `cargo-chef` para cachear dependencias.
-   - Imagen final `distroless` o `alpine` para tamaño mínimo (< 50MB).
+1. **Entidades del Dominio** ⏳
+   - Definir `Role` y `Permission` en `core_logic/domain/entities`.
+   - Definir `IRoleRepository` en `core_logic/domain/interfaces`.
 
-2. **Orquestación (Compose)** ⏳
-   - Crear `deploy/compose.yml`.
-   - Definir servicios: `app` (Backend) y `caddy` (Reverse Proxy).
-   - Configurar volúmenes para la persistencia de SQLite (`backend.db`).
+2. **Infraestructura** ⏳
+   - Implementar `SqliteRoleRepository` en `infra_db`.
+   - Mappers para convertir de SQL a Dominio.
 
-3. **Proxy Inverso (Caddy)** ⏳
-   - Configurar `deploy/Caddyfile`.
-   - HTTPS automático.
-   - Redirección de tráfico al contenedor de la app.
+3. **Casos de Uso** ⏳
+   - `CreateRole`, `AssignRoleToUser`.
+   - `GetUserPermissions`.
 
----
+4. **API y Middleware** ⏳
+   - Crear un nuevo extractor `RequirePermission<P>`.
+   - Endpoints para gestión de roles (Solo Admin).
 
-## Trabajo Futuro: Bloque VI - Gestión de Acceso (RBAC)
-
-Una vez desplegado el MVP, implementaremos la lógica faltante:
-- Entidades `Role`, `Permission`.
-- Repositorios `IRoleRepository`.
-- Casos de uso `AssignRole`.
-- Middleware `RequirePermission`.
-
-¡Manos a la obra con el despliegue del MVP!
-
-Resumen de pruebas de red (Caddy ↔ API):
-Prueba	Resultado
-API directo (8081/register)	✅ 200 OK
-API directo (8081/login)	✅ 200 OK
-API directo (8081/me)	❌ "Estado no disponible"
-A través de Caddy (9080/register)	✅ 200 OK
-A través de Caddy (9080/login)	✅ 200 OK
-A través de Caddy (9080/me)	❌ "Estado no disponible"
-La conectividad de red Caddy → API funciona correctamente. El error "Estado no disponible" es un bug en el código de Rust (en auth.rs:28), no un problema de red.
-El problema está en que el AppState no se está pasando correctamente al extractor CurrentUser. Eso ya es un bug del código, no de la infraestructura.
+¡El sistema está estable y listo para crecer!

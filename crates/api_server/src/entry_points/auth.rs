@@ -15,19 +15,17 @@ pub struct CurrentUser {
     pub user: core_logic::domain::entities::user::User,
 }
 
-impl<S> FromRequestParts<S> for CurrentUser
-where
-    S: Clone + Send + Sync,
-{
+// Implementación concreta para AppState.
+// Esto simplifica la inyección y evita problemas con genéricos complejos en los handlers.
+impl FromRequestParts<AppState> for CurrentUser {
     type Rejection = (StatusCode, axum::Json<serde_json::Value>);
 
-    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        let state = parts.extensions.get::<AppState>().cloned().ok_or_else(|| {
-            (
-                StatusCode::UNAUTHORIZED,
-                axum::Json(serde_json::json!({"error": "Estado no disponible"})),
-            )
-        })?;
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &AppState,
+    ) -> Result<Self, Self::Rejection> {
+        // En Axum 0.8 con with_state, el estado se pasa directamente en `state`.
+        // Ya no necesitamos buscar en extensions.
 
         let authorization = parts.headers.get(AUTHORIZATION).cloned().ok_or_else(|| {
             (
