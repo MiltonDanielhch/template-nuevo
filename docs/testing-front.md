@@ -240,7 +240,47 @@ lighthouse http://localhost:4321 --view
 
 ---
 
-## 🔧 Nivel 7: Comandos de Diagnóstico (Forensics)
+## ⌨️ Nivel 8: Pruebas de Command Palette (Alpine.js)
+
+Validación de la navegación rápida por teclado.
+
+### 🧪 Flujo de Navegación
+
+**1. Abrir/Cerrar**
+1.  Presiona `Ctrl + K` (o `Cmd + K` en Mac).
+2.  Verifica que aparece el buscador y el fondo se oscurece.
+3.  Presiona `ESC` o haz clic fuera para cerrar.
+
+**2. Búsqueda y Filtrado**
+1.  Escribe "Dashboard" en el buscador.
+2.  Verifica que solo aparecen los resultados relacionados.
+3.  Borra el texto y verifica que la lista vuelve a su estado original.
+
+**3. Navegación**
+1.  Haz clic en un resultado (ej: "Usuarios").
+2.  Verifica que la paleta se cierra y eres redirigido a la ruta correcta.
+
+---
+
+## 👥 Nivel 10: Pruebas de CRUD de Usuarios (HTMX)
+
+Validación de la gestión administrativa y búsqueda dinámica.
+
+### 🧪 Flujo de Búsqueda Dinámica
+
+**1. Búsqueda en Tiempo Real**
+1.  Ve a `http://localhost:4321/users`.
+2.  Escribe "Admin" en el buscador.
+3.  Verifica que la tabla se actualiza automáticamente con solo los resultados filtrados.
+4.  Observa en Network que la petición es a `/api/users?search=Admin` y la respuesta es solo el fragmento `<tr>...</tr>`.
+
+**2. Indicadores de Carga**
+1.  Verifica que al escribir aparece el mensaje "Buscando..." junto al input.
+2.  Verifica que desaparece una vez completada la búsqueda.
+
+---
+
+## 🔧 Nivel 11: Comandos de Diagnóstico (Forensics)
 
 ### Ver errores en tiempo real
 ```bash

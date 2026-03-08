@@ -28,24 +28,21 @@ Vamos a crear:
 
 ---
 
-🧭 3. SIGUIENTE PASO: COMMIT DE INTEGRACIÓN
+🧭 3. SIGUIENTE OBJETIVO: SOBERANÍA DE DATOS (CRUD de Usuarios)
 
-```markdown
-🚀 PROMPT DE COMMIT: INTEGRACIÓN BACKEND + DASHBOARD
-Actúa como Ingeniero de Software Senior. La integración del dashboard y la autenticación SSR está lista. Realiza el commit siguiendo el protocolo.
-
----
-
-�️ TAREAS REALIZADAS:
-- Movidas páginas a `src/pages/` para habilitar routing de Astro.
-- Implementado `middleware.ts` para validación de sesiones SSR.
-- Creados endpoints de API Proxy (`/api/auth/login`, `/api/auth/logout`).
-- Actualizado `dashboard.astro` con lógica de latencia y componentes UI.
-- Implementado `/api/health` para monitoreo de salud.
+Vamos a implementar:
+1. **Partial Fragments** - Definir fragmentos HTML para HTMX.
+2. **User Repository (Frontend)** - Adaptador para el backend Rust.
+3. **Admin Users Page** - Tabla interactiva con HTMX (Search/Delete/Edit).
+4. **Modales con Alpine** - Creación y edición de usuarios sin recarga.
 
 ---
 
-� COMANDO DE COMMIT:
-git add .
-git commit -m "feat(frontend): implement auth middleware and dashboard integration"
-```
+🛠️ 4. STACK Y REGLAS (Fase 4)
+- Integración: HTMX OOB Swaps para actualizaciones parciales.
+- UX: Feedback instantáneo con Alpine e indicadores de carga.
+- Reglas: Protocolo 3026, código limpio y modular.
+
+---
+
+🚀 ACCIÓN: Inicia la implementación del CRUD de Usuarios.

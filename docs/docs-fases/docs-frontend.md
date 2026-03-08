@@ -21,6 +21,31 @@ Aquí tienes el desglose pedagógico de lo que acabamos de ejecutar: **La Estruc
 
 ---
 
+## 🏛️ Integración: Fase 4 - Soberanía de Datos (CRUD de Usuarios con HTMX)
+
+| Nivel | Nombre | Descripción |
+| --- | --- | --- |
+| **1** | **¿Qué es?** (Definición Técnica) | Implementación de una interfaz administrativa para la gestión de usuarios utilizando **Partial Fragments** de HTMX para búsquedas y filtrados sin recarga de página. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Permite gestionar el acceso al sistema de forma fluida y rápida. La búsqueda en tiempo real mejora la **eficiencia operativa** del administrador al localizar cuentas instantáneamente. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Endpoint SSR:** `src/pages/api/users/index.ts` detecta si la petición es `HX-Request`. <br> 2. **Fragmento HTML:** El servidor devuelve solo las filas `<tr>` de la tabla si es HTMX, o el JSON si es una API estándar. <br> 3. **Trigger:** El input de búsqueda usa `hx-trigger="keyup changed delay:500ms"` para evitar saturar el servidor. |
+| **4** | **Ejemplo Práctico 3026** | **Página de Usuarios (`src/pages/users.astro`):**
+```astro
+<Input
+  hx-get="/api/users"
+  hx-trigger="keyup changed delay:500ms"
+  hx-target="#users-table-body"
+/>
+```
+
+**Endpoint Logic:**
+```typescript
+if (request.headers.get("HX-Request") === "true") {
+  return new Response(generateTableRows(filteredUsers), { ... });
+}
+```
+
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Bajo Costo y Alto Rendimiento:** HTMX reduce drásticamente el tamaño de los datos transferidos (solo HTML plano) y elimina la necesidad de pesados frameworks de estado en el cliente para operaciones CRUD simples. |
+
 ## 🏛️ Integración: Fase 3 - Command Palette & Health Monitor
 
 | Nivel | Nombre | Descripción |
@@ -45,6 +70,8 @@ setInterval(() => {
 ```
 
 | **5** | **¿Por qué es vital para nuestro sistema?** | **Eficiencia:** Reduce clics innecesarios y proporciona transparencia técnica al usuario, alineado con el rendimiento extremo. |
+
+---
 
 ## 🏛️ Integración: Fase 2 - Integración Backend + Dashboard
 
