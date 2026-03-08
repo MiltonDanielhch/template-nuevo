@@ -1,30 +1,24 @@
-# Caddyfile - Configuración del Proxy Inverso
-# Sintonía de Seguridad: HTTPS Automático y Headers Seguros
+# =============================================================================
+# NOTA PARA DEPLOY EN VPS LIMPIO:
+#   En un VPS (no rootless), Podman resolve correctamente los nombres de
+#   contenedores. Cambiar las IPs por: app:8080 o lab3026_api:8080
+#
+#   Ejemplo para VPS:
+#     reverse_proxy app:8080
+#     reverse_proxy lab3026_api:8080
+#
+#   Este archivo usa IP hardcodeada (10.89.0.19) porque en WSL2 rootless
+#   el DNS de Podman no funciona correctamente.
+# =============================================================================
 
-# Dominio (Reemplazar con tu dominio real en producción, ej: api.midominio.com)
-# Para local usamos localhost
-localhost {
-    # Proxy inverso hacia el contenedor de la API (nombre del servicio en compose:puerto)
-    reverse_proxy app:8080
+# Bloque HTTP (Puerto 80 interno -> 9080 externo)
+:80 {
+    log
+    reverse_proxy 10.89.0.19:8080
+}
 
-    # Compresión Gzip/Zstd para velocidad
-    encode zstd gzip
-
-    # Headers de Seguridad (Best Practices)
-    header {
-        # Habilitar HSTS (Strict Transport Security)
-        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-        # Prevenir que la web sea embebida en iframes (Clickjacking)
-        X-Frame-Options "DENY"
-        # Prevenir sniffing de contenido
-        X-Content-Type-Options "nosniff"
-        # Protección XSS básica
-        X-XSS-Protection "1; mode=block"
-    }
-
-    # Logs estructurados
-    log {
-        output stdout
-        format json
-    }
+# Bloque HTTPS (Puerto 443 interno -> 9443 externo)
+:443 {
+    tls internal
+    reverse_proxy 10.89.0.19:8080
 }

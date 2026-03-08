@@ -85,3 +85,14 @@ Una vez desplegado el MVP, implementaremos la lógica faltante:
 - Middleware `RequirePermission`.
 
 ¡Manos a la obra con el despliegue del MVP!
+
+Resumen de pruebas de red (Caddy ↔ API):
+Prueba	Resultado
+API directo (8081/register)	✅ 200 OK
+API directo (8081/login)	✅ 200 OK
+API directo (8081/me)	❌ "Estado no disponible"
+A través de Caddy (9080/register)	✅ 200 OK
+A través de Caddy (9080/login)	✅ 200 OK
+A través de Caddy (9080/me)	❌ "Estado no disponible"
+La conectividad de red Caddy → API funciona correctamente. El error "Estado no disponible" es un bug en el código de Rust (en auth.rs:28), no un problema de red.
+El problema está en que el AppState no se está pasando correctamente al extractor CurrentUser. Eso ya es un bug del código, no de la infraestructura.

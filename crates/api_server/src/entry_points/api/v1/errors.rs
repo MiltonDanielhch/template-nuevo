@@ -41,6 +41,7 @@ impl IntoResponse for ApiError {
 
         // Para cualquier otro tipo de error (infraestructura, etc.), devolvemos un 500 genérico.
         // En producción, es crucial loggear `self.0` aquí para no perder visibilidad.
+        eprintln!("🚨 Error interno no manejado: {:?}", self.0);
         (
             StatusCode::INTERNAL_SERVER_ERROR,
             Json(json!({"error": "Ha ocurrido un error interno en el servidor."})),

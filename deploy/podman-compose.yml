@@ -8,11 +8,17 @@ services:
       dockerfile: deploy/Dockerfile
     container_name: lab3026_api
     restart: unless-stopped
+    ports:
+      # =======================================================================
+      # NOTA PARA VPS LIMPIO: Cambiar a "8080:8080" (puerto externo 8080)
+      # Aquì usas 8081 porque el 8080 està ocupado en tu màquina local
+      # =======================================================================
+      - "8081:8080"
     environment:
-      - DATABASE_URL=sqlite:///app/data/backend.db
+      - DATABASE_URL=sqlite:///app/data/backend.db?mode=rwc
       - RUST_LOG=info
       - HOST=0.0.0.0
-      - PORT=8080
+      - SERVER_PORT=8080
     volumes:
       # Persistencia de SQLite (WAL)
       - backend_data:/app/data
@@ -25,9 +31,13 @@ services:
     container_name: lab3026_caddy
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp" # HTTP/3
+      # =======================================================================
+      # NOTA PARA VPS LIMPIO: Cambiar a "80:80" y "443:443"
+      # Aquì usas 9080 y 9443 porque 80 y 443 estàn ocupados en tu màquina local
+      # =======================================================================
+      - "9080:80"
+      - "9443:443"
+      - "9443:443/udp" # HTTP/3
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data

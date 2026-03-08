@@ -15,7 +15,6 @@
 //!       hilos (requests) de forma segura y eficiente, evitando clonaciones costosas.
 //! - Construir el `AppState` que se compartirá en toda la aplicación Axum.
 
-use anyhow::Result;
 use core_logic::{
     application::use_cases::user::{
         CreateSession, get_user_by_id::GetUserById, login::LoginUser, register::RegisterUser,
@@ -40,13 +39,7 @@ pub struct AppState {
 
 /// Construye y devuelve el estado de la aplicación (`AppState`).
 /// Aquí es donde se realiza toda la "magia" de la inyección de dependencias.
-pub async fn create_app_state() -> Result<AppState> {
-    // 1. Cargar configuración (ej. desde variables de entorno)
-    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-
-    // 2. Inicializar recursos externos (Pool de DB)
-    let pool = SqlitePool::connect(&database_url).await?;
-
+pub fn create_app_state(pool: SqlitePool) -> AppState {
     // 3. Instanciar adaptadores de infraestructura (implementaciones concretas)
     let user_repo: Arc<dyn IUserRepository> = Arc::new(SqliteUserRepository::new(pool.clone()));
     let session_repo: Arc<dyn ISessionRepository> = Arc::new(SqliteSessionRepository::new(pool));
@@ -59,11 +52,11 @@ pub async fn create_app_state() -> Result<AppState> {
     let get_user_by_id = Arc::new(GetUserById::new(user_repo.clone()));
 
     // 5. Construir y devolver el estado de la aplicación
-    Ok(AppState {
+    AppState {
         register_user,
         login_user,
         create_session,
         session_repo,
         get_user_by_id,
-    })
+    }
 }
