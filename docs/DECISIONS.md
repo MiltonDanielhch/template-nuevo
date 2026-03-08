@@ -236,3 +236,152 @@ Son las **Antenas**. Tu sistema puede ser escuchado por:
 - Un robot (Queues)
 
 Todos llaman a los mismos "Casos de Uso".
+
+
+--
+# ADR 0003: Arquitectura de Sintonía Hexagonal (Frontend 3026)
+
+**Estado:** 🟢 Activo
+**Fecha:** 2026-03-08
+
+---
+
+Astro (SSR): Genera la estructura principal y las páginas estáticas.
+
+Tailwind v4: Para que todo el diseño sea moderno y ligero.
+
+HTMX: Para las acciones del Dashboard (por ejemplo: "Actualizar lista de usuarios" o "Guardar configuración" sin recargar).
+
+Web Components o Alpine.js: Para la interactividad "cosmética" (menús laterales, tooltips, notificaciones).
+
+## 1. El Concepto: "La UI como Adaptador"
+
+En el Código 3026, el Frontend no es "la aplicación"; es solo una interfaz para interactuar con el Dominio. Aplicamos la misma Sintonía Hexagonal de Rust para garantizar que si cambiamos de Astro a React, o de Web a Desktop (Tauri), la lógica de negocio no se toque.
+
+- **Puertos (Interfaces):** Definimos cómo se deben pedir los datos (ej. `IAuthRepository`).
+- **Adaptadores:** Implementamos la llamada real (ej. `ConnectRPCAdapter`).
+
+---
+
+## 2. Por qué esta Mezcla (Astro + Nanostores + ArkType)
+
+### A. Independencia de Framework (Soberanía)
+
+Al separar la lógica en `domain` y `application`, Astro solo se encarga de "pintar". Si mañana quieres usar React Native para una App móvil, copias las carpetas de lógica y solo reescribes la vista.
+
+### B. Validación en la Frontera (ArkType)
+
+Usamos ArkType para validar los datos que llegan del API.
+
+**Beneficio:** Si el Backend envía un dato corrupto o inesperado, el Frontend lo detecta en la "aduana" (Capa de Infraestructura) antes de que rompa la interfaz.
+
+### C. Estado Atómico (Nanostores)
+
+A diferencia de Redux, Nanostores es diminuto y funciona con cualquier framework. Mantiene la "Sintonía" de bajo consumo de recursos para nuestro VPS de $5.
+
+---
+3. Estructura de la Nave (Actualización HTMX)
+En una arquitectura con HTMX, el flujo cambia ligeramente porque el "Adaptador de Entrada" puede ser un fragmento de HTML que viene directamente de Rust.
+
+🛠️ El Camino del Programador (Flujo de Sintonía Híbrida)
+Paso 1: Definir los "Partial Frames" (/domain/entities)
+Además del ADN (Protobuf), definimos qué componentes son "Intercambiables".
+
+Acción: Identificar qué partes de la UI se actualizan solas (ej. #stats-panel, #user-table).
+
+Paso 2: Adaptadores de Entrada Dual (/presentation/components)
+Tus componentes de shadcn/ui ahora actúan como disparadores de HTMX.
+
+Ejemplo: Un botón que no llama a una función de JS, sino que tiene atributos hx-post="/api/auth/login" y hx-target="#main-content".
+
+Paso 3: Alpine.js para la Sintonía Visual (/presentation/components/ui)
+Usamos Alpine para lo que HTMX no debe tocar (la "piel"):
+
+Abrir el Sidebar sin ir al servidor.
+
+Mostrar un "loading spinner" mientras HTMX trae el nuevo HTML.
+
+Cerrar un modal tras una respuesta exitosa.
+---
+## 3. Estructura de la Nave (Mapa del Frontend)
+
+### 🛠️ El Camino del Programador Frontend 3026
+
+#### Paso 1: Sincronizar el ADN (`/domain/entities`)
+
+No inventes tipos de datos. Genera los tipos TypeScript desde tus archivos `.proto` del backend.
+
+**Acción:** `just ui-proto`.
+
+#### Paso 2: Crear los Contratos (`/domain/interfaces`)
+
+Define qué servicios necesita tu app.
+
+**Ejemplo:** `interface IAuthService { login(credentials): Promise&lt;User&gt; }`.
+
+#### Paso 3: Implementar la "Aduana" (`/infrastructure/api`)
+
+Escribe el código que realmente hace el fetch al API de Rust. Aquí aplicas los Mappers para transformar el JSON del backend en Entidades de Dominio ricas.
+
+#### Paso 4: Definir el Estado (`/application/stores`)
+
+Crea tus Nanostores. `$currentUser` empezará como `null` y se llenará cuando el caso de uso de Login tenga éxito.
+
+#### Paso 5: Construir la Pantalla (`/presentation/pages`)
+
+Crea tu página `login.astro`. Esta página no sabe cómo llamar al API; solo llama al Caso de Uso `LoginUser.ts`.
+
+---
+
+## 🎓 Explicación para la Maestría 3026
+
+### 1. El ADN Compartido
+
+La sintonía total se logra porque el archivo `auth.proto` manda en ambos mundos. Si añades un campo `phone` en Rust, el compilador de TypeScript te obligará a manejarlo en el Frontend. Sin ADN compartido, la sintonía es una ilusión.
+
+### 2. La Capa de Aplicación (El Cerebro)
+
+Si el usuario hace click en "Cerrar Sesión":
+
+1. El componente lanza el evento.
+2. El Caso de Uso limpia el Nanostore.
+3. El Adaptador de Infraestructura borra la cookie.
+4. El navegador redirige.
+
+Cada parte hace una sola cosa. Eso es limpieza.
+
+### 3. La UI es Intercambiable
+
+Hoy usas Tailwind v4 en Astro. Si mañana sale una tecnología mejor, solo cambias la carpeta `presentation`. Tu lógica de login, tus validaciones de ArkType y tu conexión con el API de Rust no cambian.
+
+📂 Estructura Hexagonal 3026 (Versión HTMX/Alpine)
+apps/frontend_astro/
+├── src/
+│   ├── domain/
+│   │   ├── entities/           # Tipos de Rust (.proto) + Definición de Fragmentos HTML
+│   │   ├── interfaces/
+│   │   └── schemas/            # Validaciones ArkType (se usan en el Form de Astro)
+│   │
+│   ├── infrastructure/
+│   │   ├── api/
+│   │   │   ├── auth-client.ts  # Cliente tradicional (JSON)
+│   │   │   └── htmx-bridge.ts  # Configuración de headers para HTMX (HX-Request)
+│   │   └── storage/
+│   │
+│   ├── application/
+│   │   ├── use-cases/          # Lógica que dispara acciones HTMX o limpia Stores
+│   │   └── stores/             # Nanostores (Solo para $token y $theme)
+│   │
+│   ├── presentation/
+│   │   ├── components/
+│   │   │   ├── ui/             # Shadcn + Atributos hx- (Button, Input)
+│   │   │   ├── shared/         # Sidebar/Navbar animados con Alpine.js
+│   │   │   └── htmx/           # <--- NUEVO: Fragmentos reutilizables de HTML
+│   │   ├── layouts/
+│   │   └── pages/              # Páginas Astro que orquestan el swap de HTMX
+│   │
+│   ├── styles/                 # Tailwind v4 (Motor de diseño)
+│   └── lib/                    # utils.ts y directivas de Alpine.js
+│
+├── middleware.ts               # Valida JWT y decide si deja pasar la petición HTMX
+└── astro.config.mjs            # Adaptador Bun + Alpine.js Plugin
