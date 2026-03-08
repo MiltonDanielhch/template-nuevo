@@ -15,56 +15,35 @@ Actúa como Ingeniero de Software Senior y Arquitecto Jefe. La autenticación HT
 🧭 2. PRÓXIMO OBJETIVO: INTEGRACIÓN BACKEND + DASHBOARD
 
 Vamos a crear:
-1. **Middleware de Auth** - Validar JWT en SSR
-2. **Dashboard Page** - Página principal tras login
-3. **Logout** - Cerrar sesión
-4. **Navbar/Sidebar** - Navegación
+1. **Middleware de Auth** - ✅ Validar sessiones en SSR
+2. **Dashboard Page** - ✅ Página principal tras login con Alpine.js
+3. **Logout** - ✅ Cerrar sesión y limpiar cookies
+4. **Navbar/Sidebar** - ✅ Navegación y componentes compartidos
 
 ---
 
-🛠️ 3. STACK Y REGLAS
-- Integración: Astro SSR endpoints que proxy a Axum
-- Estado: Alpine stores + Cookies HttpOnly
-- Reglas: Archivos < 150 líneas, Protocolo 3026
+� ACCIÓN: FASE COMPLETADA. Ahora realizaremos el commit de los cambios.
 
 ---
 
-🏗️ 4. ESTRUCTURA DE ARCHIVOS A CREAR
+🧭 3. SIGUIENTE PASO: COMMIT DE INTEGRACIÓN
 
+```markdown
+🚀 PROMPT DE COMMIT: INTEGRACIÓN BACKEND + DASHBOARD
+Actúa como Ingeniero de Software Senior. La integración del dashboard y la autenticación SSR está lista. Realiza el commit siguiendo el protocolo.
+
+---
+
+�️ TAREAS REALIZADAS:
+- Movidas páginas a `src/pages/` para habilitar routing de Astro.
+- Implementado `middleware.ts` para validación de sesiones SSR.
+- Creados endpoints de API Proxy (`/api/auth/login`, `/api/auth/logout`).
+- Actualizado `dashboard.astro` con lógica de latencia y componentes UI.
+- Implementado `/api/health` para monitoreo de salud.
+
+---
+
+� COMANDO DE COMMIT:
+git add .
+git commit -m "feat(frontend): implement auth middleware and dashboard integration"
 ```
-apps/frontend_astro/src/
-├── presentation/
-│   ├── pages/
-│   │   ├── dashboard.astro    # Dashboard tras login
-│   │   ├── logout.astro       # Cerrar sesión
-│   │   └── api/
-│   │       └── auth/
-│   │           └── login.ts   # Endpoint API (opcional)
-│   └── components/
-│       └── shared/
-│           ├── Navbar.astro
-│           └── Sidebar.astro
-```
-
----
-
-📋 5. INTEGRACIÓN CON BACKEND
-
-El frontend debe comunicarse con:
-- Backend Axum en puerto 8080
-- Usar cookies HttpOnly para el token JWT
-- Validar sesión en cada request SSR
-
----
-
-✅ 6. VERIFICACIÓN FINAL
-
-Después de implementar:
-1. `bun run dev` - Frontend en puerto 4321
-2. `cargo run -p api_server` - Backend en puerto 8080
-3. Probar login/register
-4. Verificar redirect al dashboard
-
----
-
-🚀 ACCIÓN: Implementa la integración backend y el dashboard. Consulta `docs/testing-front.md` para pruebas.

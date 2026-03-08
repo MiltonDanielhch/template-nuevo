@@ -1,0 +1,181 @@
+---
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Navbar from "../../components/shared/Navbar.astro";
+import Sidebar from "../../components/shared/Sidebar.astro";
+import MainLayout from "../../layouts/MainLayout.astro";
+---
+
+<MainLayout title="Dashboard">
+  <div class="flex h-screen flex-col">
+    <Navbar />
+    <div class="flex flex-1 overflow-hidden">
+      <Sidebar />
+      <main class="flex-1 overflow-y-auto bg-background p-6">
+        <div class="mx-auto max-w-6xl">
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <p class="text-muted-foreground">Bienvenido a Laboratorio 3026</p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4" x-data>
+            <Card>
+              <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle class="text-sm font-medium">Usuarios Totales</CardTitle>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </CardHeader>
+              <CardContent>
+                <div class="text-2xl font-bold">128</div>
+                <p class="text-xs text-muted-foreground">+12% desde el último mes</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle class="text-sm font-medium">Sesiones Activas</CardTitle>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
+                  <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+              </CardHeader>
+              <CardContent>
+                <div class="text-2xl font-bold">14</div>
+                <p class="text-xs text-muted-foreground">Usuarios conectados ahora</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle class="text-sm font-medium">API Latency</CardTitle>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+              </CardHeader>
+              <CardContent>
+                <div class="text-2xl font-bold" x-text="$store.dashboard.latency">--</div>
+                <p class="text-xs text-muted-foreground">ms de latencia</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle class="text-sm font-medium">Uptime</CardTitle>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </CardHeader>
+              <CardContent>
+                <div class="text-2xl font-bold">100%</div>
+                <p class="text-xs text-muted-foreground">Disponibilidad del sistema</p>
+              </CardContent>
+            </Card>
+
+            <script is:inline>
+              document.addEventListener('alpine:init', () => {
+                Alpine.store('dashboard', {
+                  latency: '--',
+                  updateLatency() {
+                    const start = Date.now();
+                    fetch('/api/health')
+                      .then(() => {
+                        this.latency = Date.now() - start;
+                      })
+                      .catch(() => {
+                        this.latency = 'Error';
+                      });
+                  }
+                });
+
+                // Initial update
+                Alpine.store('dashboard').updateLatency();
+
+                // Periodic update
+                setInterval(() => {
+                  Alpine.store('dashboard').updateLatency();
+                }, 5000);
+              });
+            </script>
+          </div>
+
+          <div class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+            <Card class="col-span-4">
+              <CardHeader>
+                <CardTitle>Resumen</CardTitle>
+                <CardDescription>
+                  Estado general del sistema
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div class="space-y-4">
+                  <div class="flex items-center gap-3 rounded-lg border p-3">
+                    <div class="h-2 w-2 rounded-full bg-green-500"></div>
+                    <div class="flex-1">
+                      <p class="text-sm font-medium">Backend API</p>
+                      <p class="text-xs text-muted-foreground">Conectado al puerto 8080</p>
+                    </div>
+                    <span class="text-sm text-green-600">Online</span>
+                  </div>
+                  <div class="flex items-center gap-3 rounded-lg border p-3">
+                    <div class="h-2 w-2 rounded-full bg-green-500"></div>
+                    <div class="flex-1">
+                      <p class="text-sm font-medium">Base de Datos</p>
+                      <p class="text-xs text-muted-foreground">SQLite conectado</p>
+                    </div>
+                    <span class="text-sm text-green-600">Online</span>
+                  </div>
+                  <div class="flex items-center gap-3 rounded-lg border p-3">
+                    <div class="h-2 w-2 rounded-full bg-green-500"></div>
+                    <div class="flex-1">
+                      <p class="text-sm font-medium">Servidor Frontend</p>
+                      <p class="text-xs text-muted-foreground">Astro SSR activo</p>
+                    </div>
+                    <span class="text-sm text-green-600">Online</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card class="col-span-3">
+              <CardHeader>
+                <CardTitle>Acciones Rápidas</CardTitle>
+                <CardDescription>
+                  tareas disponibles
+                </CardDescription>
+              </CardHeader>
+              <CardContent class="grid gap-2">
+                <a href="/users" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-muted hover:text-muted-foreground h-9 px-4 py-2 border">
+                  Gestionar Usuarios
+                </a>
+                <a href="/settings" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-muted hover:text-muted-foreground h-9 px-4 py-2 border">
+                  Configuración
+                </a>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</MainLayout>
+
+<script>
+  async function checkLatency() {
+    try {
+      const start = Date.now();
+      await fetch('/api/auth/me', { method: 'HEAD' });
+      const latency = Date.now() - start;
+      const el = document.getElementById('latency');
+      if (el) el.textContent = latency.toString();
+    } catch {
+      const el = document.getElementById('latency');
+      if (el) el.textContent = '--';
+    }
+  }
+  checkLatency();
+  setInterval(checkLatency, 30000);
+</script>

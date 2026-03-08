@@ -29,8 +29,8 @@
 | 2 | Aduana ArkType | `domain/schemas/`: Esquemas de validación compartidos para Cliente/Servidor. | ✅ |
 | 3 | API Adapter | `infrastructure/api/auth-client.ts`: Cliente para peticiones tradicionales y streaming. | ✅ |
 | 4 | HTMX Bridge | `infrastructure/api/hx-bridge.ts`: Configuración de headers HTMX (HX-Request). | ✅ |
-| 5 | Sincronía de Estado | `application/stores/`: Nanostores solo para sesión; HTMX para datos de vista. | ⏳ |
-| 6 | Middleware Auth | `src/middleware.ts`: Validación de JWT/Session en cada petición SSR. | ⏳ |
+| 5 | Sincronía de Estado | `application/stores/`: Nanostores solo para sesión; HTMX para datos de vista. | ✅ |
+| 6 | Middleware Auth | `src/middleware.ts`: Validación de JWT/Session en cada petición SSR. | ✅ |
 
 ---
 
@@ -40,8 +40,8 @@
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
 | 1 | Auth Flow HTMX | `presentation/pages/login.astro`, `register.astro`: Login/Register usando `hx-post` hacia Axum. | ✅ |
-| 2 | Use Cases UI | `application/use-cases/`: Orquestación de comandos entre UI y Backend. | ⏳ |
-| 3 | Dashboard Reactivo | `presentation/pages/dashboard/`: Polling/OOB Swap con HTMX para métricas. | ⏳ |
+| 2 | Use Cases UI | `application/use-cases/`: Orquestación de comandos entre UI y Backend. | ✅ |
+| 3 | Dashboard Reactivo | `presentation/pages/dashboard/`: Polling/OOB Swap con HTMX para métricas. | ✅ |
 | 4 | Command Palette | `presentation/components/command/`: Buscador global con Alpine.js. | ⏳ |
 | 5 | Health Monitor | `presentation/components/shared/`: Pulso de latencia entre el VPS y el cliente. | ⏳ |
 

@@ -158,8 +158,6 @@ Alpine.store('theme').toggle()
 // Verificar localStorage
 localStorage.getItem('theme')
 // Debe mostrar: "dark"
-```
-
 ### Auth Store
 ```javascript
 // Simular login
@@ -167,7 +165,49 @@ Alpine.store('auth').setAuth('test-token-123', { email: 'test@lab3026.com' })
 
 // Verificar persistencia
 Alpine.store('auth').token
-// "test-token-123"
+```
+
+---
+
+## 🛡️ Nivel 6: Pruebas de Middleware y SSR
+
+Validación de protección de rutas y gestión de sesiones del lado servidor.
+
+### 🧪 Flujo de Protección de Rutas
+
+**1. Acceso sin sesión**
+1.  Abre el navegador en `http://localhost:4321/dashboard`
+2.  Verifica que el middleware te redirige automáticamente a `/login`
+3.  Observa en la consola del navegador que no hay cookie `auth_token`
+
+**2. Acceso con sesión (Simulado)**
+1.  En la consola del navegador, ejecuta:
+```javascript
+document.cookie = "auth_token=test_session_token; path=/";
+```
+2.  Recarga `http://localhost:4321/dashboard`
+3.  Verifica que ahora puedes ver el Dashboard
+
+**3. Logout (Cierre de sesión)**
+1.  Haz clic en el botón de cerrar sesión en el Dashboard
+2.  Verifica que eres redirigido a `/login`
+3.  Verifica que la cookie `auth_token` ha sido eliminada de `Application > Cookies`
+
+**4. Redirección de Auth**
+1.  Con la cookie `auth_token` activa, intenta entrar a `/login`
+2.  Verifica que el middleware te redirige de vuelta al `/dashboard`
+
+---
+
+## 📡 Nivel 7: Pruebas de Monitoreo (Latency)
+
+Validación de salud del sistema.
+
+### Verificar Latencia en Dashboard
+1.  Abre el Dashboard
+2.  Observa el card "API Latency"
+3.  Verifica que el valor se actualiza cada 5 segundos (polling)
+4.  En Network, verifica las peticiones a `/api/health`"test-token-123"
 
 // Limpiar
 Alpine.store('auth').clearAuth()

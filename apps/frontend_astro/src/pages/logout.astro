@@ -1,0 +1,14 @@
+---
+Astro.cookies.delete("auth_token", { path: "/" });
+return Astro.redirect("/login");
+---
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cerrando Sesión...</title>
+  </head>
+  <body>
+    <p> cerrando sesión...</p>
+  </body>
+</html>

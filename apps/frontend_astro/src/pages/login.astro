@@ -1,0 +1,100 @@
+---
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import MainLayout from "../../layouts/MainLayout.astro";
+---
+
+<MainLayout title="Iniciar Sesión">
+  <div class="flex items-center justify-center min-h-screen bg-background">
+    <Card class="w-full max-w-md">
+      <CardHeader class="space-y-1">
+        <CardTitle class="text-2xl">Iniciar Sesión</CardTitle>
+        <CardDescription>
+          Ingresa tus credenciales para acceder a Laboratorio 3026
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form
+          id="login-form"
+          hx-post="/api/auth/login"
+          hx-target="#login-form"
+          hx-swap="outerHTML"
+          hx-indicator=".htmx-indicator"
+        >
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <Label for="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="tu@email.com"
+                required
+              />
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <Label for="password">Contraseña</Label>
+                <a href="/forgot-password" class="text-sm text-primary hover:underline">
+                  ¿Olvidaste tu contraseña?
+                </a>
+              </div>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <div class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="remember"
+                name="remember"
+                class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <Label for="remember" class="text-sm text-muted-foreground">
+                Recordarme
+              </Label>
+            </div>
+
+            <Button type="submit" class="w-full">
+              Iniciar Sesión
+            </Button>
+
+            <div class="htmx-indicator flex items-center justify-center gap-2 text-muted-foreground">
+              <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              <span>Iniciando sesión...</span>
+            </div>
+          </div>
+        </form>
+
+        <div class="mt-4 text-center text-sm">
+          <span class="text-muted-foreground">¿No tienes cuenta? </span>
+          <a href="/register" class="text-primary hover:underline font-medium">
+            Regístrate
+          </a>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+
+  <script>
+    document.addEventListener('htmx:afterRequest', (e) => {
+      if (e.detail.successful) {
+        const response = e.detail.xhr;
+        if (response.status === 200) {
+          window.location.href = '/dashboard';
+        }
+      }
+    });
+  </script>
+</MainLayout>

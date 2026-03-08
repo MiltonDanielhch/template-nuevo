@@ -21,6 +21,37 @@ Aquí tienes el desglose pedagógico de lo que acabamos de ejecutar: **La Estruc
 
 ---
 
+## 🏛️ Integración: Fase 2 - Integración Backend + Dashboard
+
+| Nivel | Nombre | Descripción |
+| --- | --- | --- |
+| **1** | **¿Qué es?** (Definición Técnica) | Es la implementación del **Middleware de Autenticación** y la creación de un **Dashboard Reactivo** que se comunica con el backend mediante proxies de API en Astro SSR. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Sirve para **proteger las rutas privadas** y proporcionar una interfaz de administración en tiempo real. Sin esto, cualquier usuario podría acceder a datos sensibles y no tendríamos visibilidad del estado del sistema. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Middleware:** Intercepta cada petición SSR, verifica la cookie `auth_token` y redirige según el estado de la sesión. <br> 2. **API Proxies:** Endpoints en `src/pages/api/` que actúan como puente entre HTMX y el backend Axum, gestionando cookies `httpOnly`. <br> 3. **Dashboard:** Usa Alpine.js para polling de latencia (`/api/health`) y HTMX para actualizaciones parciales. <br> 4. **Routing:** Las páginas se movieron a `src/pages/` para habilitar el sistema de rutas de Astro. |
+| **4** | **Ejemplo Práctico 3026** | Archivos implementados: <br>
+
+<br> **Middleware de Auth (`src/middleware.ts`):**
+```typescript
+export const onRequest = defineMiddleware(async (context, next) => {
+  const token = context.cookies.get("auth_token")?.value;
+  if (context.url.pathname.startsWith("/dashboard") && !token) {
+    return context.redirect("/login");
+  }
+  return next();
+});
+```
+
+<br> **API Proxy (`src/pages/api/auth/login.ts`):**
+```typescript
+export const POST: APIRoute = async ({ request, cookies }) => {
+  // Lógica de validación y seteo de cookie
+  cookies.set("auth_token", token, { httpOnly: true, path: "/" });
+  return new Response(null, { headers: { "HX-Redirect": "/dashboard" } });
+};
+```
+
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Seguridad:** El uso de cookies `httpOnly` protege contra ataques XSS. <br><br> **Rendimiento:** Al validar la sesión en el middleware SSR, evitamos flashes de contenido no autorizado (FOUC) y cargas innecesarias en el cliente. |
+
 ## 🏛️ Integración: Fase 1.1 - Chasis Hexagonal Automático (Astro + HTMX)
 
 | Nivel | Nombre | Descripción |
