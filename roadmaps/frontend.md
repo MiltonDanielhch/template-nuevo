@@ -12,7 +12,7 @@
 |---|-------|------------------------|:------:|
 | 1 | Astro SSR Setup | `astro.config.mjs`: Configurar `output: 'server'` con adaptador Node. | ✅ |
 | 2 | Tailwind v4 Base | `src/styles/global.css`: Setup de `@theme` y variables de sintonía. | ✅ |
-| 3 | Atomic UI (shadcn) | `presentation/components/ui/`: Componentes base adaptados para HTMX (`hx-`). | ⏳ |
+| 3 | Atomic UI (shadcn) | `presentation/components/ui/`: Componentes base adaptados para HTMX (`hx-`). | ✅ |
 | 4 | Layouts Maestros | `presentation/layouts/`: `MainLayout.astro` (SEO) y `AppLayout.astro` (Dashboard). | ✅ |
 | 5 | Theme Engine | `src/lib/alpine.ts`: Stores Alpine para theme y auth. | ✅ |
 | 6 | Integración Alpine | `astro.config.mjs` + `src/lib/alpine.ts`: Alpine.js para estados efímeros. | ✅ |
@@ -25,10 +25,10 @@
 
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
-| 1 | ADN & Fragments | `domain/entities/`: Tipos Protobuf y definición de Partial Frames para HTMX. | ⏳ |
-| 2 | Aduana ArkType | `domain/schemas/`: Esquemas de validación compartidos para Cliente/Servidor. | ⏳ |
-| 3 | API Adapter | `infrastructure/api/auth-client.ts`: Cliente para peticiones tradicionales y streaming. | ⏳ |
-| 4 | HTMX Bridge | `infrastructure/api/htmx-bridge.ts`: Configuración de headers HTMX (HX-Request). | ⏳ |
+| 1 | ADN & Fragments | `domain/entities/`: Tipos Protobuf y definición de Partial Frames para HTMX. | ✅ |
+| 2 | Aduana ArkType | `domain/schemas/`: Esquemas de validación compartidos para Cliente/Servidor. | ✅ |
+| 3 | API Adapter | `infrastructure/api/auth-client.ts`: Cliente para peticiones tradicionales y streaming. | ✅ |
+| 4 | HTMX Bridge | `infrastructure/api/hx-bridge.ts`: Configuración de headers HTMX (HX-Request). | ✅ |
 | 5 | Sincronía de Estado | `application/stores/`: Nanostores solo para sesión; HTMX para datos de vista. | ⏳ |
 | 6 | Middleware Auth | `src/middleware.ts`: Validación de JWT/Session en cada petición SSR. | ⏳ |
 
@@ -39,7 +39,7 @@
 
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
-| 1 | Auth Flow HTMX | `presentation/pages/auth/`: Login/Register usando `hx-post` hacia Axum. | ⏳ |
+| 1 | Auth Flow HTMX | `presentation/pages/login.astro`, `register.astro`: Login/Register usando `hx-post` hacia Axum. | ✅ |
 | 2 | Use Cases UI | `application/use-cases/`: Orquestación de comandos entre UI y Backend. | ⏳ |
 | 3 | Dashboard Reactivo | `presentation/pages/dashboard/`: Polling/OOB Swap con HTMX para métricas. | ⏳ |
 | 4 | Command Palette | `presentation/components/command/`: Buscador global con Alpine.js. | ⏳ |

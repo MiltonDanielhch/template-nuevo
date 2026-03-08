@@ -1,0 +1,107 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import Card from '../../components/ui/Card.astro';
+import Input from '../../components/ui/Input.astro';
+import Button from '../../components/ui/Button.astro';
+---
+
+<MainLayout title="Registrarse">
+  <div class="flex items-center justify-center min-h-screen">
+    <Card class="w-full max-w-md">
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-text">Crear Cuenta</h1>
+        <p class="text-text-muted mt-2">Únete a Laboratorio 3026</p>
+      </div>
+
+      <form
+        id="register-form"
+        hx-post="/api/auth/register"
+        hx-target="#register-form"
+        hx-swap="outerHTML"
+        hx-indicator=".htmx-indicator"
+      >
+        <div class="space-y-4">
+          <Input
+            name="email"
+            type="email"
+            label="Email"
+            placeholder="tu@email.com"
+            required
+          />
+
+          <Input
+            name="password"
+            type="password"
+            label="Contraseña"
+            placeholder="••••••••"
+            required
+          />
+
+          <Input
+            name="confirmPassword"
+            type="password"
+            label="Confirmar Contraseña"
+            placeholder="••••••••"
+            required
+          />
+
+          <div class="flex items-start">
+            <input
+              type="checkbox"
+              name="terms"
+              required
+              class="mt-1 rounded border-border text-primary-600 focus:ring-primary-500"
+            />
+            <span class="ml-2 text-sm text-text-muted">
+              Acepto los
+              <a href="/terms" class="text-primary-600 hover:text-primary-700">
+                Términos de Servicio
+              </a>
+              y la
+              <a href="/privacy" class="text-primary-600 hover:text-primary-700">
+                Política de Privacidad
+              </a>
+            </span>
+          </div>
+
+          <Button type="submit" class="w-full">
+            Crear Cuenta
+          </Button>
+
+          <div class="htmx-indicator text-center text-text-muted hidden">
+            <svg
+              class="animate-spin h-5 w-5 mx-auto"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              ></path>
+            </svg>
+            <span class="ml-2">Creando cuenta...</span>
+          </div>
+        </div>
+      </form>
+
+      <div class="mt-6 text-center">
+        <p class="text-text-muted">
+          ¿Ya tienes cuenta?
+          <a href="/login" class="text-primary-600 hover:text-primary-700 font-medium">
+            Inicia Sesión
+          </a>
+        </p>
+      </div>
+    </Card>
+  </div>
+</MainLayout>

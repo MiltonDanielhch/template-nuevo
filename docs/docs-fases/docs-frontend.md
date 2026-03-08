@@ -124,16 +124,86 @@ export default (Alpine: Alpine) => {
 
 ---
 
+## 🏛️ Integración: Fase 2.1 - Flujo de Autenticación HTMX
+
+| Nivel | Nombre | Descripción |
+| --- | --- | --- |
+| **1** | **¿Qué es?** (Definición Técnica) | Sistema de **formularios HTMX** que se comunican directamente con los endpoints de Axum, intercambiando fragmentos de HTML en lugar de JSON + JavaScript. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Permite al usuario **loguearse y registrarse** sin necesidad de una SPA completa. El desastre que evita es el "Loading State Complex": sin HTMX, tendrías que escribir JS para manejar loading, errores, y redirecciones. |
+| **3** | **¿Cómo funciona?** (La Anatomía) |
+
+<br> 1. **Form:** Usa atributos `hx-post`, `hx-target`, `hx-swap` para enviar datos al servidor. <br>
+
+<br> 2. **Endpoint:** Axum procesa el request y devuelve un fragmento HTML (éxito) o error (validation). <br>
+
+<br> 3. **Response:** HTMX hace swap del contenido sin recargar la página. <br>
+
+<br> 4. **Validación:** ArkType valida en cliente antes de enviar, y Rust valida en servidor. |
+| **4** | **Ejemplo Práctico 3026** | Archivos creados en esta fase: <br>
+
+<br> **`domain/schemas/auth.ts`:**
+```typescript
+import { type } from 'arktype';
+export const loginSchema = type({
+  email: "string.email",
+  password: "string.min(8)"
+});
+```
+
+<br> **`domain/entities/auth.ts`:**
+```typescript
+export interface User { id: string; email: string; createdAt: string; }
+export interface AuthResponse { user: User; token: string; }
+```
+
+<br> **`infrastructure/api/auth-client.ts`:**
+```typescript
+class AuthClient {
+  async login(email, password) { ... }
+  async register(email, password) { ... }
+  async logout() { ... }
+}
+export const authClient = new AuthClient();
+```
+
+<br> **`presentation/pages/login.astro`:**
+```astro
+<form hx-post="/api/auth/login" hx-target="#login-form" hx-swap="outerHTML">
+  <Input name="email" type="email" />
+  <Input name="password" type="password" />
+  <Button type="submit">Iniciar Sesión</Button>
+</form>
+```
+
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Bajo Costo ($5):** No necesitamos un framework JS pesado (React/Vue). HTMX + ~30 líneas de Astro pesan ~50KB vs ~500KB de una SPA. <br><br> **Sintonía Hexagonal:** El mismo `auth-client.ts` sirve para web, Tauri, o cualquier cliente que necesite auth. |
+
+---
+
+## 🎯 Estado Actual: BLOQUE II - AUTENTICACIÓN ✅ COMPLETADO
+
+| Tarea | Estado |
+|-------|--------|
+| Esquemas ArkType (login/register) | ✅ Completado |
+| Entidades (User, Session, AuthResponse) | ✅ Completado |
+| Cliente API (auth-client.ts) | ✅ Completado |
+| HTMX Bridge (hx-bridge.ts) | ✅ Completado |
+| Componentes UI (Button, Input, Card) | ✅ Completado |
+| Página Login HTMX | ✅ Completado |
+| Página Register HTMX | ✅ Completado |
+
+---
+
 ### 📝 Resumen para tu Bitácora
-Has completado la **Fundación del Frontend 3026**. Ahora tienes:
-- Chasis hexagonal configurado
-- Estilos Tailwind v4 con theme 3026
-- Layout maestro con HTMX + Alpine.js
-- Build funcional (~3.7s)
+Has completado el **Flujo de Autenticación HTMX**. Ahora tienes:
+- Formularios login/register con HTMX
+- Cliente API que maneja tokens
+- Validación ArkType
+- Componentes UI reutilizables
+- Build funcional (~5s)
 
 **¿Cuál es tu siguiente paso, Milton Daniel?**
-1.  **Flujo de Autenticación HTMX**: Crear páginas de login/register con `hx-post` hacia Axum.
-2.  **Cliente API**: Implementar `infrastructure/api/auth-client.ts`.
-3.  **Validación ArkType**: Esquemas compartidos frontend/backend.
+1.  **Integración Backend**: Conectar los endpoints de Axum con HTMX
+2.  **Dashboard**: Crear página principal tras login
+3.  **Middleware Auth**: Validar JWT en SSR
 
 Dime cuál quieres integrar ahora en tu cerebro.

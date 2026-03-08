@@ -18,15 +18,16 @@ bun run build
 1.  **Build SSR:** Que Astro compile correctamente las páginas server-side.
 2.  **TypeScript:** Que no haya errores de tipos en TypeScript.
 3.  **Tailwind v4:** Que los estilos se procesen correctamente.
-4.  **Integraciones:** Que Alpine.js se configure sin errores.
+4.  **Integraciones:** Que Alpine.js y React se configuren sin errores.
+5.  **Shadcn/ui:** Que los componentes React se bundeleen correctamente.
 
 **Resultado Esperado:**
 ```text
-✓ Completed in 3-5s
+✓ Completed in 10-15s
 output: "server"
 adapter: @astrojs/node
 dist/client/*.js (bundled)
-dist/server/*.js (server entry)
+dist/server/*.server entry)
 ```
 
 ### Verificar Tipado TypeScript
@@ -41,11 +42,11 @@ bun run astro check
 
 Validación visual del sistema de estilos.
 
-### Verificar Tailwind v4
+### Verificar Tailwind v4 + Shadcn
 ```bash
 cd apps/frontend_astro
-# El build ya incluye esto, pero puedes verificar el output
-cat dist/client/*.css | head -50
+# El build ya incluye esto
+ls dist/client/*.css
 ```
 
 ### Verificar Theme 3026
@@ -60,11 +61,43 @@ getComputedStyle(document.documentElement).getPropertyValue('--color-primary-500
 // Verificar que Alpine.js está cargado
 Alpine.store('theme')
 // Debe mostrar el objeto del store
+
+// Verificar que React/shadcn está cargado
+document.querySelector('[data-slot="button"]')
+// Debe mostrar el botón de shadcn
 ```
 
 ---
 
-## 🔄 Nivel 3: Pruebas de Integración HTMX
+## 🎯 Nivel 3: Pruebas de shadcn/ui
+
+Validación de componentes React en Astro.
+
+### Verificar Componentes shadcn
+```bash
+# Listar componentes instalados
+ls apps/frontend_astro/src/components/ui/
+# Debe mostrar: button.tsx, input.tsx, card.tsx, label.tsx
+```
+
+### Usar componente en Astro
+Los componentes shadcn se usan con `client:load` o `client:visible`:
+```astro
+---
+import { Button } from "@/components/ui/button"
+---
+<Button client:load>Click me</Button>
+```
+
+### Agregar nuevo componente
+```bash
+cd apps/frontend_astro
+bunx shadcn@latest add [component-name] -y
+```
+
+---
+
+## 🔄 Nivel 4: Pruebas de Integración HTMX
 
 Validación del flujo HTMX con el backend.
 
@@ -109,7 +142,7 @@ htmx.on('htmx:afterSwap', (e) => {
 
 ---
 
-## 🧪 Nivel 4: Pruebas de Alpine.js
+## 🧪 Nivel 5: Pruebas de Alpine.js
 
 Validación de estado efímero.
 
@@ -143,7 +176,7 @@ Alpine.store('auth').clearAuth()
 
 ---
 
-## 🌐 Nivel 5: Pruebas de Responsive y Accesibilidad
+## 🌐 Nivel 6: Pruebas de Responsive y Accesibilidad
 
 ### Verificar Meta Tags
 ```bash
@@ -167,7 +200,7 @@ lighthouse http://localhost:4321 --view
 
 ---
 
-## 🔧 Comandos de Diagnóstico (Forensics)
+## 🔧 Nivel 7: Comandos de Diagnóstico (Forensics)
 
 ### Ver errores en tiempo real
 ```bash
@@ -188,25 +221,32 @@ ls -la apps/frontend_astro/dist/client/
 
 ---
 
-## 📊 Matriz de Errores Comunes
+## 📊 Nivel 8: Matriz de Errores Comunes
 
 | Error | Causa Probable | Solución |
 |-------|----------------|----------|
 | **Build fail** | Dependencias faltantes | `bun install` |
 | **HTMX no funciona** | Script no cargado | Verificar CDN en MainLayout |
 | **Alpine no funciona** | Error en `alpine.ts` | Revisar sintaxis TypeScript |
+| **Shadcn/ui no funciona** | Falta `client:load` | Agregar directiva de hydatation |
 | **Estilos no aplican** | Tailwind no procesado | Verificar `postcss.config.cjs` |
 | **CORS errors** | Backend no acepta petitions | Configurar CORS en Axum |
-| ** hydration error** | Mismatch de estado | Verificar que `x-data` es consistente |
+| **React hydration error** | Mismatch de estado | Verificar que `x-data` es consistente |
 
 ---
 
-## 🚀 Scripts de Prueba Rápidos
+## 🚀 Nivel 9: Scripts de Prueba Rápidos
 
 ### Prueba completa de la fundación
 ```bash
 cd apps/frontend_astro
 bun run build && echo "✅ Build exitoso"
+```
+
+### Agregar componente shadcn
+```bash
+cd apps/frontend_astro
+bunx shadcn@latest add [component] -y
 ```
 
 ### Desarrollo con hot reload

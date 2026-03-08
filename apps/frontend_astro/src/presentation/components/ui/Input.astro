@@ -1,0 +1,43 @@
+---
+interface Props {
+  name: string;
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
+  placeholder?: string;
+  required?: boolean;
+  value?: string;
+  disabled?: boolean;
+  error?: string;
+  class?: string;
+}
+
+const {
+  name,
+  type = 'text',
+  placeholder = '',
+  required = false,
+  value = '',
+  disabled = false,
+  error,
+  class: className = '',
+} = Astro.props;
+---
+
+<div class:list={['space-y-1', className]}>
+  <input
+    type={type}
+    name={name}
+    id={name}
+    placeholder={placeholder}
+    required={required}
+    value={value}
+    disabled={disabled}
+    class:list={[
+      'w-full px-3 py-2 rounded-lg border bg-surface text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200',
+      error
+        ? 'border-red-500 focus:ring-red-500'
+        : 'border-border',
+    ]}
+    {...Astro.props}
+  />
+  {error && <p class="text-sm text-red-500">{error}</p>}
+</div>
