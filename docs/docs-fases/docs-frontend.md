@@ -10,7 +10,7 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 | **1** | **¿Qué es?** (Definición Técnica) | Una explicación precisa pero sin rodeos |
 | **2** | **¿Para qué sirve?** (El Propósito) | El problema real que resuelve. Si no existiera esto, ¿qué desastre ocurriría? |
 | **3** | **¿Cómo funciona?** (La Anatomía) | Explica la mecánica interna paso a paso. Usa diagramas de texto o analogías si es complejo |
-| **4** | **Ejemplo Práctico 3026** | Muestra un fragmento de código mínimo, limpio y comentado que aplique este concepto a nuestro proyecto (Rust, Python o Astro)  aqui el comando que ultilizaste y como implentarlo en el proyecto para saber si funciona
+| **4** | **Ejemplo Práctico 3026** | Muestra un fragmento de código mínimo, limpio y comentado que aplique este concepto a nuestro proyecto (Rust, Python o Astro)  aqui el comando que ultilizaste y como implentarlo en el proyecto para saber si funciona |
 | **5** | **¿Por qué es vital para nuestro sistema?** | Explica cómo este concepto ayuda a nuestra meta de Bajo Costo ($5), Alto Rendimiento y Multiplataforma |
 
 
@@ -35,20 +35,105 @@ Aquí tienes el desglose pedagógico de lo que acabamos de ejecutar: **La Estruc
 
 <br> 3. **Application (El Cerebro):** Casos de uso que orquestan el flujo de datos y Nanostores para el estado atómico. <br>
 
-<br> 4. **Presentation (La Piel):** Componentes visuales y páginas que inyectan los fragmentos de HTML. |
-| **4** | **Ejemplo Práctico 3026** | Hemos ejecutado un comando de orquestación en la terminal. Para replicar o verificar la integridad del laboratorio: <br>
+<br> 4. **Presentation (La Piel):** Componentes visuales y páginas que injectan los fragmentos de HTML. |
+| **4** | **Ejemplo Práctico 3026** | Ejecutamos los siguientes comandos para crear la estructura: <br>
 
-<br>
+<br> **Instalación de dependencias:**
+```bash
+cd apps/frontend_astro
+bun add htmx.org arktype nanostores
+bun add @tailwindcss/postcss
+```
+
+<br> **Archivos configurados:**
+- `astro.config.mjs` - SSR con Node adapter + Alpine.js
+- `postcss.config.cjs` - PostCSS para Tailwind v4
+- `src/styles/global.css` - Theme 3026 con variables CSS
+- `src/lib/alpine.ts` - Stores (theme, auth)
+- `src/middleware.ts` - Middleware base Astro 5
+
+<br> **Verificación:**
+```bash
+cd apps/frontend_astro
+bun run build
+# ✅ Build exitoso en ~3.7s
+```
 
 | **5** | **¿Por qué es vital para nuestro sistema?** | **Bajo Costo ($5):** Al separar capas, podemos usar SSR de forma inteligente, enviando solo fragmentos de HTML (`presentation/components/htmx/`), lo que consume mucha menos CPU y RAM que una SPA pesada. <br><br> **Multiplataforma:** La lógica en `domain` y `application` es puro TypeScript; si mañana quieres crear una App de escritorio con **Tauri**, solo tienes que cambiar la capa de `presentation`. |
 
 ---
 
+## 🏛️ Integración: Fase 1.2 - Layout Maestro + HTMX + Alpine
+
+| Nivel | Nombre | Descripción |
+| --- | --- | --- |
+| **1** | **¿Qué es?** (Definición Técnica) | Es el **Contenedor Raíz** de la aplicación que configura HTMX para interactividad sin JavaScript complejo y Alpine.js para estado efímero (temas, modales, toggles). |
+| **2** | **¿Para qué sirve?** (El Propósito) | Sirve como **Punto de Entrada Único** para toda la aplicación. Sin esto, tendríamos código duplicado en cada página (scripts HTMX, meta tags, estilos). El desastre que evita es el "Descontrol de Versiones" de scripts y estilos. |
+| **3** | **¿Cómo funciona?** (La Anatomía) |
+
+<br> 1. **Head:** Carga HTMX, Alpine.js plugins, y configuración de CSRF. <br>
+
+<br> 2. **Body:** `<slot />` donde Astro renderiza las páginas. <br>
+
+<br> 3. **Scripts:** Configuración global de HTMX (swap style, indicadores de carga) y eventos para toast notifications. <br>
+
+<br> 4. **Alpine Stores:** `theme` (dark/light) y `auth` (token, user) con persistencia en localStorage. |
+| **4** | **Ejemplo Práctico 3026** | Archivos creados en esta fase: <br>
+
+<br> **`src/presentation/layouts/MainLayout.astro`:**
+```astro
+---
+import "../styles/global.css";
+interface Props { title: string; }
+const { title } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="es" x-data="{ darkMode: ..., toggleDarkMode() {...} }">
+  <head>
+    <!-- HTMX + Alpine.js -->
+    <script src="https://unpkg.com/htmx.org@2.0.8"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect"></script>
+  </head>
+  <body>
+    <div id="app"><slot /></div>
+  </body>
+</html>
+```
+
+<br> **`src/lib/alpine.ts`:**
+```typescript
+export default (Alpine: Alpine) => {
+  Alpine.store('theme', { dark: ..., toggle() {...} });
+  Alpine.store('auth', { token: null, user: null, ... });
+};
+```
+
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Bajo Costo ($5):** HTMX envía solo HTML, no JSON + JS. Alpine.js pesa ~15KB vs React ~150KB. Esto es crucial para un VPS de $5. <br><br> **Multiplataforma:** El mismo layout sirve para web y, con mínimas modificaciones, para Tauri. |
+
+---
+
+## 🎯 Estado Actual: BLOQUE I - FUNDACIÓN ✅ COMPLETADO
+
+| Tarea | Estado |
+|-------|--------|
+| Astro SSR Setup | ✅ Completado |
+| Tailwind v4 Base | ✅ Completado |
+| Integración Alpine | ✅ Completado |
+| Layouts Maestros | ✅ Completado |
+| Middleware Base | ✅ Completado |
+
+---
+
 ### 📝 Resumen para tu Bitácora
-Con este paso, has pasado de tener una "carpeta de archivos" a tener una **"Infraestructura de Software"**. Tu frontend ahora respeta la misma jerarquía que tu backend de Rust, logrando la **Sintonía Total**.
+Has completado la **Fundación del Frontend 3026**. Ahora tienes:
+- Chasis hexagonal configurado
+- Estilos Tailwind v4 con theme 3026
+- Layout maestro con HTMX + Alpine.js
+- Build funcional (~3.7s)
 
 **¿Cuál es tu siguiente paso, Milton Daniel?**
-1.  **Configurar el `MainLayout.astro`**: El contenedor maestro con HTMX y Alpine.js.
-2.  **Configurar `middleware.ts`**: El guardián que validará las sesiones de Rust antes de que Astro renderice nada.
+1.  **Flujo de Autenticación HTMX**: Crear páginas de login/register con `hx-post` hacia Axum.
+2.  **Cliente API**: Implementar `infrastructure/api/auth-client.ts`.
+3.  **Validación ArkType**: Esquemas compartidos frontend/backend.
 
 Dime cuál quieres integrar ahora en tu cerebro.

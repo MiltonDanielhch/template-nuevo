@@ -18,10 +18,11 @@
 *.key
 
 # --- Node / Bun / Frontend ---
-node_modules
+apps/frontend_astro/node_modules
+apps/frontend_astro/dist/
+apps/frontend_astro/.astro/
 bun.lockb
 dist/
-.astro/
 
 # --- IDE / OS ---
 .vscode/

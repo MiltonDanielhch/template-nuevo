@@ -1,38 +1,120 @@
-🚀 PROMPT DE SINTONÍA: LABORATORIO 3026 (Génesis de Código)
-Actúa como Ingeniero de Software Senior y Arquitecto Jefe. NOTA CRÍTICA: No existe código previo en el frontend. Estamos iniciando la implementación desde CERO basándonos en la documentación y los ADRs aprobados.
+🚀 PROMPT DE SINTONÍA: LABORATORIO 3026 (Fase 2 - Autenticación HTMX)
+Actúa como Ingeniero de Software Senior y Arquitecto Jefe. La fundación está completa. Ahora implementaremos el flujo de autenticación usando HTMX + Alpine.js.
 
-🧭 1. CONTEXTO Y ESTADO (Documentación Maestra)
-Misión: Sistema soberano con Arquitectura Hexagonal Estricta.
+---
 
-ADN Único: Protobuf (/proto) es la fuente de verdad.
+🧭 1. CONTEXTO Y ESTADO (Lo que ya tenemos)
+- ✅ Astro SSR configurado con Node adapter
+- ✅ Tailwind v4 con theme 3026
+- ✅ Alpine.js con stores (theme, auth)
+- ✅ MainLayout.astro con HTMX
+- ✅ Build funcional (~3.7s)
 
-Estado Backend: Bloques I-V completados y funcionales en Rust.
+🧭 2. PRÓXIMO OBJETIVO: FLUJO DE AUTENTICACIÓN HTMX
 
-Fase Actual: Bloque I del Frontend (Iniciando la Fundación).
+Vamos a crear:
+1. **Página de Login** (`/login`) - Formulario HTMX
+2. **Página de Register** (`/register`) - Formulario HTMX
+3. **Cliente API** (`infrastructure/api/auth-client.ts`)
+4. **Validación ArkType** (`domain/schemas/auth.ts`)
+5. **Use Cases** (`application/use-cases/auth.ts`)
 
-Reglas: Protocolo 3026 (Archivos < 200 líneas, sin .clone() innecesarios, optimizado para 512MB RAM).
+---
 
-🛠️ 2. STACK TECNOLÓGICO SELECCIONADO
-Framework: Astro 5.0 (SSR) con adaptador Bun.
+🛠️ 3. STACK Y REGLAS
+- Interactividad: HTMX (hx-post, hx-target, hx-swap)
+- Validación: ArkType (schemas compartidos)
+- Estado: Nanostores + Alpine stores
+- Estilos: Tailwind v4 + Componentes reutilizables
+- Reglas: Archivos < 150 líneas, Protocolo 3026
 
-Interactividad: HTMX (Lógica de negocio) + Alpine.js (Cosmética/UI).
+---
 
-Estilos: Tailwind v4 + shadcn/ui (Adaptados a Astro).
+🏗️ 4. ESTRUCTURA DE ARCHIVOS A CREAR
 
-Validación: ArkType | Estado: Nanostores.
+```
+apps/frontend_astro/src/
+├── domain/
+│   ├── entities/
+│   │   └── auth.ts          # Tipos (User, Session)
+│   └── schemas/
+│       └── auth.ts           # Validación ArkType
+│
+├── infrastructure/
+│   └── api/
+│       ├── auth-client.ts    # Cliente HTTP
+│       └── htmx-bridge.ts    # Config HTMX
+│
+├── application/
+│   ├── use-cases/
+│   │   └── auth.ts           # Lógica de login/register
+│   └── stores/
+│       └── auth.ts           # Nanostores (si es necesario)
+│
+└── presentation/
+    ├── pages/
+    │   ├── login.astro       # Página login
+    │   └── register.astro    # Página register
+    └── components/
+        └── ui/
+            ├── Button.astro
+            ├── Input.astro
+            └── Card.astro
+```
 
-🏗️ 3. ARQUITECTURA DE CARPETAS A CONSTRUIR
-Plaintext
-src/
-├── domain/         # Capa 1: Entidades (.proto), Interfaces y Esquemas.
-├── infrastructure/ # Capa 2: Adaptadores API y Storage.
-├── application/    # Capa 3: Casos de Uso y Nanostores.
-└── presentation/   # Capa 4: Componentes, Layouts y Pages SSR.
-🎯 OBJETIVO DE LA SESIÓN: "EL PRIMER LADRILLO"
-Como no hay código escrito, tu primera misión es guiarme en la creación de los cimientos técnicos:
+---
 
-Configuración de Vuelo: Crear astro.config.mjs con soporte para Bun, SSR y Alpine.js.
+🎯 5. IMPLEMENTACIÓN REQUERIDA
 
-Capa de Estilos: Crear src/styles/global.css con la configuración de Tailwind v4 y variables de sintonía.
+### A) SCHEMAS DE VALIDACIÓN (ArkType)
+En `domain/schemas/auth.ts`:
+```typescript
+import { type } from 'arktype';
 
-Layout Maestro: Diseñar src/presentation/layouts/MainLayout.astro que servirá de base para toda la app, incluyendo los scripts de HTMX y Alpine.
+export const loginSchema = type({
+  email: "string.email",
+  password: "string.min(8)"
+});
+
+export const registerSchema = type({
+  email: "string.email",
+  password: "string.min(8).regex(/[A-Z]/).regex(/[0-9]/)",
+  confirmPassword: "string"
+});
+```
+
+### B) CLIENTE API
+En `infrastructure/api/auth-client.ts`:
+- Funciones: `login(email, password)`, `register(email, password)`, `logout()`, `getCurrentUser()`
+- Debe manejar el token JWT y guardarlo en cookie/localStorage
+
+### C) PÁGINAS HTMX
+En `presentation/pages/login.astro`:
+- Usar `hx-post="/api/auth/login"`
+- `hx-target="#login-form"` para mostrar errores
+- `hx-swap="outerHTML"` para reemplazar el formulario tras éxito
+- Validación cliente con ArkType antes de enviar
+
+---
+
+📋 6. INTEGRACIÓN CON BACKEND
+
+El frontend debe comunicarse con:
+- `POST /api/auth/login` - Recibe token JWT
+- `POST /api/auth/register` - Crea usuario
+- `GET /api/auth/me` - Obtiene usuario actual
+- `POST /api/auth/logout` - Cierra sesión
+
+---
+
+✅ 7. VERIFICACIÓN FINAL
+
+Después de implementar:
+1. `bun run build` - Debe compilar sin errores
+2. `bun run dev` - Servidor en puerto 4321
+3. Probar login/register en el navegador
+4. Verificar que HTMX hace las peticiones correctamente
+
+---
+
+🚀 ACCIÓN: Implementa el flujo de autenticación HTMX completo siguiendo la arquitectura hexagonal. Usa los comandos de prueba en `docs/testing-front.md` para verificar cada componente.

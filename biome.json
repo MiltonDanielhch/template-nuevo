@@ -4,7 +4,8 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "suspicious": { "noExplicitAny": "off" }
     }
   },
   "formatter": {
@@ -17,5 +18,10 @@
     "formatter": {
       "semicolons": "always"
     }
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
   }
 }

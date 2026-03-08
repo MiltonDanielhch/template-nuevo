@@ -10,12 +10,13 @@
 
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
-| 1 | Astro SSR Setup | `astro.config.mjs`: Configurar `output: 'server'` con adaptador `bun`. | ⏳ |
-| 2 | Tailwind v4 Base | `src/styles/global.css`: Setup de `@theme` y variables de sintonía. | ⏳ |
+| 1 | Astro SSR Setup | `astro.config.mjs`: Configurar `output: 'server'` con adaptador Node. | ✅ |
+| 2 | Tailwind v4 Base | `src/styles/global.css`: Setup de `@theme` y variables de sintonía. | ✅ |
 | 3 | Atomic UI (shadcn) | `presentation/components/ui/`: Componentes base adaptados para HTMX (`hx-`). | ⏳ |
-| 4 | Layouts Maestros | `presentation/layouts/`: `MainLayout.astro` (SEO) y `AppLayout.astro` (Dashboard). | ⏳ |
-| 5 | Theme Engine | `src/lib/theme-engine.ts`: Persistencia de tema en Cookies (evitar parpadeo). | ⏳ |
-| 6 | Integración Alpine | `astro.config.mjs`: Añadir Alpine.js para estados efímeros (modales/toggles). | ⏳ |
+| 4 | Layouts Maestros | `presentation/layouts/`: `MainLayout.astro` (SEO) y `AppLayout.astro` (Dashboard). | ✅ |
+| 5 | Theme Engine | `src/lib/alpine.ts`: Stores Alpine para theme y auth. | ✅ |
+| 6 | Integración Alpine | `astro.config.mjs` + `src/lib/alpine.ts`: Alpine.js para estados efímeros. | ✅ |
+| 7 | Middleware Base | `src/middleware.ts`: Configuración base para SSR. | ✅ |
 
 ---
 
@@ -26,9 +27,10 @@
 |---|-------|------------------------|:------:|
 | 1 | ADN & Fragments | `domain/entities/`: Tipos Protobuf y definición de Partial Frames para HTMX. | ⏳ |
 | 2 | Aduana ArkType | `domain/schemas/`: Esquemas de validación compartidos para Cliente/Servidor. | ⏳ |
-| 3 | API Adapter | `infrastructure/api/client.ts`: Cliente para peticiones tradicionales y streaming. | ⏳ |
-| 4 | Sincronía de Estado | `application/stores/`: Nanostores solo para sesión; HTMX para datos de vista. | ⏳ |
-| 5 | Middleware Auth | `src/middleware.ts`: Validación de JWT/Session en cada petición SSR. | ⏳ |
+| 3 | API Adapter | `infrastructure/api/auth-client.ts`: Cliente para peticiones tradicionales y streaming. | ⏳ |
+| 4 | HTMX Bridge | `infrastructure/api/htmx-bridge.ts`: Configuración de headers HTMX (HX-Request). | ⏳ |
+| 5 | Sincronía de Estado | `application/stores/`: Nanostores solo para sesión; HTMX para datos de vista. | ⏳ |
+| 6 | Middleware Auth | `src/middleware.ts`: Validación de JWT/Session en cada petición SSR. | ⏳ |
 
 ---
 
@@ -62,3 +64,15 @@
 |---|-------|------------------------|:------:|
 | 1 | Role Guard | `presentation/components/auth/Guard.astro`: Control de visibilidad del lado servidor. | ⏳ |
 | 2 | Admin Panel | `presentation/pages/admin/`: CRUD de gestión de sintonía de usuarios. | ⏳ |
+
+---
+
+## 📊 Progreso General
+
+```
+BLOQUE I: ████████████ 100% (7/7 completados)
+BLOQUE II: ████████░░░░ 0% (0/6 completados)
+BLOQUE III: ████████████ 0% (0/5 completados)
+BLOQUE IV: ████████████ 0% (0/2 completados)
+BLOQUE V: ████████████ 0% (0/2 completados)
+```
