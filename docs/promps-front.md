@@ -21,10 +21,7 @@ Vamos a crear:
 4. **Navbar/Sidebar** - ✅ Navegación y componentes compartidos
 5. **Command Palette** - ✅ Buscador global con `Ctrl+K`
 6. **Health Monitor** - ✅ Indicador de latencia en tiempo real
-
----
-
-🚀 ACCIÓN: FASE COMPLETADA. Ahora realizaremos el commit de los cambios.
+7. **Auth Check Fix** - ✅ Eliminado 404 en `/api/auth/me`
 
 ---
 
@@ -35,6 +32,7 @@ Vamos a implementar:
 2. **User Repository (Frontend)** - ✅ Adaptador para el backend Rust.
 3. **Admin Users Page** - ✅ Tabla interactiva con HTMX (Search/Delete/Edit).
 4. **Modales con Alpine** - ✅ Creación y edición de usuarios sin recarga.
+5. **Cursor & Event Fix** - ✅ Botón "Nuevo Usuario" con puntero y evento Alpine.
 
 ---
 

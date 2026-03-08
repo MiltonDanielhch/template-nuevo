@@ -172,20 +172,3 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
     </div>
   </div>
 </MainLayout>
-
-<script>
-  async function checkLatency() {
-    try {
-      const start = Date.now();
-      await fetch('/api/auth/me', { method: 'HEAD' });
-      const latency = Date.now() - start;
-      const el = document.getElementById('latency');
-      if (el) el.textContent = latency.toString();
-    } catch {
-      const el = document.getElementById('latency');
-      if (el) el.textContent = '--';
-    }
-  }
-  checkLatency();
-  setInterval(checkLatency, 30000);
-</script>

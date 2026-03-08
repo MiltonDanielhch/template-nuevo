@@ -326,7 +326,8 @@ ls -la apps/frontend_astro/dist/client/
 | Error | Causa Probable | Solución |
 |-------|----------------|----------|
 | **Build fail** | Dependencias faltantes | `bun install` |
-| **HTMX error** | `ajaxPrefilter is not a function` | Cambiar a `htmx:configRequest` en `MainLayout.astro` |
+| **404 en /api/auth/me** | Llamada residual en script de dashboard | Se eliminó el script redundante en `dashboard.astro` y se creó el endpoint en `api/auth/me.ts` |
+| **Cursor no cambia a puntero** | Estilos de botón shadcn en Astro | Asegurar clase `cursor-pointer` en el elemento interactivo |
 | **Modal no abre** | Error de JS global o Alpine no cargado | Verificar consola (F12) por errores de tipo o carga de scripts |
 | **HTMX no funciona** | Script no cargado | Verificar CDN en MainLayout |
 | **Alpine no funciona** | Error en `alpine.ts` | Revisar sintaxis TypeScript |
