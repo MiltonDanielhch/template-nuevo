@@ -3,8 +3,14 @@
 
 pub mod assign;
 pub mod create;
+pub mod delete;
 pub mod list;
+pub mod list_permissions;
+pub mod update;
 
 pub use assign::AssignRoleToUser;
 pub use create::CreateRole;
+pub use delete::DeleteRole;
 pub use list::ListRoles;
+pub use list_permissions::ListPermissions;
+pub use update::UpdateRole;

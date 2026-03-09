@@ -35,7 +35,9 @@ impl UpdateUser {
             .user_repo
             .find_by_id(&command.id)
             .await?
-            .ok_or_else(|| DomainError::NotFound(format!("Usuario con ID {} no encontrado", command.id)))?;
+            .ok_or_else(|| {
+                DomainError::NotFound(format!("Usuario con ID {} no encontrado", command.id))
+            })?;
 
         if let Some(username) = command.username {
             user.set_username(Some(username));
@@ -44,10 +46,10 @@ impl UpdateUser {
         if let Some(email_str) = command.email {
             let email = Email::parse(email_str)?;
             // Verificar si el email ya está en uso por otro usuario
-            if let Some(existing) = self.user_repo.find_by_email(&email).await? {
-                if existing.id() != user.id() {
-                    return Err(DomainError::UserAlreadyExists(email.to_string()).into());
-                }
+            if let Some(existing) = self.user_repo.find_by_email(&email).await?
+                && existing.id() != user.id()
+            {
+                return Err(DomainError::UserAlreadyExists(email.to_string()).into());
             }
             user.set_email(email);
         }

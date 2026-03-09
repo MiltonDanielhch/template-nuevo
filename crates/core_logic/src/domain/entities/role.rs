@@ -89,7 +89,11 @@ impl Permission {
     }
 
     pub fn from_persistence(id: PermissionId, name: String, description: Option<String>) -> Self {
-        Self { id, name, description }
+        Self {
+            id,
+            name,
+            description,
+        }
     }
 
     pub fn id(&self) -> &PermissionId {
@@ -135,7 +139,13 @@ impl Role {
         created_at: DateTime<Utc>,
         permissions: Vec<Permission>,
     ) -> Self {
-        Self { id, name, description, created_at, permissions }
+        Self {
+            id,
+            name,
+            description,
+            created_at,
+            permissions,
+        }
     }
 
     pub fn id(&self) -> &RoleId {

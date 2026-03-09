@@ -6,14 +6,16 @@
 
 use core_logic::{
     application::use_cases::{
-        role::{AssignRoleToUser, CreateRole, ListRoles},
+        role::{AssignRoleToUser, CreateRole, DeleteRole, ListPermissions, ListRoles, UpdateRole},
         user::{
             CreateSession, DeleteUser, GetUserById, ListUsers, LoginUser, RegisterUser, UpdateUser,
         },
     },
     domain::interfaces::{IRoleRepository, ISessionRepository},
 };
-use infra_db::{Argon2idHasher, SqliteRoleRepository, SqliteSessionRepository, SqliteUserRepository};
+use infra_db::{
+    Argon2idHasher, SqliteRoleRepository, SqliteSessionRepository, SqliteUserRepository,
+};
 use std::sync::Arc;
 
 /// Estado de la aplicación compartido a través de los handlers de Axum.
@@ -33,6 +35,9 @@ pub struct AppState {
     pub create_role: Arc<CreateRole>,
     pub assign_role: Arc<AssignRoleToUser>,
     pub list_roles: Arc<ListRoles>,
+    pub update_role: Arc<UpdateRole>,
+    pub delete_role: Arc<DeleteRole>,
+    pub list_permissions: Arc<ListPermissions>,
     pub role_repo: Arc<dyn IRoleRepository>,
 }
 
@@ -55,6 +60,9 @@ pub fn create_app_state(pool: sqlx::SqlitePool) -> AppState {
     let create_role = Arc::new(CreateRole::new(role_repo.clone()));
     let assign_role = Arc::new(AssignRoleToUser::new(role_repo.clone()));
     let list_roles = Arc::new(ListRoles::new(role_repo.clone()));
+    let update_role = Arc::new(UpdateRole::new(role_repo.clone()));
+    let delete_role = Arc::new(DeleteRole::new(role_repo.clone()));
+    let list_permissions = Arc::new(ListPermissions::new(role_repo.clone()));
 
     AppState {
         register_user,
@@ -68,6 +76,9 @@ pub fn create_app_state(pool: sqlx::SqlitePool) -> AppState {
         create_role,
         assign_role,
         list_roles,
+        update_role,
+        delete_role,
+        list_permissions,
         role_repo,
     }
 }

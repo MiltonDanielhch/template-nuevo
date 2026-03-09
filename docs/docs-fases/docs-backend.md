@@ -85,3 +85,17 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 | **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Backend:** Se actualizó la entidad `User` y el comando `RegisterUser` para aceptar un `Option<String>` como username. <br> 2. **DTOs:** Se añadieron campos de username a las peticiones y respuestas JSON. <br> 3. **Frontend:** El proxy de login en Astro ahora redirige las credenciales al puerto 8081 (Axum) y gestiona la cookie de sesión real. |
 | **4** | **Ejemplo Práctico 3026** | **Comando de Verificación:** `node test_backend.js` (Script que creamos para simular el flujo completo de registro/login real). |
 | **5** | **¿Por qué es vital para nuestro sistema?** | **Profesionalismo:** Un sistema sin nombres de usuario se siente incompleto. Con esto, el laboratorio está listo para escalar a una red social o sistema de gestión real con identidad propia. |
+
+---
+
+## 👤 BLOQUE VIII: PERFIL Y SOBERANÍA
+
+### 🧠 Integración: Fase 8.1 - Gestión de Perfil (Self-Service)
+
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Implementación de un endpoint `PUT /me` que permite a los usuarios autenticados modificar su propia información (email, password, username) sin intervención de un administrador. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Da autonomía al usuario y reduce la carga administrativa. Evita el desastre de tener que pedir soporte técnico para tareas básicas como cambiar una contraseña. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Extracción:** El handler `update_me_handler` usa el extractor `CurrentUser` para obtener el ID del usuario directamente del token de sesión. <br> 2. **Comando:** Se reutiliza el caso de uso `UpdateUser` pero forzando el ID del usuario autenticado. <br> 3. **Seguridad:** No se permite cambiar el rol en este endpoint, solo datos personales. |
+| **4** | **Ejemplo Práctico 3026** | **Backend:** `PUT /api/v1/me` <br> **Frontend:** Página de `/settings` con formularios reactivos que llaman al proxy `/api/users/me`. |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **UX Profesional:** Los usuarios esperan poder gestionar su propia identidad. <br> **Escalabilidad:** Automatiza el mantenimiento de cuentas, permitiendo que el sistema crezca sin necesidad de un equipo de soporte numeroso. |

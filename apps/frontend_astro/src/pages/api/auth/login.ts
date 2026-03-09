@@ -15,15 +15,19 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     if (response.ok) {
-      const data = await response.json();
-      const token = data.token;
+      const respData = await response.json();
+      const token = respData.token;
+      const remember = data.get("remember") === "on";
+
+      // Si se marca "Recordarme", la cookie dura 30 días. Si no, es una "Session Cookie".
+      const maxAge = remember ? 60 * 60 * 24 * 30 : undefined;
 
       cookies.set("auth_token", token, {
         path: "/",
         httpOnly: true,
         secure: import.meta.env.PROD,
         sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7, // 1 semana
+        ...(maxAge && { maxAge }),
       });
 
       return new Response(null, {

@@ -35,10 +35,10 @@ Vamos a crear:
 
 ---
 
-🧭 4. PRÓXIMO OBJETIVO: GESTIÓN DE PERFIL Y ROLES
-1. **Página de Ajustes**: Permitir al usuario cambiar su propia contraseña y email.
-2. **UI de Roles**: Interfaz para que el admin asigne roles reales desde el backend RBAC.
-3. **Búsqueda Avanzada**: Filtros dinámicos por rol y estado en la tabla de usuarios.
+🧭 4. GESTIÓN DE PERFIL Y ROLES (COMPLETE)
+- ✅ **Settings Page**: Página `/settings` para que el usuario gestione su perfil.
+- ✅ **Dynamic Roles**: El admin panel carga roles reales desde `/api/roles`.
+- ✅ **Navigation Fixes**: Sidebar y Command Palette sincronizados con las nuevas rutas.
 
 ---
 

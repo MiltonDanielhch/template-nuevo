@@ -173,3 +173,17 @@
 | 4 | API Handlers | `api_server` | Endpoints `GET /users`, `PUT /users/:id`, `DELETE /users/:id`. | ✅ |
 | 5 | Auth Guards | `api_server` | Protección de rutas CRUD mediante `CurrentUser`. | ✅ |
 | 6 | Username Support | `core_logic` + `infra_db` | Soporte para nombres de usuario en registro y listado. | ✅ |
+
+---
+
+## 🛡️ BLOQUE VIII: PERFIL Y AUDITORÍA
+
+**Objetivo:** Completar la soberanía del usuario sobre sus datos y la trazabilidad del sistema.
+**Estado:** [/] En Progreso
+
+| # | Tarea | Ubicación | Descripción | Estado |
+|---|-------|-----------|-------------|:------:|
+| 1 | Profile Update | `api_server` | Endpoint `PUT /me` para actualización propia. | ✅ |
+| 2 | Role Discovery | `api_server` | Endpoint `GET /roles` para listar roles disponibles. | ✅ |
+| 3 | Audit Middleware | `api_server` | Registrar acciones en `audit_logs`. | ⏳ |
+| 4 | Rate Limiting | `api_server` | Protección contra fuerza bruta. | ⏳ |

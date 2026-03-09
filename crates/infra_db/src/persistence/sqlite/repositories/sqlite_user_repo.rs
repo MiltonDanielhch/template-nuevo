@@ -130,12 +130,9 @@ impl IUserRepository for SqliteUserRepository {
     }
 
     async fn find_all(&self) -> Result<Vec<User>> {
-        let rows = sqlx::query_as!(
-            DbUser,
-            "SELECT * FROM users WHERE deleted_at IS NULL"
-        )
-        .fetch_all(&self.pool)
-        .await?;
+        let rows = sqlx::query_as!(DbUser, "SELECT * FROM users WHERE deleted_at IS NULL")
+            .fetch_all(&self.pool)
+            .await?;
 
         let mut users = Vec::with_capacity(rows.len());
         for row in rows {
@@ -147,13 +144,9 @@ impl IUserRepository for SqliteUserRepository {
     async fn delete(&self, id: &UserId) -> Result<()> {
         let id_str = id.as_str();
         let now = Utc::now().naive_utc();
-        sqlx::query!(
-            "UPDATE users SET deleted_at = ? WHERE id = ?",
-            now,
-            id_str
-        )
-        .execute(&self.pool)
-        .await?;
+        sqlx::query!("UPDATE users SET deleted_at = ? WHERE id = ?", now, id_str)
+            .execute(&self.pool)
+            .await?;
         Ok(())
     }
 }

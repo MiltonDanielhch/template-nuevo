@@ -49,4 +49,16 @@ pub trait IRoleRepository: Send + Sync {
         role_id: &RoleId,
         permission_id: &PermissionId,
     ) -> Result<()>;
+    /// Actualiza el nombre y descripción de un rol.
+    async fn update_role(&self, role: &Role) -> Result<()>;
+
+    /// Elimina un rol físicamente (Hard Delete para roles).
+    async fn delete_role(&self, id: &RoleId) -> Result<()>;
+
+    /// Sincroniza los permisos de un rol (reemplaza los actuales por los nuevos).
+    async fn sync_role_permissions(
+        &self,
+        role_id: &RoleId,
+        permission_ids: &[PermissionId],
+    ) -> Result<()>;
 }

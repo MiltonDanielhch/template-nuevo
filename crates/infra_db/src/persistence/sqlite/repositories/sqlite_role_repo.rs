@@ -270,4 +270,58 @@ impl IRoleRepository for SqliteRoleRepository {
         .context("Error asignando permiso al rol")?;
         Ok(())
     }
+
+    async fn update_role(&self, role: &Role) -> Result<()> {
+        let id = role.id().as_str();
+        let name = role.name();
+        let description = role.description();
+        sqlx::query!(
+            r#"UPDATE roles SET name = ?, description = ? WHERE id = ?"#,
+            name,
+            description,
+            id
+        )
+        .execute(&self.pool)
+        .await
+        .context("Error actualizando rol en DB")?;
+        Ok(())
+    }
+
+    async fn delete_role(&self, id: &RoleId) -> Result<()> {
+        let id_str = id.as_str();
+        sqlx::query!(r#"DELETE FROM roles WHERE id = ?"#, id_str)
+            .execute(&self.pool)
+            .await
+            .context("Error eliminando rol en DB")?;
+        Ok(())
+    }
+
+    async fn sync_role_permissions(
+        &self,
+        role_id: &RoleId,
+        permission_ids: &[PermissionId],
+    ) -> Result<()> {
+        let mut tx = self.pool.begin().await?;
+        let rid = role_id.as_str();
+
+        sqlx::query!(r#"DELETE FROM role_permissions WHERE role_id = ?"#, rid)
+            .execute(&mut *tx)
+            .await
+            .context("Error limpiando permisos antiguos del rol")?;
+
+        for pid in permission_ids {
+            let pid_str = pid.as_str();
+            sqlx::query!(
+                r#"INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?)"#,
+                rid,
+                pid_str
+            )
+            .execute(&mut *tx)
+            .await
+            .context("Error insertando nuevo permiso en sync")?;
+        }
+
+        tx.commit().await?;
+        Ok(())
+    }
 }

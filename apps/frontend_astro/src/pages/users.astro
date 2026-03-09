@@ -8,27 +8,30 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
 
 export const prerender = false;
 
-// Obtenemos los usuarios reales del backend Rust
 const token = Astro.cookies.get("auth_token")?.value;
 let allUsers = [];
+let availableRoles = [];
 
 try {
-  console.log("Fetching users from backend with token:", token ? "present" : "missing");
-  const response = await fetch("http://localhost:8081/users", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  console.log("Fetching users and roles from backend");
+  const [usersRes, rolesRes] = await Promise.all([
+    fetch("http://localhost:8081/users", {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+    fetch("http://localhost:8081/roles", {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+  ]);
 
-  if (response.ok) {
-    allUsers = await response.json();
-    console.log(`Successfully fetched ${allUsers.length} users`);
-  } else {
-    const errorText = await response.text();
-    console.error(`Error fetching users: ${response.status} - ${errorText}`);
+  if (usersRes.ok) {
+    allUsers = await usersRes.json();
+  }
+
+  if (rolesRes.ok) {
+    availableRoles = await rolesRes.json();
   }
 } catch (error) {
-  console.error("Error fetching users on SSR:", error);
+  console.error("Error fetching data on SSR:", error);
 }
 ---
 

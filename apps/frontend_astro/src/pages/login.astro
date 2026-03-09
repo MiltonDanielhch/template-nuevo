@@ -8,9 +8,9 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
 
 <MainLayout title="Iniciar Sesión">
   <div class="flex items-center justify-center min-h-screen bg-background">
-    <Card class="w-full max-w-md">
-      <CardHeader class="space-y-1">
-        <CardTitle class="text-2xl">Iniciar Sesión</CardTitle>
+    <Card className="w-full max-w-md">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl">Iniciar Sesión</CardTitle>
         <CardDescription>
           Ingresa tus credenciales para acceder a Laboratorio 3026
         </CardDescription>
@@ -31,6 +31,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                 name="email"
                 type="email"
                 placeholder="tu@email.com"
+                autoComplete="email"
                 required
               />
             </div>
@@ -47,6 +48,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                 name="password"
                 type="password"
                 placeholder="••••••••"
+                autoComplete="current-password"
                 required
               />
             </div>
@@ -58,12 +60,12 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                 name="remember"
                 class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               />
-              <Label htmlFor="remember" class="text-sm text-muted-foreground">
+              <Label htmlFor="remember" className="text-sm text-muted-foreground">
                 Recordarme
               </Label>
             </div>
 
-            <Button type="submit" class="w-full">
+            <Button type="submit" className="w-full">
               Iniciar Sesión
             </Button>
 
@@ -88,7 +90,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
   </div>
 
   <script>
-    document.addEventListener('htmx:afterRequest', (e) => {
+    document.addEventListener('htmx:afterRequest', (e: any) => {
       if (e.detail.successful) {
         const response = e.detail.xhr;
         if (response.status === 200) {

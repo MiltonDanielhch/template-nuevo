@@ -19,13 +19,8 @@ Estamos construyendo un sistema de autenticación y gestión de usuarios con una
 
 ✅ **Base de Datos Completa**: Todas las migraciones (RBAC, Audit, Users, Sessions) están listas.
 ✅ **Auth Funcional**: Registro, Login, Sessions, Logout y `/me` funcionan correctamente.
-✅ **CRUD Usuarios (Backend Rust)**: Endpoints para Listar, Actualizar y Eliminar usuarios implementados.
-✅ **Integración Frontend**: Astro llama al backend real de Rust. Se corrigió el mapeo de `username`.
-✅ **Telemetría Avanzada**: Sistema de logs diarios persistentes en `logs/backend.log` con tracing de peticiones HTTP.
-✅ **Corrección Crítica**: El extractor `CurrentUser` (Axum 0.8) ya recibe correctamente el `AppState`.
-✅ **Despliegue Soberano**: `Dockerfile` optimizado + `podman-compose` + `Caddy`.
-
 ✅ **RBAC (Roles y Permisos)**: Lógica en `core_logic`, repositorio en `infra_db` y middleware/endpoints en `api_server` completamente funcionales.
+✅ **Gestión de Perfil**: Endpoints para que el usuario actualice su propia información (`PUT /me`) implementados y verificados.
 
 ### Estructura Implementada
 
@@ -51,9 +46,9 @@ crates/
 
 ---
 
-## Próximos Pasos: Expansión y Seguridad
+## Próximos Pasos: Seguridad Avanzada y Notificaciones
 
-1. **Gestión de Perfil**: Endpoints para que el usuario actualice su propia información (email, password).
+1. **Auditoría Estricta**: Middleware para registrar acciones sensibles (cambio de password, login, eliminación) en `audit_logs`.
 2. **Seguridad Avanzada**: Implementar Rate Limiting por IP para evitar ataques de fuerza bruta.
 3. **Notificaciones**: Sistema base para envío de correos (Verificación de cuenta, Reseteo de contraseña).
-4. **Auditoría Estricta**: Middleware para registrar acciones sensibles en `audit_logs`.
+4. **Health Extended**: Endpoints de salud más detallados (uso de memoria, conexiones DB).

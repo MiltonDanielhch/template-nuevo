@@ -16,7 +16,11 @@ use crate::{
     config::di::AppState,
     entry_points::{api::v1::errors::ApiError, auth::CurrentUser},
 };
-use axum::{Json, extract::{Path, State}, http::StatusCode};
+use axum::{
+    Json,
+    extract::{Path, State},
+    http::StatusCode,
+};
 use core_logic::{
     application::use_cases::user::{
         login::LoginUserCommand, register::RegisterUserCommand, update::UpdateUserCommand,
@@ -148,6 +152,23 @@ pub async fn me_handler(
     Ok(Json(current_user.user.into()))
 }
 
+pub async fn update_me_handler(
+    State(state): State<AppState>,
+    current_user: CurrentUser,
+    Json(payload): Json<UpdateUserRequest>,
+) -> Result<Json<MeResponse>, ApiError> {
+    let command = UpdateUserCommand {
+        id: current_user.user.id().clone(),
+        username: payload.username,
+        email: payload.email,
+        password: payload.password,
+        avatar_url: payload.avatar_url,
+    };
+
+    let user = state.update_user.execute(command).await?;
+    Ok(Json(user.into()))
+}
+
 pub async fn logout_handler(
     State(state): State<AppState>,
     current_user: CurrentUser,
@@ -190,8 +211,7 @@ pub async fn update_user_handler(
 ) -> Result<Json<MeResponse>, ApiError> {
     use core_logic::domain::value_objects::user_id::UserId;
 
-    let user_id = UserId::new_from_string(id_str)
-        .map_err(|e| ApiError(anyhow::anyhow!(e)))?;
+    let user_id = UserId::new_from_string(id_str).map_err(|e| ApiError(anyhow::anyhow!(e)))?;
 
     let command = UpdateUserCommand {
         id: user_id,
@@ -213,8 +233,7 @@ pub async fn delete_user_handler(
 ) -> Result<StatusCode, ApiError> {
     use core_logic::domain::value_objects::user_id::UserId;
 
-    let user_id = UserId::new_from_string(id_str)
-        .map_err(|e| ApiError(anyhow::anyhow!(e)))?;
+    let user_id = UserId::new_from_string(id_str).map_err(|e| ApiError(anyhow::anyhow!(e)))?;
 
     state.delete_user.execute(user_id).await?;
 

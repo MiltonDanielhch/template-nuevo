@@ -13,12 +13,16 @@ const token = Astro.cookies.get("auth_token")?.value || "";
 <!DOCTYPE html>
 <html lang="es" x-data="{
   darkMode: document.documentElement.classList.contains('dark'),
+  sidebarOpen: window.innerWidth > 1024,
   toggleDarkMode() {
     this.darkMode = !this.darkMode;
     localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
     document.documentElement.classList.toggle('dark', this.darkMode);
+  },
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
   }
-}">
+}" @resize.window="if (window.innerWidth > 1024) sidebarOpen = true">
   <head>
     <script is:inline>
       (function() {
@@ -123,7 +127,7 @@ const token = Astro.cookies.get("auth_token")?.value || "";
         if (isTauri()) {
           try {
             const tokenInfo = document.querySelector('meta[name="auth-token"]')?.getAttribute('content');
-            const store = await load('store.json', { autoSave: false });
+            const store = await load('store.json', { autoSave: false, defaults: {} });
 
             if (tokenInfo) {
               await store.set('auth_token', tokenInfo);

@@ -5,9 +5,7 @@
 //! Verifica que el rol exista antes de aceptar la asignación.
 
 use crate::domain::{
-    entities::role::RoleId,
-    errors::DomainError,
-    interfaces::IRoleRepository,
+    entities::role::RoleId, errors::DomainError, interfaces::IRoleRepository,
     value_objects::user_id::UserId,
 };
 use anyhow::Result;
@@ -28,9 +26,7 @@ impl AssignRoleToUser {
         self.role_repo
             .find_role_by_id(&role_id)
             .await?
-            .ok_or_else(|| {
-                DomainError::NotFound(format!("Rol '{}' no encontrado.", role_id))
-            })?;
+            .ok_or_else(|| DomainError::NotFound(format!("Rol '{}' no encontrado.", role_id)))?;
 
         self.role_repo.assign_role_to_user(&user_id, &role_id).await
     }

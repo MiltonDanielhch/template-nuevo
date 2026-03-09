@@ -1,0 +1,144 @@
+---
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import Navbar from "@/presentation/components/shared/Navbar.astro";
+import Sidebar from "@/presentation/components/shared/Sidebar.astro";
+import MainLayout from "@/presentation/layouts/MainLayout.astro";
+
+export const prerender = false;
+
+const token = Astro.cookies.get("auth_token")?.value;
+let user = null;
+
+try {
+  const response = await fetch("http://localhost:8081/me", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (response.ok) {
+    user = await response.json();
+  }
+} catch (error) {
+  console.error("Error fetching user profile:", error);
+}
+
+if (!user) {
+  return Astro.redirect("/login");
+}
+---
+
+<MainLayout title="Mi Perfil">
+  <div class="flex h-screen flex-col">
+    <Navbar />
+    <div class="flex flex-1 overflow-hidden">
+      <Sidebar />
+      <main class="flex-1 overflow-y-auto bg-background p-6">
+        <div class="mx-auto max-w-2xl">
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold tracking-tight">Configuración</h1>
+            <p class="text-muted-foreground">Gestiona tu información personal y seguridad</p>
+          </div>
+
+          <div class="grid gap-6">
+            <!-- Información Personal -->
+            <Card>
+              <CardHeader>
+                <CardTitle>Información Personal</CardTitle>
+                <CardDescription>Actualiza tu nombre de usuario y correo electrónico</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form
+                  hx-post="/api/users/me"
+                  hx-swap="none"
+                  class="space-y-4"
+                  @submit.prevent="
+                    const formData = new FormData($el);
+                    fetch($el.action, { method: 'POST', body: formData })
+                      .then(r => r.json())
+                      .then(data => {
+                        if (data.success) {
+                          alert(data.message);
+                          window.location.reload();
+                        } else {
+                          alert(data.message || 'Error al actualizar');
+                        }
+                      })
+                  "
+                >
+                  <div class="space-y-2">
+                    <label for="username" class="text-sm font-medium">Nombre de Usuario</label>
+                    <Input id="username" name="username" value={user.username || ""} placeholder="Tu nombre de usuario" required />
+                  </div>
+                  <div class="space-y-2">
+                    <label for="email" class="text-sm font-medium">Correo Electrónico</label>
+                    <Input id="email" name="email" type="email" value={user.email} placeholder="tu@ejemplo.com" required />
+                  </div>
+                  <Button type="submit" class="w-full sm:w-auto">Guardar Cambios</Button>
+                </form>
+              </CardContent>
+            </Card>
+
+            <!-- Seguridad -->
+            <Card>
+              <CardHeader>
+                <CardTitle>Seguridad</CardTitle>
+                <CardDescription>Cambia tu contraseña para mantener tu cuenta segura</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form
+                  hx-post="/api/users/me"
+                  hx-swap="none"
+                  class="space-y-4"
+                  @submit.prevent="
+                    const formData = new FormData($el);
+                    if (formData.get('password') !== formData.get('confirm_password')) {
+                      alert('Las contraseñas no coinciden');
+                      return;
+                    }
+                    fetch($el.action, { method: 'POST', body: formData })
+                      .then(r => r.json())
+                      .then(data => {
+                        if (data.success) {
+                          alert(data.message);
+                          $el.reset();
+                        } else {
+                          alert(data.message || 'Error al actualizar');
+                        }
+                      })
+                  "
+                >
+                  <div class="space-y-2">
+                    <label for="password" class="text-sm font-medium">Nueva Contraseña</label>
+                    <Input id="password" name="password" type="password" placeholder="••••••••" required />
+                  </div>
+                  <div class="space-y-2">
+                    <label for="confirm_password" class="text-sm font-medium">Confirmar Contraseña</label>
+                    <Input id="confirm_password" name="confirm_password" type="password" placeholder="••••••••" required />
+                  </div>
+                  <Button type="submit" variant="outline" class="w-full sm:w-auto">Actualizar Contraseña</Button>
+                </form>
+              </CardContent>
+            </Card>
+
+            <!-- Metadata de Cuenta -->
+            <Card class="border-destructive/20 bg-destructive/5">
+              <CardHeader>
+                <CardTitle class="text-destructive">Zona de Peligro</CardTitle>
+                <CardDescription>Acciones irreversibles sobre tu cuenta</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p class="text-sm text-muted-foreground mb-4">
+                  Actualmente tienes el rol de <strong class="text-foreground">{user.role}</strong>.
+                  Si necesitas eliminar tu cuenta, por favor contacta con un administrador.
+                </p>
+                <Button variant="destructive" disabled>Eliminar Cuenta</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</MainLayout>
