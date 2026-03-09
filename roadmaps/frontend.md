@@ -65,6 +65,7 @@
 |---|-------|------------------------|:------:|
 | 1 | Role Guard | `presentation/components/auth/Guard.astro`: Control de visibilidad del lado servidor. | ✅ |
 | 2 | Admin Panel | `presentation/pages/users.astro`: CRUD completo (Listar, Crear, Editar, Eliminar) real con HTMX. | ✅ |
+| 3 | UI Robustness | `src/pages/users.astro`: Fix de Alpine stores y robustez HTMX (POST/Prevent). | ✅ |
 
 ---
 

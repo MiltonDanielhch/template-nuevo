@@ -25,14 +25,20 @@ Vamos a crear:
 
 ---
 
-🧭 3. SIGUIENTE OBJETIVO: SOBERANÍA DE DATOS (CRUD de Usuarios)
+🧭 3. SOBERANÍA DE DATOS (CRUD COMPLETE)
+- ✅ **Partial Fragments**: Definidos fragmentos HTML para HTMX.
+- ✅ **User Repository (Frontend)**: Adaptador para el backend Rust con soporte de `username`.
+- ✅ **Admin Users Page**: Tabla interactiva con HTMX (Search/Delete/Edit).
+- ✅ **Modales con Alpine**: Creación y edición de usuarios sin recarga.
+- ✅ **HTMX Robustness**: Fix de envío (POST), `.prevent` y `htmx.process` en modales.
+- ✅ **UI Fallbacks**: Estados y roles con valores por defecto para consistencia visual.
 
-Vamos a implementar:
-1. **Partial Fragments** - ✅ Definir fragmentos HTML para HTMX.
-2. **User Repository (Frontend)** - ✅ Adaptador para el backend Rust.
-3. **Admin Users Page** - ✅ Tabla interactiva con HTMX (Search/Delete/Edit).
-4. **Modales con Alpine** - ✅ Creación y edición de usuarios sin recarga.
-5. **Cursor & Event Fix** - ✅ Botón "Nuevo Usuario" con puntero y evento Alpine.
+---
+
+🧭 4. PRÓXIMO OBJETIVO: GESTIÓN DE PERFIL Y ROLES
+1. **Página de Ajustes**: Permitir al usuario cambiar su propia contraseña y email.
+2. **UI de Roles**: Interfaz para que el admin asigne roles reales desde el backend RBAC.
+3. **Búsqueda Avanzada**: Filtros dinámicos por rol y estado en la tabla de usuarios.
 
 ---
 

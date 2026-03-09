@@ -3,10 +3,10 @@ import type { APIRoute } from "astro";
 export const POST: APIRoute = async ({ request, url, cookies }) => {
   const id = url.searchParams.get("id");
   const data = await request.formData();
-  const username = data.get("name");
+  const username = data.get("username");
   const email = data.get("email");
   const password = data.get("password");
-  const role = data.get("role");
+  const role = data.get("role") || "User";
 
   const token = cookies.get("auth_token")?.value;
 
@@ -41,26 +41,26 @@ export const POST: APIRoute = async ({ request, url, cookies }) => {
 
     const html = `
       <tr id="user-${user.id}" class="border-b border-border hover:bg-muted/50 transition-colors">
-        <td class="px-4 py-3 text-sm font-medium text-foreground">${user.username || "N/A"}</td>
+        <td class="px-4 py-3 text-sm font-medium text-foreground">${user.username || "Sin nombre"}</td>
         <td class="px-4 py-3 text-sm text-muted-foreground">${user.email}</td>
         <td class="px-4 py-3 text-sm">
           <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-            user.role === "Admin" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+            role === "Admin" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
           }">
-            ${user.role}
+            ${role}
           </span>
         </td>
         <td class="px-4 py-3 text-sm">
           <span class="inline-flex items-center gap-1.5 text-foreground">
-            <span class="h-1.5 w-1.5 rounded-full ${user.status === "Activo" ? "bg-green-500" : "bg-red-500"}"></span>
-            ${user.status}
+            <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+            Activo
           </span>
         </td>
         <td class="px-4 py-3 text-right text-sm">
           <div class="flex justify-end gap-2">
             <button
               class="text-muted-foreground hover:text-primary transition-colors font-medium cursor-pointer"
-              @click="editUser('${user.id}', '${user.username || ""}', '${user.email}', '${user.role}')"
+              @click="editUser('${user.id}', '${user.username || ""}', '${user.email}', '${role}')"
             >
               Editar
             </button>

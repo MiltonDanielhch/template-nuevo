@@ -31,6 +31,8 @@ use serde::{Deserialize, Serialize};
 pub struct RegisterUserRequest {
     pub email: String,
     pub password: String,
+    pub username: Option<String>,
+    pub role: Option<String>,
 }
 
 /// DTO para la respuesta exitosa de registro de usuario.
@@ -39,6 +41,8 @@ pub struct RegisterUserRequest {
 pub struct RegisterUserResponse {
     pub id: String,
     pub email: String,
+    pub username: Option<String>,
+    pub role: String,
 }
 
 impl From<User> for RegisterUserResponse {
@@ -46,6 +50,8 @@ impl From<User> for RegisterUserResponse {
         Self {
             id: user.id().to_string(),
             email: user.email().to_string(),
+            username: user.username().clone(),
+            role: "User".to_string(), // TODO: Cargar del repo de roles
         }
     }
 }
@@ -61,6 +67,7 @@ pub async fn register_user_handler(
     let command = RegisterUserCommand {
         email: payload.email,
         password: payload.password,
+        username: payload.username,
     };
 
     let new_user = state.register_user.execute(command).await?;
@@ -118,6 +125,7 @@ pub struct MeResponse {
     pub id: String,
     pub email: String,
     pub username: Option<String>,
+    pub role: String,
     pub email_verified: bool,
 }
 
@@ -127,6 +135,7 @@ impl From<User> for MeResponse {
             id: user.id().to_string(),
             email: user.email().to_string(),
             username: user.username().clone(),
+            role: "User".to_string(), // TODO: Cargar del repositorio de roles en el futuro
             email_verified: user.is_email_verified(),
         }
     }

@@ -45,12 +45,12 @@ pub struct UserPersistenceData {
 
 impl User {
     /// Constructor para nuevos usuarios.
-    pub fn new(email: Email, password_hash: PasswordHash) -> Self {
+    pub fn new(email: Email, password_hash: PasswordHash, username: Option<String>) -> Self {
         let now = Utc::now();
         Self {
             id: UserId::new(),
             email,
-            username: None,
+            username,
             password_hash,
             avatar_url: None,
             email_verified: false,

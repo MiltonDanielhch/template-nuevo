@@ -2,10 +2,10 @@ import type { APIRoute } from "astro";
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   const data = await request.formData();
-  const username = data.get("username");
-  const email = data.get("email");
-  const password = data.get("password");
-  // const role = data.get("role"); // El backend actual asigna rol por defecto o mediante lógica interna
+  const username = data.get("username")?.toString();
+  const email = data.get("email")?.toString();
+  const password = data.get("password")?.toString();
+  const role = data.get("role")?.toString() || "User";
 
   const token = cookies.get("auth_token")?.value;
 
@@ -17,9 +17,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        email: email?.toString(),
-        password: password?.toString(),
-        username: username?.toString(),
+        email,
+        password,
+        username,
+        role,
       }),
     });
 

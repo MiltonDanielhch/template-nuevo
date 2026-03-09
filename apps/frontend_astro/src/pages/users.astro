@@ -13,13 +13,19 @@ const token = Astro.cookies.get("auth_token")?.value;
 let allUsers = [];
 
 try {
+  console.log("Fetching users from backend with token:", token ? "present" : "missing");
   const response = await fetch("http://localhost:8081/users", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+  
   if (response.ok) {
     allUsers = await response.json();
+    console.log(`Successfully fetched ${allUsers.length} users`);
+  } else {
+    const errorText = await response.text();
+    console.error(`Error fetching users: ${response.status} - ${errorText}`);
   }
 } catch (error) {
   console.error("Error fetching users on SSR:", error);
@@ -65,7 +71,7 @@ try {
             </div>
             <button
               class="inline-flex h-8 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-3 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer"
-              @click="openModal = true"
+              @click="resetForm(); openModal = true"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
               Nuevo Usuario
@@ -125,8 +131,8 @@ try {
                         </td>
                         <td class="px-4 py-3 text-sm">
                           <span class="inline-flex items-center gap-1.5 text-foreground">
-                            <span class={`h-1.5 w-1.5 rounded-full ${user.status === 'Activo' ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                            {user.status}
+                            <span class={`h-1.5 w-1.5 rounded-full ${(user.status || 'Activo') === 'Activo' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                            {user.status || 'Activo'}
                           </span>
                         </td>
                         <td class="px-4 py-3 text-right text-sm">
@@ -187,12 +193,12 @@ try {
         </div>
 
         <form
-          x-ref="userForm"
+          x-ref="userForm" method="POST" @submit.prevent
           :hx-post="isEdit ? `/api/users/edit?id=${editId}` : '/api/users/create'"
           :hx-target="isEdit ? `#user-${editId}` : '#users-table-body'"
           :hx-swap="isEdit ? 'outerHTML' : 'afterbegin'"
           class="p-4 space-y-4"
-          @htmx:after-request="if($event.detail.successful) { openModal = false; resetForm(); }"
+          @htmx:after-request="if($event.detail.successful) { openModal = false; resetForm(); htmx.process(document.body); }"
         >
           <div class="space-y-2">
             <label for="username" class="text-sm font-medium">Nombre de Usuario</label>

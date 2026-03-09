@@ -48,6 +48,18 @@ editUser(id, name, email, role) {
 
 ---
 
+## 🏛️ Integración: Fase 7 - Robustez UI (HTMX & Alpine Stores)
+
+| Nivel | Nombre | Descripción |
+| --- | --- | --- |
+| **1** | **¿Qué es?** (Definición Técnica) | Optimización del sistema de estados frontend mediante la inicialización robusta de **Stores Globales de Alpine.js** y el refuerzo de seguridad en formularios **HTMX** (POST method y prevent defaults). |
+| **2** | **¿Para qué sirve?** (El Propósito) | Evita errores de "Variable no definida" al usar el Command Palette y previene que los formularios se envíen por error como peticiones GET tradicionales, lo cual rompía la creación de usuarios. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Stores:** Usamos `is:inline` en Astro para asegurar que `Alpine.store()` se ejecute antes que cualquier otro script. <br> 2. **HTMX Fix:** Forzamos `method="POST"` y `@submit.prevent` en los formularios modales para asegurar que HTMX maneje la petición asíncrona correctamente. <br> 3. **Re-procesamiento:** Al insertar nuevas filas, llamamos a `htmx.process()` para que los nuevos botones de "Editar" funcionen instantáneamente. |
+| **4** | **Ejemplo Práctico 3026** | **Inicialización de Store:** <br> `<script is:inline>document.addEventListener('alpine:init', () => { Alpine.store('commandPalette', { ... }) })</script>` <br> **Formulario Robusto:** <br> `<form method="POST" @submit.prevent ...>` |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Confiabilidad:** Un sistema que falla aleatoriamente al cargar o enviar datos no es profesional. Estas correcciones garantizan una experiencia de usuario sólida y predecible. |
+
+---
+
 ## 🏛️ Integración: Fase 5 - Modales Reactivos con Alpine.js (Creación de Usuarios)
 
 | Nivel | Nombre | Descripción |

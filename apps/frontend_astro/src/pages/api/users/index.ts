@@ -45,8 +45,8 @@ export const GET: APIRoute = async ({ url, request, cookies }) => {
           </td>
           <td class="px-4 py-3 text-sm">
             <span class="inline-flex items-center gap-1.5 text-foreground">
-              <span class="h-1.5 w-1.5 rounded-full ${user.status === "Activo" ? "bg-green-500" : "bg-red-500"}"></span>
-              ${user.status}
+              <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+              Activo
             </span>
           </td>
           <td class="px-4 py-3 text-right text-sm">

@@ -51,8 +51,9 @@ crates/
 
 ---
 
-## Próximos Pasos: ¡Sistema Base Completo!
+## Próximos Pasos: Expansión y Seguridad
 
-El Bloque VI (RBAC) y Bloque VII (CRUD) están listos. El sistema es ahora robusto y extensible.
-
-¡El sistema está estable y monitorizado!
+1. **Gestión de Perfil**: Endpoints para que el usuario actualice su propia información (email, password).
+2. **Seguridad Avanzada**: Implementar Rate Limiting por IP para evitar ataques de fuerza bruta.
+3. **Notificaciones**: Sistema base para envío de correos (Verificación de cuenta, Reseteo de contraseña).
+4. **Auditoría Estricta**: Middleware para registrar acciones sensibles en `audit_logs`.

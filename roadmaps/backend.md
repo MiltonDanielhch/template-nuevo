@@ -172,3 +172,4 @@
 | 3 | Use Cases CRUD | `core_logic` | `ListUsers`, `UpdateUser`, `DeleteUser`. | ✅ |
 | 4 | API Handlers | `api_server` | Endpoints `GET /users`, `PUT /users/:id`, `DELETE /users/:id`. | ✅ |
 | 5 | Auth Guards | `api_server` | Protección de rutas CRUD mediante `CurrentUser`. | ✅ |
+| 6 | Username Support | `core_logic` + `infra_db` | Soporte para nombres de usuario en registro y listado. | ✅ |
