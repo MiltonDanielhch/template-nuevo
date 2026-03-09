@@ -10,7 +10,7 @@ export const prerender = false;
 
 // Obtenemos los usuarios reales del backend Rust
 const token = Astro.cookies.get("auth_token")?.value;
-let _allUsers = [];
+let allUsers = [];
 
 try {
   const response = await fetch("http://localhost:8081/users", {
@@ -19,7 +19,7 @@ try {
     },
   });
   if (response.ok) {
-    _allUsers = await response.json();
+    allUsers = await response.json();
   }
 } catch (error) {
   console.error("Error fetching users on SSR:", error);
