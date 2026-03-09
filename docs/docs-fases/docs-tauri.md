@@ -74,4 +74,3 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 | **3** | **¿Cómo funciona?** (La Anatomía) | Configuramos en `tauri.conf.json` los `bundle.windows` e `identifier` ("bo.lab3026.app"). Instalamos `tauri-plugin-deep-link`. Al ejecutar `bunx tauri build`, Tauri descarga las herramientas de compilación de Windows (Wix Toolset) empaquetando todo el HTML/CSS y el binario de Rust en instaladores listos. |
 | **4** | **Ejemplo Práctico 3026** | **Enlazar desde la web:** <br> ```json "plugins": { "deep-link": { "desktop": { "schemes": ["lab3026"] } } } ``` <br> Cualquiera que haga clic en `lab3026://abrir` iniciará la aplicación instalada. |
 | **5** | **¿Por qué es vital para nuestro sistema?** | Otorga una **apariencia y distribución "Enterprise"** (Clase Corporativa) y garantiza la seguridad mediante sandboxing e instaladores Windows oficiales, elevando la calidad del código 3026. |
-

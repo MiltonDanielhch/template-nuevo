@@ -120,6 +120,6 @@ Verificar guardado local.
 Cuando instalas el `tauri-plugin-store` que hicimos en el "Auth Sync", Tauri lo único que guardó en tu computadora fue el JWT (el string del Token). Mantiene a tu Astro hidratado para que no tengas que iniciar sesión mil veces, igualito a como lo haría Google Chrome con localStorage, pero a nivel de sistema operativo.
 
 **Por lo tanto, si en un futuro decides añadir un Rol "Finanzas" en tu BD:**
-Solo editas la API (Axum) y el Frontend (Astro). A Tauri no tienes que tocarle **ninguna** línea de código. La próxima vez que generes el instalador con `bun run tauri build`, Tauri agarrará la última versión de tu Astro y la envolverá solita. 
+Solo editas la API (Axum) y el Frontend (Astro). A Tauri no tienes que tocarle **ninguna** línea de código. La próxima vez que generes el instalador con `bun run tauri build`, Tauri agarrará la última versión de tu Astro y la envolverá solita.
 
 **Resumen:** Tauri es el chasis (el auto). Tu Backend y Astro son el Motor. Si mejoras el motor, el auto sigue corriendo perfectamente sin tener que rediseñarlo.

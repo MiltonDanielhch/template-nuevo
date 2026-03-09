@@ -121,7 +121,7 @@ const token = Astro.cookies.get("auth_token")?.value || "";
           try {
             const tokenInfo = document.querySelector('meta[name="auth-token"]')?.getAttribute('content');
             const store = await load('store.json', { autoSave: false });
-            
+
             if (tokenInfo) {
               await store.set('auth_token', tokenInfo);
             } else {
