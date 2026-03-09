@@ -12,15 +12,19 @@
   "app": {
     "windows": [
       {
-        "title": "Laboratorio 3026",
-        "width": 800,
-        "height": 600,
+        "title": "Laboratorio 3026 - Soberanía de Escritorio",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 900,
+        "minHeight": 600,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "center": true
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "capabilities": ["main"]
     }
   },
   "bundle": {

@@ -11,7 +11,7 @@
 |---|-------|------------------------|:------:|
 | 1 | Tauri Init & Workspace | `src-tauri/`: Inicializar y añadir al workspace de Cargo. | ✅ |
 | 2 | Sintonía Astro | `tauri.conf.json`: Configurar `devPath` y `distDir` para Astro 5.0. | ✅ |
-| 3 | Permissions | `src-tauri/capabilities/`: Definir permisos de red y acceso local. | ⏳ |
+| 3 | Permissions | `src-tauri/capabilities/`: Definir permisos de red y acceso local. | ✅ |
 | 4 | Window Logic | `src-tauri/src/main.rs`: Lógica de creación de ventanas nativas. | ⏳ |
 
 ---
@@ -42,7 +42,7 @@
 ## 📊 Progreso General
 
 ```
-BLOQUE I:  ██████░░░░░░ 50% (2/4 completados)
+BLOQUE I:  ████████████ 100% (4/4 completados)
 BLOQUE II: ░░░░░░░░░░░░ 0% (0/3 completados)
 BLOQUE III:░░░░░░░░░░░░ 0% (0/4 completados)
 ```
