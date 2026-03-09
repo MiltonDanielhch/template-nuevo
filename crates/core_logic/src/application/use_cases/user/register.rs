@@ -32,6 +32,7 @@ use std::sync::Arc;
 pub struct RegisterUserCommand {
     pub email: String,
     pub password: String,
+    pub username: Option<String>,
 }
 
 /// Caso de uso para registrar un nuevo usuario.
@@ -66,7 +67,10 @@ impl RegisterUser {
             .context("Error al hashear la contraseña")?;
 
         // 4. Crear la entidad de dominio User
-        let new_user = User::new(email, password_hash);
+        let mut new_user = User::new(email, password_hash);
+        if let Some(username) = command.username {
+            new_user.set_username(Some(username));
+        }
 
         // 5. Guardar el usuario usando el repositorio
         self.user_repo

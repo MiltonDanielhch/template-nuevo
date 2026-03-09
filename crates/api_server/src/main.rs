@@ -26,11 +26,26 @@ use sqlx::sqlite::SqlitePoolOptions;
 use std::env;
 use std::{net::SocketAddr, path::Path};
 use tokio::net::TcpSocket;
+use tracing::{info, error};
+use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
 #[tokio::main]
 async fn main() {
     // Carga las variables de entorno desde el archivo .env
     dotenv().ok();
+
+    // --- Sintonía de Logs ---
+    // Configuramos el sistema de logs persistentes (Consola + Archivo)
+    let file_appender = tracing_appender::rolling::daily("logs", "backend.log");
+    let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
+
+    tracing_subscriber::registry()
+        .with(EnvFilter::from_default_env())
+        .with(fmt::layer().with_writer(non_blocking).with_ansi(false)) // Log a archivo (sin colores ANSI)
+        .with(fmt::layer().with_writer(std::io::stdout)) // Log a consola (con colores ANSI por defecto)
+        .init();
+
+    info!("🚀 Iniciando Laboratorio 3026: Sintonía de Backend...");
 
     // Cargar configuración del servidor (Puerto y Host)
     let config = ServerConfig::from_env();
@@ -46,7 +61,7 @@ async fn main() {
 
     // 2. Ejecutar las migraciones de SQLx.
     // La ruta debe ser relativa al WORKDIR del contenedor (`/app`).
-    println!("📡 Sintonizando la base de datos: aplicando migraciones...");
+    info!("📡 Sintonizando la base de datos: aplicando migraciones...");
 
     // Sintonía de Rutas: Buscamos las migraciones tanto en local (Workspace) como en Docker.
     let migrations_path = if Path::new("./migrations").exists() {
@@ -66,7 +81,7 @@ async fn main() {
         .run(&pool)
         .await
         .expect("Error Crítico: Fallaron las migraciones de la base de datos.");
-    println!("✅ Migraciones aplicadas correctamente.");
+    info!("✅ Migraciones aplicadas correctamente.");
 
     // 1. Construir el AppState (Inyección de Dependencias)
     let app_state = create_app_state(pool);
@@ -94,16 +109,17 @@ async fn main() {
         .expect("No se pudo configurar SO_REUSEADDR");
     socket
         .bind(socket_addr)
-        .unwrap_or_else(|e| panic!("Error Crítico: No se pudo enlazar a {}: {}", addr, e));
+        .unwrap_or_else(|e| {
+            error!("Error Crítico: No se pudo enlazar a {}: {}", addr, e);
+            panic!("Error Crítico: No se pudo enlazar a {}: {}", addr, e)
+        });
     let listener = socket
         .listen(1024)
         .expect("No se pudo escuchar en el socket");
 
-    println!(
-        "🚀 Servidor API 3026 listo para la sintonía en {}",
-        listener.local_addr().unwrap()
-    );
+    info!("✅ Servidor escuchando en: http://{}", addr);
+
     axum::serve(listener, app)
         .await
-        .expect("Error Crítico: El servidor falló en tiempo de ejecución.");
+        .expect("Error Crítico: Fallo en el servidor Axum");
 }

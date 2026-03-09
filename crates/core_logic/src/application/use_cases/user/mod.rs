@@ -5,9 +5,12 @@
 //! como el registro, inicio de sesión, actualización de perfil, etc.
 
 pub mod create_session;
+pub mod delete;
 pub mod get_user_by_id;
+pub mod list;
 pub mod login;
 pub mod register;
+pub mod update;
 
 pub use create_session::CreateSession;
 pub use get_user_by_id::GetUserById;

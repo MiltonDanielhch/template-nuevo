@@ -2,21 +2,59 @@ import type { APIRoute } from "astro";
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   const data = await request.formData();
+  const username = data.get("username");
   const email = data.get("email");
   const password = data.get("password");
   const confirmPassword = data.get("confirmPassword");
 
-  // Validación básica
   if (password !== confirmPassword) {
     return new Response(JSON.stringify({ error: "Las contraseñas no coinciden" }), { status: 400 });
   }
 
-  // En un entorno real, aquí llamaríamos al backend Axum
-  // const response = await fetch("http://localhost:8080/api/auth/register", { ... });
+  try {
+    // 1. Registrar al usuario en el backend Rust
+    const registerResponse = await fetch("http://localhost:8080/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, username }),
+    });
 
-  if (email && password) {
-    // Simulamos que el backend nos devuelve un token tras el registro
-    const token = `simulated_session_token_${Date.now()}`;
+    if (!registerResponse.ok) {
+      const errorData = await registerResponse.json();
+      const errorMessage = errorData.error || "Error en el registro";
+
+      // Si es una petición HTMX, devolvemos un pequeño fragmento HTML para el error
+      // o podemos devolver el formulario completo con el error.
+      // Para simplificar, devolvemos un mensaje que HTMX pueda manejar.
+      return new Response(
+        `<div class="bg-destructive/10 text-destructive text-sm p-3 rounded-md mb-4 animate-in fade-in slide-in-from-top-1">
+          ${errorMessage}
+          <button class="ml-2 underline" onclick="window.location.reload()">Reintentar</button>
+        </div>`,
+        {
+          status: 200, // Devolvemos 200 para que HTMX haga el swap en el target
+          headers: { "Content-Type": "text/html" },
+        },
+      );
+    }
+
+    // 2. Si el registro fue exitoso, hacemos login automáticamente para obtener el token
+    const loginResponse = await fetch("http://localhost:8080/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!loginResponse.ok) {
+      // Si el registro funcionó pero el login falló, redirigimos al login
+      return new Response(null, {
+        status: 200,
+        headers: { "HX-Redirect": "/login" },
+      });
+    }
+
+    const loginData = await loginResponse.json();
+    const token = loginData.token;
 
     cookies.set("auth_token", token, {
       path: "/",
@@ -27,12 +65,13 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     return new Response(null, {
-      status: 201, // Created
-      headers: {
-        "HX-Redirect": "/dashboard",
-      },
+      status: 201,
+      headers: { "HX-Redirect": "/dashboard" },
+    });
+  } catch (error) {
+    console.error("Auth Error:", error);
+    return new Response(JSON.stringify({ error: "Error de conexión con el servidor" }), {
+      status: 500,
     });
   }
-
-  return new Response(JSON.stringify({ error: "Datos de registro incompletos" }), { status: 400 });
 };

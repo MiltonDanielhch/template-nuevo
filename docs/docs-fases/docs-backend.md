@@ -41,5 +41,17 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 
 ---
 
+### 🧠 Integración: Fase 5.3 - Sintonía de Telemetría (Logging & Tracing)
+
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Implementación de un sistema de registro (logging) persistente utilizando `tracing`, `tracing-subscriber` y `tracing-appender`. Permite capturar eventos del sistema tanto en la consola como en archivos físicos con rotación diaria. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Sirve para tener visibilidad total de lo que ocurre en el servidor ("Caja Negra"). El desastre que evita es que, ante un error en producción, no sepamos qué pasó (¿Falló la DB? ¿Fue un 404? ¿Un error de validación?). |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Capas (Layers):** Configuramos dos capas en el suscriptor. Una envía logs a `stdout` (consola) y otra a un `RollingFileAppender`. <br> 2. **Rotación:** El appender crea un archivo nuevo cada día (`backend.log.YYYY-MM-DD`) en la carpeta `logs/`. <br> 3. **Filtrado:** Usamos `EnvFilter` para que, vía `.env`, podamos silenciar logs ruidosos (ej: sqlx) y enfocarnos en nuestra lógica (`debug` o `info`). |
+| **4** | **Ejemplo Práctico 3026** | **Inicialización en `main.rs`:** <br> ```rust let file_appender = tracing_appender::rolling::daily("logs", "backend.log"); tracing_subscriber::registry().with(EnvFilter::from_default_env()).with(fmt::layer().with_writer(non_blocking)).init(); info!("🚀 Servidor Iniciado"); ``` <br> **Uso en Handlers:** `debug!("Payload recibido: {:?}", payload);` |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Mantenibilidad:** Reduce el tiempo de diagnóstico de fallos de horas a segundos. <br> **Auditoría:** Los archivos de log persistentes son la "caja negra" legal y técnica de cualquier sistema profesional. |
+
+---
+
 ## 🔐 BLOQUE IV: SESIONES Y AUTH
 ... (resto del contenido anterior)

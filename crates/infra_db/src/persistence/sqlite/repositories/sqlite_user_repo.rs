@@ -126,6 +126,32 @@ impl IUserRepository for SqliteUserRepository {
         .fetch_optional(&self.pool)
         .await?;
 
-        db_user.map_or(Ok(None), |u| Self::to_domain_user(u).map(Some))
+        db_user.map(Self::to_domain_user).transpose()
+    }
+
+    async fn find_all(&self) -> Result<Vec<User>> {
+        let db_users = sqlx::query_as!(DbUser, "SELECT * FROM users WHERE deleted_at IS NULL")
+            .fetch_all(&self.pool)
+            .await?;
+
+        db_users
+            .into_iter()
+            .map(Self::to_domain_user)
+            .collect::<Result<Vec<User>>>()
+    }
+
+    async fn delete(&self, id: &UserId) -> Result<()> {
+        let id_str = id.as_str();
+        let now = Utc::now().naive_utc();
+        sqlx::query!(
+            "UPDATE users SET deleted_at = ?, updated_at = ? WHERE id = ?",
+            now,
+            now,
+            id_str
+        )
+        .execute(&self.pool)
+        .await?;
+
+        Ok(())
     }
 }

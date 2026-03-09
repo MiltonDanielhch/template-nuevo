@@ -1,13 +1,27 @@
 import type { APIRoute } from "astro";
-import { deleteUser } from "@/lib/db";
 
-export const DELETE: APIRoute = async ({ url }) => {
+export const DELETE: APIRoute = async ({ url, cookies }) => {
   const id = url.searchParams.get("id");
+  const token = cookies.get("auth_token")?.value;
 
   if (id) {
-    deleteUser(id);
-    // HTMX espera una respuesta vacía o un fragmento para eliminar el elemento (hx-swap="outerHTML" con respuesta vacía elimina el target)
-    return new Response(null, { status: 200 });
+    try {
+      const response = await fetch(`http://localhost:8080/users/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al eliminar usuario en el backend");
+      }
+
+      return new Response(null, { status: 200 });
+    } catch (error) {
+      console.error("Backend Error:", error);
+      return new Response("Error de conexión con el servidor", { status: 500 });
+    }
   }
 
   return new Response(JSON.stringify({ error: "ID no proporcionado" }), { status: 400 });

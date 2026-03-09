@@ -10,27 +10,43 @@ export const GET: APIRoute = async ({ cookies }) => {
     });
   }
 
-  // En un entorno real, aquí validaríamos el token con el backend Rust
-  // const response = await fetch("http://localhost:8080/api/auth/me", { ... });
+  try {
+    const response = await fetch("http://localhost:8080/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  return new Response(
-    JSON.stringify({
-      id: "1",
-      name: "Admin Principal",
-      email: "admin@lab3026.com",
-      role: "Administrador",
-    }),
-    {
+    if (!response.ok) {
+      return new Response(JSON.stringify({ error: "Sesión inválida" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const userData = await response.json();
+    return new Response(JSON.stringify(userData), {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    },
-  );
+    });
+  } catch (error) {
+    console.error("Me Error:", error);
+    return new Response(JSON.stringify({ error: "Error de conexión con el servidor" }), {
+      status: 500,
+    });
+  }
 };
 
 export const HEAD: APIRoute = async ({ cookies }) => {
   const token = cookies.get("auth_token")?.value;
-  if (!token) {
-    return new Response(null, { status: 401 });
+  if (!token) return new Response(null, { status: 401 });
+
+  try {
+    const response = await fetch("http://localhost:8080/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return new Response(null, { status: response.ok ? 200 : 401 });
+  } catch {
+    return new Response(null, { status: 500 });
   }
-  return new Response(null, { status: 200 });
 };

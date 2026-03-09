@@ -1,56 +1,38 @@
-🚀 PROMPT DE SINTONÍA: LABORATORIO 3026 (Fase 3 - Integración Backend + Dashboard)
-Actúa como Ingeniero de Software Senior y Arquitecto Jefe. La autenticación HTMX está completa. Ahora implementaremos la integración con el backend y el dashboard.
+🚀 PROMPT DE SINTONÍA: LABORATORIO 3026 (Fase 4 - Telemetría y Consolidación)
+Actúa como Ingeniero de Software Senior y Arquitecto Jefe. La integración real con el backend de Rust (Axum 0.8) y el sistema de telemetría están completos.
 
 ---
 
 🧭 1. CONTEXTO Y ESTADO (Lo que ya tenemos)
-- ✅ Esquemas ArkType (login/register)
-- ✅ Entidades (User, Session, AuthResponse)
-- ✅ Cliente API (auth-client.ts)
-- ✅ HTMX Bridge (hx-bridge.ts)
-- ✅ Componentes UI (Button, Input, Card)
-- ✅ Página Login HTMX
-- ✅ Página Register HTMX
+- ✅ **Auth Real**: Astro conectado a los endpoints de Rust para Login/Register/Me.
+- ✅ **CRUD Real**: Gestión de usuarios conectada al backend de Rust (Listar, Editar, Eliminar).
+- ✅ **Telemetría Frontend**: Logger de HTMX y listeners de errores en `MainLayout`.
+- ✅ **Fix de Alpine+HTMX**: Uso de `htmx.process()` para atributos dinámicos en modales.
+- ✅ **Sincronía de Datos**: Unificación del campo `username` en todo el flujo.
 
-🧭 2. PRÓXIMO OBJETIVO: INTEGRACIÓN BACKEND + DASHBOARD
+🧭 2. PRÓXIMO OBJETIVO: SOBERANÍA MULTIPLATAFORMA (Tauri Bridge)
 
 Vamos a crear:
-1. **Middleware de Auth** - ✅ Validar sessiones en SSR
-2. **Dashboard Page** - ✅ Página principal tras login con Alpine.js
-3. **Logout** - ✅ Cerrar sesión y limpiar cookies
-4. **Navbar/Sidebar** - ✅ Navegación y componentes compartidos
-5. **Command Palette** - ✅ Buscador global con `Ctrl+K`
-6. **Health Monitor** - ✅ Indicador de latencia en tiempo real
-7. **Auth Check Fix** - ✅ Eliminado 404 en `/api/auth/me`
+1. **Tauri Config** - Configuración de `tauri.conf.json` para Astro 5.0.
+2. **Window Manager** - Gestión de ventanas nativas y menús.
+3. **Local Storage Bridge** - Persistencia sincronizada entre Web y Desktop.
+4. **Build Pipeline** - Generación de binarios `.exe` para Windows.
 
 ---
 
-🧭 3. SIGUIENTE OBJETIVO: SOBERANÍA DE DATOS (CRUD de Usuarios)
+🧭 3. SIGUIENTE OBJETIVO: GESTIÓN DE ACCESO (RBAC UI)
 
 Vamos a implementar:
-1. **Partial Fragments** - ✅ Definir fragmentos HTML para HTMX.
-2. **User Repository (Frontend)** - ✅ Adaptador para el backend Rust.
-3. **Admin Users Page** - ✅ Tabla interactiva con HTMX (Search/Delete/Edit).
-4. **Modales con Alpine** - ✅ Creación y edición de usuarios sin recarga.
-5. **Cursor & Event Fix** - ✅ Botón "Nuevo Usuario" con puntero y evento Alpine.
+1. **Role-Based Guards** - Componentes que ocultan elementos según el rol del usuario (Admin/User).
+2. **Permissions Editor** - Interfaz para asignar roles a usuarios (conectado al Bloque VI del Backend).
 
 ---
 
-🧭 4. PRÓXIMO OBJETIVO: SOBERANÍA MULTIPLATAFORMA (Tauri Bridge)
-
-Vamos a crear:
-1. **Tauri Config** - Configuración de `tauri.conf.json`.
-2. **Window Manager** - Gestión de ventanas y menús nativos.
-3. **Local Storage Bridge** - Persistencia entre el navegador y el SO.
-4. **Build Pipeline** - Generación de binarios para Windows.
-
----
-
-🛠️ 5. STACK Y REGLAS (Fase 5)
-- Integración: HTMX OOB Swaps para actualizaciones parciales.
-- UX: Feedback instantáneo con Alpine e indicadores de carga.
+🛠️ 4. STACK Y REGLAS (Fase 6)
+- Integración: Telemetría de HTMX para depuración en vivo.
+- UX: Feedback visual en modales y tablas tras acciones exitosas.
 - Reglas: Protocolo 3026, código limpio y modular.
 
 ---
 
-🚀 ACCIÓN: Inicia la implementación del CRUD de Usuarios.
+🚀 ACCIÓN: Inicia la preparación del entorno Tauri para escritorio.

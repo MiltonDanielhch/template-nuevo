@@ -48,6 +48,21 @@ const { title } = Astro.props;
           htmx.config.defaultSettleDelay = 0;
           htmx.config.historyCacheSize = 0;
           htmx.config.refreshOnHistoryMiss = false;
+
+          // --- LOGS DE FRONTEND (DEBUG) ---
+          htmx.logger = function(elt, event, data) {
+            if(console) {
+              console.debug("HTMX Event:", event, elt, data);
+            }
+          };
+
+          document.body.addEventListener('htmx:responseError', (e) => {
+            console.error("HTMX Response Error:", e.detail.xhr.status, e.detail.xhr.responseText);
+          });
+
+          document.body.addEventListener('htmx:sendError', (e) => {
+            console.error("HTMX Send Error (Red):", e.detail);
+          });
         }
       });
 

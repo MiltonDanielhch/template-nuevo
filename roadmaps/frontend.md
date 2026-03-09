@@ -27,8 +27,8 @@
 |---|-------|------------------------|:------:|
 | 1 | ADN & Fragments | `domain/entities/`: Tipos Protobuf y definición de Partial Frames para HTMX. | ✅ |
 | 2 | Aduana ArkType | `domain/schemas/`: Esquemas de validación compartidos para Cliente/Servidor. | ✅ |
-| 3 | API Adapter | `infrastructure/api/auth-client.ts`: Cliente para peticiones tradicionales y streaming. | ✅ |
-| 4 | HTMX Bridge | `infrastructure/api/hx-bridge.ts`: Configuración de headers HTMX (HX-Request). | ✅ |
+| 3 | API Adapter | `infrastructure/api/auth-client.ts`: Cliente para peticiones reales al backend Rust. | ✅ |
+| 4 | HTMX Bridge | `infrastructure/api/hx-bridge.ts`: Configuración de headers HTMX y telemetría de eventos. | ✅ |
 | 5 | Sincronía de Estado | `application/stores/`: Nanostores solo para sesión; HTMX para datos de vista. | ✅ |
 | 6 | Middleware Auth | `src/middleware.ts`: Validación de JWT/Session en cada petición SSR. | ✅ |
 
@@ -39,7 +39,7 @@
 
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
-| 1 | Auth Flow HTMX | `presentation/pages/login.astro`, `register.astro`: Login/Register usando `hx-post` hacia Axum. | ✅ |
+| 1 | Auth Flow HTMX | `presentation/pages/login.astro`, `register.astro`: Login/Register conectado a Axum. | ✅ |
 | 2 | Use Cases UI | `application/use-cases/`: Orquestación de comandos entre UI y Backend. | ✅ |
 | 3 | Dashboard Reactivo | `presentation/pages/dashboard/`: Polling/OOB Swap con HTMX para métricas. | ✅ |
 | 4 | Command Palette | `presentation/components/command/`: Buscador global con Alpine.js. | ✅ |
@@ -53,7 +53,8 @@
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
 | 1 | Tauri Bridge | `src-tauri/`: Wrapper para escritorio con acceso a FS local. | ⏳ |
-| 2 | PWA & SW | `public/`: Manifest y Service Worker para carga offline de assets. | ⏳ |
+| 2 | Window Manager | Gestión de ventanas y menús nativos. | ⏳ |
+| 3 | PWA & SW | `public/`: Manifest y Service Worker para carga offline de assets. | ⏳ |
 
 ---
 
@@ -63,7 +64,7 @@
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
 | 1 | Role Guard | `presentation/components/auth/Guard.astro`: Control de visibilidad del lado servidor. | ✅ |
-| 2 | Admin Panel | `presentation/pages/admin/`: CRUD completo (Listar, Crear, Editar, Eliminar) con HTMX. | ✅ |
+| 2 | Admin Panel | `presentation/pages/users.astro`: CRUD completo (Listar, Crear, Editar, Eliminar) real con HTMX. | ✅ |
 
 ---
 
@@ -73,6 +74,6 @@
 BLOQUE I: ████████████ 100% (7/7 completados)
 BLOQUE II: ████████████ 100% (6/6 completados)
 BLOQUE III: ████████████ 100% (5/5 completados)
-BLOQUE IV: ██░░░░░░░░░░ 0% (0/2 completados)
+BLOQUE IV: ██░░░░░░░░░░ 0% (0/3 completados)
 BLOQUE V: ████████████ 100% (2/2 completados)
 ```

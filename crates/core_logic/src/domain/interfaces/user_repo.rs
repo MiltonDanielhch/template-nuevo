@@ -31,4 +31,8 @@ pub trait IUserRepository: Send + Sync {
     async fn find_by_id(&self, id: &UserId) -> Result<Option<User>>;
     /// Busca un usuario por su `Email`. Devuelve `None` si no se encuentra.
     async fn find_by_email(&self, email: &Email) -> Result<Option<User>>;
+    /// Busca todos los usuarios activos.
+    async fn find_all(&self) -> Result<Vec<User>>;
+    /// Elimina (Soft Delete) un usuario de la capa de persistencia.
+    async fn delete(&self, id: &UserId) -> Result<()>;
 }

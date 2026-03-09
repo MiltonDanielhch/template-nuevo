@@ -74,7 +74,7 @@
 | # | Tarea | Descripción | Estado |
 |---|-------|-------------|--------|
 | 1 | Proto Gen | Generar código Rust desde `.proto` usando buf | ⏳ |
-| 2 | Mappers | Traductores entre Proto Structs &lt;-&gt; Domain Entities | ⏳ |
+| 2 | Mappers | Traductores entre Proto Structs <-> Domain Entities | ⏳ |
 
 ### 📅 Fase 2.2: Identidad 3026
 
@@ -88,6 +88,7 @@
 | 6 | Tests de Integración | `api_server/tests/integration_tests.rs` | Tests para register y login. | ✅ |
 | 7 | Session Tokens | `infra_db` + `core_logic` | Sistema de tokens de sesión. | ✅ |
 | 8 | Migraciones | `infra_db/migrations` | RBAC, Users, Tokens, Audit, Sessions. | ✅ |
+| 9 | **Telemetría (Logging)** | `api_server` | Sistema de logs diarios persistentes con tracing y rotación. | ✅ |
 
 ---
 
@@ -100,8 +101,8 @@
 |---|-------|-----------|-------------|:------:|
 | 1 | AppState | `api_server` | Struct con `Arc<dyn IUserRepository>`. | ✅ |
 | 2 | DI Container | `api_server/config/di.rs` | Unir `SqliteUserRepository` con `IUserRepository`. | ✅ |
-| 3 | Axum Router | `api_server/routes.rs` | Configuración de rutas y `State`. | ✅ |
-| 4 | Handlers | `api_server/entry_points/api/v1/user_handlers.rs` | Handler `POST /register`. | ✅ |
+| 3 | Axum Router | `api_server/routes.rs` | Configuración de rutas, `State` y `TraceLayer`. | ✅ |
+| 4 | Handlers CRUD | `api_server/v1/user_handlers.rs` | Registro, Login, Listar, Editar y Eliminar usuarios. | ✅ |
 | 5 | Value Object Display | `core_logic/domain/value_objects` | Implementar `Display` para `UserId`, `Email`. | ✅ |
 | 6 | DomainError | `core_logic/domain/errors` | Variante `UserAlreadyExists`. | ✅ |
 | 7 | Email Duplicate Check | `core_logic/application/use_cases/user/register.rs` | Verificar email antes de guardar. | ✅ |
@@ -159,19 +160,15 @@
 
 ---
 
-## 🔧 Comandos Maestro (Justfile sugerido)
+## 👥 BLOQUE VII: SOBERANÍA DE DATOS (CRUD de Usuarios)
 
-```just
-# Código 3026 - Centro de Mando
+**Objetivo:** Implementar la gestión completa de usuarios en el backend real.
+**Estado:** ✅ Completado
 
-audit:
-    python3 ver-proyecto.py
-
-proto-gen:
-    buf generate
-
-dev:
-    cargo watch -x 'run -p api_server'
-
-db-migrate:
-    sqlx migrate run --source crates/infra_db/migrations
+| # | Tarea | Ubicación | Descripción | Estado |
+|---|-------|-----------|-------------|:------:|
+| 1 | IUserRepository Ext | `core_logic` | Añadir `find_all` y `delete` al contrato. | ✅ |
+| 2 | SQLite Repo Ext | `infra_db` | Implementar `find_all` y `delete` con Soft Delete. | ✅ |
+| 3 | Use Cases CRUD | `core_logic` | `ListUsers`, `UpdateUser`, `DeleteUser`. | ✅ |
+| 4 | API Handlers | `api_server` | Endpoints `GET /users`, `PUT /users/:id`, `DELETE /users/:id`. | ✅ |
+| 5 | Auth Guards | `api_server` | Protección de rutas CRUD mediante `CurrentUser`. | ✅ |

@@ -2,15 +2,28 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { getUsers } from "@/lib/db";
 import Navbar from "@/presentation/components/shared/Navbar.astro";
 import Sidebar from "@/presentation/components/shared/Sidebar.astro";
 import MainLayout from "@/presentation/layouts/MainLayout.astro";
 
 export const prerender = false;
 
-// Obtenemos los usuarios reales de nuestra "DB" simulada
-const allUsers = getUsers();
+// Obtenemos los usuarios reales del backend Rust
+const token = Astro.cookies.get("auth_token")?.value;
+let allUsers = [];
+
+try {
+  const response = await fetch("http://localhost:8080/users", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (response.ok) {
+    allUsers = await response.json();
+  }
+} catch (error) {
+  console.error("Error fetching users on SSR:", error);
+}
 ---
 
 <MainLayout title="Gestión de Usuarios">
@@ -20,17 +33,21 @@ const allUsers = getUsers();
       openModal: false,
       isEdit: false,
       editId: '',
-      form: { name: '', email: '', password: '', role: 'Usuario' },
-      editUser(id, name, email, role) {
+      form: { username: '', email: '', password: '', role: 'User' },
+      editUser(id, username, email, role) {
+        console.log('Editing user:', { id, username, email, role });
         this.isEdit = true;
         this.editId = id;
-        this.form = { name, email, password: '', role };
+        this.form = { username: username || '', email: email || '', password: '', role: role || 'User' };
         this.openModal = true;
+        // Forzamos a HTMX a reconocer el cambio de atributos
+        this.$nextTick(() => htmx.process(this.$refs.userForm));
       },
       resetForm() {
         this.isEdit = false;
         this.editId = '';
-        this.form = { name: '', email: '', password: '', role: 'Usuario' };
+        this.form = { username: '', email: '', password: '', role: 'User' };
+        this.$nextTick(() => htmx.process(this.$refs.userForm));
       }
     }"
     @user-created.window="openModal = false; resetForm(); htmx.process(document.body)"
@@ -97,7 +114,7 @@ const allUsers = getUsers();
                   <tbody id="users-table-body" class="divide-y divide-border">
                     {allUsers.map((user) => (
                       <tr id={`user-${user.id}`} class="border-b border-border hover:bg-muted/50 transition-colors">
-                        <td class="px-4 py-3 text-sm font-medium text-foreground">{user.username}</td>
+                        <td class="px-4 py-3 text-sm font-medium text-foreground">{user.username || 'Sin nombre'}</td>
                         <td class="px-4 py-3 text-sm text-muted-foreground">{user.email}</td>
                         <td class="px-4 py-3 text-sm">
                           <span class={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -116,7 +133,7 @@ const allUsers = getUsers();
                           <div class="flex justify-end gap-2">
                             <button
                               class="text-muted-foreground hover:text-primary transition-colors font-medium cursor-pointer"
-                              @click={`editUser('${user.id}', '${user.username}', '${user.email}', '${user.role}')`}
+                              @click={`editUser('${user.id}', '${user.username || ''}', '${user.email}', '${user.role}')`}
                             >
                               Editar
                             </button>
@@ -125,7 +142,7 @@ const allUsers = getUsers();
                               hx-delete={`/api/users/delete?id=${user.id}`}
                               hx-target={`#user-${user.id}`}
                               hx-swap="outerHTML"
-                              hx-confirm={`¿Estás seguro de eliminar a ${user.username}?`}
+                              hx-confirm={`¿Estás seguro de eliminar a ${user.username || user.email}?`}
                             >
                               Eliminar
                             </button>
@@ -170,6 +187,7 @@ const allUsers = getUsers();
         </div>
 
         <form
+          x-ref="userForm"
           :hx-post="isEdit ? `/api/users/edit?id=${editId}` : '/api/users/create'"
           :hx-target="isEdit ? `#user-${editId}` : '#users-table-body'"
           :hx-swap="isEdit ? 'outerHTML' : 'afterbegin'"
@@ -177,8 +195,8 @@ const allUsers = getUsers();
           @htmx:after-request="if($event.detail.successful) { openModal = false; resetForm(); }"
         >
           <div class="space-y-2">
-            <label for="name" class="text-sm font-medium">Nombre de Usuario</label>
-            <Input id="name" name="name" x-model="form.name" placeholder="Ej: tatiana_3026" required />
+            <label for="username" class="text-sm font-medium">Nombre de Usuario</label>
+            <Input id="username" name="username" x-model="form.username" placeholder="Ej: tatiana_3026" required />
           </div>
 
           <div class="space-y-2">

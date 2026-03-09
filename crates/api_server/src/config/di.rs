@@ -17,12 +17,12 @@
 
 use core_logic::{
     application::use_cases::user::{
-        CreateSession, get_user_by_id::GetUserById, login::LoginUser, register::RegisterUser,
+        CreateSession, delete::DeleteUser, get_user_by_id::GetUserById, list::ListUsers,
+        login::LoginUser, register::RegisterUser, update::UpdateUser,
     },
-    domain::interfaces::{IHasher, ISessionRepository, IUserRepository},
+    domain::interfaces::ISessionRepository,
 };
 use infra_db::{Argon2idHasher, SqliteSessionRepository, SqliteUserRepository};
-use sqlx::SqlitePool;
 use std::sync::Arc;
 
 /// Estado de la aplicación compartido a través de los handlers de Axum.
@@ -32,29 +32,33 @@ use std::sync::Arc;
 pub struct AppState {
     pub register_user: Arc<RegisterUser>,
     pub login_user: Arc<LoginUser>,
+    pub list_users: Arc<ListUsers>,
+    pub update_user: Arc<UpdateUser>,
+    pub delete_user: Arc<DeleteUser>,
     pub create_session: Arc<CreateSession>,
     pub session_repo: Arc<dyn ISessionRepository>,
     pub get_user_by_id: Arc<GetUserById>,
 }
 
-/// Construye y devuelve el estado de la aplicación (`AppState`).
-/// Aquí es donde se realiza toda la "magia" de la inyección de dependencias.
-pub fn create_app_state(pool: SqlitePool) -> AppState {
-    // 3. Instanciar adaptadores de infraestructura (implementaciones concretas)
-    let user_repo: Arc<dyn IUserRepository> = Arc::new(SqliteUserRepository::new(pool.clone()));
-    let session_repo: Arc<dyn ISessionRepository> = Arc::new(SqliteSessionRepository::new(pool));
-    let hasher: Arc<dyn IHasher> = Arc::new(Argon2idHasher {});
+pub fn create_app_state(pool: sqlx::SqlitePool) -> AppState {
+    let user_repo = Arc::new(SqliteUserRepository::new(pool.clone()));
+    let session_repo = Arc::new(SqliteSessionRepository::new(pool.clone()));
+    let hasher = Arc::new(Argon2idHasher {});
 
-    // 4. Instanciar casos de uso de la aplicación, inyectando las dependencias
     let register_user = Arc::new(RegisterUser::new(user_repo.clone(), hasher.clone()));
     let login_user = Arc::new(LoginUser::new(user_repo.clone(), hasher.clone()));
+    let list_users = Arc::new(ListUsers::new(user_repo.clone()));
+    let update_user = Arc::new(UpdateUser::new(user_repo.clone(), hasher.clone()));
+    let delete_user = Arc::new(DeleteUser::new(user_repo.clone()));
     let create_session = Arc::new(CreateSession::new(session_repo.clone()));
     let get_user_by_id = Arc::new(GetUserById::new(user_repo.clone()));
 
-    // 5. Construir y devolver el estado de la aplicación
     AppState {
         register_user,
         login_user,
+        list_users,
+        update_user,
+        delete_user,
         create_session,
         session_repo,
         get_user_by_id,

@@ -102,4 +102,22 @@ impl User {
     pub fn deleted_at(&self) -> &Option<DateTime<Utc>> {
         &self.deleted_at
     }
+
+    // Setters (Domain logic for updates)
+    pub fn set_username(&mut self, username: Option<String>) {
+        self.username = username;
+        self.updated_at = Utc::now();
+    }
+    pub fn set_email(&mut self, email: Email) {
+        self.email = email;
+        self.updated_at = Utc::now();
+    }
+    pub fn set_password_hash(&mut self, password_hash: PasswordHash) {
+        self.password_hash = password_hash;
+        self.updated_at = Utc::now();
+    }
+    pub fn set_avatar_url(&mut self, avatar_url: Option<String>) {
+        self.avatar_url = avatar_url;
+        self.updated_at = Utc::now();
+    }
 }
