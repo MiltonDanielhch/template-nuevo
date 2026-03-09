@@ -77,27 +77,13 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
 
             <script is:inline>
               document.addEventListener('alpine:init', () => {
-                Alpine.store('dashboard', {
-                  latency: '--',
-                  updateLatency() {
-                    const start = Date.now();
-                    fetch('/api/health')
-                      .then(() => {
-                        this.latency = Date.now() - start;
-                      })
-                      .catch(() => {
-                        this.latency = 'Error';
-                      });
-                  }
-                });
-
-                // Initial update
-                Alpine.store('dashboard').updateLatency();
-
-                // Periodic update
-                setInterval(() => {
-                  Alpine.store('dashboard').updateLatency();
-                }, 5000);
+                // El store 'dashboard' se inicializa ahora en src/lib/alpine.ts
+                // para evitar conflictos y asegurar robustez.
+                const store = Alpine.store('dashboard');
+                if (store) {
+                  store.updateLatency();
+                  setInterval(() => store.updateLatency(), 5000);
+                }
               });
             </script>
           </div>

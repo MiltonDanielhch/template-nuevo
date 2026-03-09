@@ -12,20 +12,24 @@ const token = Astro.cookies.get("auth_token")?.value || "";
 
 <!DOCTYPE html>
 <html lang="es" x-data="{
-  darkMode: localStorage.getItem('theme') === 'dark',
+  darkMode: document.documentElement.classList.contains('dark'),
   toggleDarkMode() {
     this.darkMode = !this.darkMode;
     localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
     document.documentElement.classList.toggle('dark', this.darkMode);
-  },
-  init() {
-    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      this.darkMode = true;
-      document.documentElement.classList.add('dark');
-    }
   }
-}" x-init="init()">
+}">
   <head>
+    <script is:inline>
+      (function() {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Laboratorio 3026 - Sistema de Gestión" />
@@ -41,7 +45,6 @@ const token = Astro.cookies.get("auth_token")?.value || "";
     <script is:inline src="https://unpkg.com/htmx.org@2.0.8/dist/ext/csrf.js"></script>
 
     <!-- Alpine.js Plugins -->
-    <script defer is:inline src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
 
     <script is:inline>
       document.addEventListener('DOMContentLoaded', () => {
@@ -135,7 +138,7 @@ const token = Astro.cookies.get("auth_token")?.value || "";
       });
     </script>
   </head>
-  <body class="min-h-screen bg-background text-text transition-colors duration-200">
+  <body class="min-h-screen bg-background text-text">
     <CommandPalette />
     <div id="app">
       <slot />

@@ -1,4 +1,7 @@
+import intersect from "@alpinejs/intersect";
 import type { Alpine } from "alpinejs";
+
+declare module "@alpinejs/intersect";
 
 interface ThemeStore {
   dark: boolean;
@@ -24,7 +27,13 @@ interface CommandPaletteStore {
   execute: (item: any) => void;
 }
 
+interface DashboardStore {
+  latency: string | number;
+  updateLatency: () => void;
+}
+
 export default (Alpine: Alpine) => {
+  Alpine.plugin(intersect);
   Alpine.store("theme", {
     dark:
       localStorage.getItem("theme") === "dark" ||
@@ -86,16 +95,20 @@ export default (Alpine: Alpine) => {
       },
     ],
     get filteredItems() {
-      if (!this.search) return this.items;
-      return this.items.filter((i: any) =>
-        i.label.toLowerCase().includes(this.search.toLowerCase()),
-      );
+      const items = this.items || [];
+      if (!this.search) return items;
+      return items.filter((i: any) => i.label.toLowerCase().includes(this.search.toLowerCase()));
     },
     toggle() {
       this.open = !this.open;
       if (this.open) {
         this.search = "";
         this.selectedIndex = 0;
+        // El foco se maneja mejor con un $nextTick en el componente o aquí
+        setTimeout(() => {
+          const input = document.querySelector('input[x-ref="searchInput"]') as HTMLInputElement;
+          if (input) input.focus();
+        }, 50);
       }
     },
     close() {
@@ -106,4 +119,21 @@ export default (Alpine: Alpine) => {
       this.close();
     },
   } as CommandPaletteStore);
+
+  Alpine.store("dashboard", {
+    latency: "--",
+    updateLatency() {
+      const start = Date.now();
+      fetch("/api/health")
+        .then(() => {
+          (this as any).latency = Date.now() - start;
+        })
+        .catch(() => {
+          (this as any).latency = "Error";
+        });
+    },
+  } as DashboardStore);
+
+  // Global access for legacy onclick handlers or external scripts
+  (window as any).Alpine = Alpine;
 };

@@ -19,7 +19,7 @@ try {
       Authorization: `Bearer ${token}`,
     },
   });
-  
+
   if (response.ok) {
     allUsers = await response.json();
     console.log(`Successfully fetched ${allUsers.length} users`);
