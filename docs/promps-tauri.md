@@ -1,29 +1,30 @@
-🚀 PROMPT DE SINTONÍA: LABORATORIO 3026 (Fase 5.2 - Permisos Nativos)
-Actúa como Ingeniero de Software Senior y Arquitecto de Seguridad. La aplicación de escritorio ya compila y se ejecuta. Ahora debemos definir su "pasaporte" de seguridad.
+🚀 PROMPT DE SINTONÍA: LABORATORIO 3026 (Fase 6 - El Puente IPC)
+Actúa como Ingeniero de Software Senior y Arquitecto de Sistemas Nativos. El chasis de la aplicación de escritorio está completo y configurado. Es hora de construir el puente de comunicación entre el frontend y el backend nativo de Rust.
 
 ---
 
 🧭 1. CONTEXTO Y ESTADO (Lo que ya tenemos)
-- ✅ **Chasis de Tauri**: `src-tauri` inicializado y funcionando.
-- ✅ **Workspace Integrado**: `src-tauri` es parte del workspace de Cargo.
-- ✅ **App en Ventana**: La aplicación de Astro se renderiza correctamente en una ventana nativa.
+- ✅ **Chasis de Tauri Completo**: Ventana configurada, permisos de red listos y workspace integrado.
+- ✅ **App de Escritorio Funcional**: La aplicación se ejecuta y muestra el frontend de Astro.
 
-🧭 2. PRÓXIMO OBJETIVO: CAPABILITIES (Permisos Explícitos)
+- ✅ **Comunicación IPC Establecida**: Comandos creados y ejecutándose mediante `@tauri-apps/api/core`.
+- ✅ **Sincronización de Sesión**: `tauri-plugin-store` configurado para persistir sesión.
+- ✅ **FS Access**: Integración nativa a sistema de directorios y diálogos de Windows.
+- ✅ **Bundle Windows**: Instaladores `.msi` y `.nsis` (MSIX) construidos satisfactoriamente.
 
-Por defecto, Tauri es "Zero Trust" (Confianza Cero). No puede hacer nada. Debemos darle permisos explícitos.
+🧭 2. PRÓXIMO OBJETIVO: MANTENIMIENTO Y PERFECCIONAMIENTO
 
-Vamos a ejecutar:
-1. **Crear `capabilities/`**: Crear la estructura de directorios para los permisos.
-2. **Definir Permisos de Red**: Permitir que la app se comunique con `http://localhost:8080` (nuestro backend de Axum).
-3. **Habilitar `window-manager`**: Permitir que el código de Rust controle las ventanas (crear, cerrar, etc.).
-4. **Configurar `tauri.conf.json`**: Activar las capabilities en la configuración principal.
+Vamos a generar documentación y preparar manuales de calidad.
 
----
-
-🛠️ 3. STACK Y REGLAS (Fase 7.2)
-- Seguridad: Principio de Mínimo Privilegio. Solo damos los permisos estrictamente necesarios.
-- Modularidad: Separar permisos de desarrollo y producción si es necesario.
+1. **Crear Manual de Pruebas**: Redactar `testing-tauri.md` que contenga comandos útiles para verificar que el binario compila y ejecuta sin errores.
+2. **Clarificar Arquitectura de Estado**: Explicar claramente que la lógica de roles vive en el Backend de Axum (Rust) y no es necesario re-escribir lógica en Tauri.
 
 ---
 
-🚀 ACCIÓN: Inicia la creación y configuración de los archivos de capabilities.
+🛠️ 3. STACK Y REGLAS (Fase 9 - Mantenimiento)
+- Comunicación clara teórica.
+- Explicar sin acoplar código innecesario.
+
+---
+
+🚀 ACCIÓN: Genera el archivo de testing y responde las dudas de arquitectura del puente Frontend/Tauri/Backend.

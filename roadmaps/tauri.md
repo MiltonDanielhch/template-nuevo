@@ -21,9 +21,9 @@
 
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
-| 1 | Command Bridge | `src-tauri/src/commands/`: Comandos de Rust invocables desde el frontend. | ⏳ |
-| 2 | Auth Sync | Sincronizar tokens de sesión entre el navegador y el almacenamiento seguro de Tauri. | ⏳ |
-| 3 | Local FS Access | Lógica para guardar/leer archivos locales desde la app de escritorio. | ⏳ |
+| 1 | Command Bridge | `src-tauri/src/commands/`: Comandos de Rust invocables desde el frontend. | ✅ |
+| 2 | Auth Sync | Sincronizar tokens de sesión entre el navegador y el almacenamiento seguro de Tauri. | ✅ |
+| 3 | Local FS Access | Lógica para guardar/leer archivos locales desde la app de escritorio. | ✅ |
 
 ---
 
@@ -32,10 +32,10 @@
 
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
-| 1 | WinAppCli Init | Inicializar manifiestos y activos con WinAppCli. | ⏳ |
-| 2 | App Identity | Generar identidad de paquete para notificaciones nativas. | ⏳ |
-| 3 | MSIX Packaging | Generar instalador profesional MSIX firmado. | ⏳ |
-| 4 | Protocol Handler | Configurar `lab3026://` para abrir la app desde la web. | ⏳ |
+| 1 | WinAppCli Init | Inicializar manifiestos y activos con WinAppCli. | ✅ |
+| 2 | App Identity | Generar identidad de paquete para notificaciones nativas. | ✅ |
+| 3 | MSIX Packaging | Generar instalador profesional MSIX firmado. | ✅ |
+| 4 | Protocol Handler | Configurar `lab3026://` para abrir la app desde la web. | ✅ |
 
 ---
 
@@ -43,6 +43,6 @@
 
 ```
 BLOQUE I:  ████████████ 100% (4/4 completados)
-BLOQUE II: ░░░░░░░░░░░░ 0% (0/3 completados)
-BLOQUE III:░░░░░░░░░░░░ 0% (0/4 completados)
+BLOQUE II: ████████████ 100% (3/3 completados)
+BLOQUE III:████████████ 100% (4/4 completados)
 ```

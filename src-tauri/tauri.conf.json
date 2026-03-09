@@ -2,12 +2,19 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Lab3026",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "bo.lab3026.app",
   "build": {
     "frontendDist": "../apps/frontend_astro/dist",
     "devUrl": "http://localhost:4321",
     "beforeDevCommand": "bun --cwd apps/frontend_astro run dev",
     "beforeBuildCommand": "bun --cwd apps/frontend_astro run build"
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["lab3026"]
+      }
+    }
   },
   "app": {
     "windows": [
@@ -24,7 +31,7 @@
     ],
     "security": {
       "csp": null,
-      "capabilities": ["main"]
+      "capabilities": ["default"]
     }
   },
   "bundle": {
@@ -36,6 +43,14 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "http://timestamp.digicert.com",
+      "wix": {
+        "language": "es-ES"
+      }
+    }
   }
 }

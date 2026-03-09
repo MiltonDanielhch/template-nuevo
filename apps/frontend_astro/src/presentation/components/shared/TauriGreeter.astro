@@ -1,0 +1,36 @@
+---
+import { Card } from "@/components/ui/card";
+---
+
+<Card className="p-4">
+  <h3 class="text-lg font-semibold mb-2">Puente Nativo (Rust)</h3>
+  <div class="flex items-center gap-2">
+    <input id="greet-input" placeholder="Escribe tu nombre..." class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+    <button id="greet-button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Saludar</button>
+  </div>
+  <p id="greet-msg" class="text-sm text-muted-foreground mt-2"></p>
+</Card>
+
+<script>
+  import { invoke } from "@tauri-apps/api/core";
+
+  let greetInputEl: HTMLInputElement | null;
+  let greetMsgEl: HTMLElement | null;
+
+  async function greet() {
+    if (greetMsgEl && greetInputEl) {
+      // Invocar el comando `greet` de Rust
+      greetMsgEl.textContent = await invoke("greet", {
+        name: greetInputEl.value,
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    greetInputEl = document.querySelector("#greet-input");
+    greetMsgEl = document.querySelector("#greet-msg");
+    document
+      .querySelector("#greet-button")
+      ?.addEventListener("click", () => greet());
+  });
+</script>

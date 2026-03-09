@@ -30,3 +30,10 @@
 2026-03-09T01:29:04.725801Z  INFO api_server: 📡 Sintonizando la base de datos: aplicando migraciones...
 2026-03-09T01:29:04.731519Z  INFO api_server: ✅ Migraciones aplicadas correctamente.
 2026-03-09T01:29:04.734747Z  INFO api_server: ✅ Servidor escuchando en: http://0.0.0.0:8080
+2026-03-09T03:01:56.968387Z  INFO api_server::entry_points::api::v1::user_handlers: 🔄 Petición de actualización para usuario ID: 019cc67c-714b-7be3-8ff0-0ce6e6b37bfe
+2026-03-09T03:01:57.001598Z DEBUG api_server::entry_points::api::v1::user_handlers: Payload de actualización: UpdateUserRequest { username: Some("test"), email: Some("test@test.com"), password: None, avatar_url: None }
+2026-03-09T03:01:57.028586Z  INFO api_server::entry_points::api::v1::user_handlers: ✅ Usuario ID: 019cc67c-714b-7be3-8ff0-0ce6e6b37bfe actualizado con éxito
+2026-03-09T03:32:14.897605Z  INFO api_server: 🚀 Iniciando Laboratorio 3026: Sintonía de Backend...
+2026-03-09T03:32:14.954849Z  INFO api_server: 📡 Sintonizando la base de datos: aplicando migraciones...
+2026-03-09T03:32:14.975461Z  INFO api_server: ✅ Migraciones aplicadas correctamente.
+2026-03-09T03:32:14.997783Z  INFO api_server: ✅ Servidor escuchando en: http://0.0.0.0:8080

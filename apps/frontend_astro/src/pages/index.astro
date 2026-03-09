@@ -1,5 +1,6 @@
----
 import MainLayout from "../presentation/layouts/MainLayout.astro";
+import TauriGreeter from "@/presentation/components/shared/TauriGreeter.astro";
+import LocalFsCard from "@/presentation/components/shared/LocalFsCard.astro";
 ---
 
 <MainLayout title="Inicio">
@@ -8,6 +9,11 @@ import MainLayout from "../presentation/layouts/MainLayout.astro";
       <h1 class="text-4xl font-bold text-primary-600 mb-4">Laboratorio 3026</h1>
       <p class="text-text-muted mb-8">Sistema de Gestión</p>
       <a href="/login" class="btn-primary">Iniciar Sesión</a>
+    </div>
+    
+    <div class="mt-12 max-w-md w-full mx-auto">
+      <TauriGreeter />
+      <LocalFsCard />
     </div>
   </div>
 </MainLayout>
