@@ -16,7 +16,8 @@ resolver = "2"
 members = [
     "crates/api_server",
     "crates/core_logic",
-    "crates/infra_db"
+    "crates/infra_db",
+    "src-tauri"
 ]
 
 [profile.release]

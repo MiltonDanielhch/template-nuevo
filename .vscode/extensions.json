@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "rust-lang.rust-analyzer", // El cerebro de Rust
+    "tamasfe.even-better-toml", // Para Cargo.toml
+    "biomejs.biome", // Nuestro guardián de frontend
+    "zxh404.vscode-proto3", // Para leer el ADN .proto
+    "vadimcn.vscode-lldb", // Para depurar Rust paso a paso
+    "fill-labs.dependi" // Para gestionar versiones de crates
+  ]
+}
