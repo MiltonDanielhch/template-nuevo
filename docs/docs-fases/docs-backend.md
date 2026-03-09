@@ -53,5 +53,28 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 
 ---
 
-## 🔐 BLOQUE IV: SESIONES Y AUTH
-... (resto del contenido anterior)
+## 🛡️ BLOQUE VI: GESTIÓN DE ACCESO (RBAC)
+
+### 🧠 Integración: Fase 6.1 - RBAC con Extractor Genérico (Axum & Traits)
+
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Un sistema de Control de Acceso basado en Roles (RBAC) que utiliza un extractor genérico de Axum (`RequirePermission<P>`) y un sistema de "Permission Markers" (traits) para verificar permisos en tiempo de compilación y ejecución. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Sirve para restringir el acceso a partes específicas de la API según los privilegios del usuario. Evita que usuarios normales creen roles o borren otros usuarios, protegiendo la integridad del sistema. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Definición:** Creamos un trait `Permission` con una constante `NAME`. <br> 2. **Marcadores:** Creamos structs vacíos como `RolesWrite` que implementan `Permission`. <br> 3. **Extractor:** El extractor `RequirePermission<P>` se ejecuta antes que el handler. Busca el usuario actual, consulta sus permisos en el `IRoleRepository` y, si no tiene el permiso `P::NAME`, devuelve un `403 Forbidden`. |
+| **4** | **Ejemplo Práctico 3026** | **En el Handler:** <br> ```rust pub async fn create_role_handler(State(state): State<AppState>, _perm: RequirePermission<RolesWrite>, Json(payload): Json<CreateRoleRequest>) -> ... { ... } ``` <br> **En el Middleware:** `pub struct RolesWrite; impl Permission for RolesWrite { const NAME: &'static str = "roles:write"; }` |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Seguridad Avanzada:** Implementa el principio de "mínimo privilegio". <br> **Mantenibilidad:** El uso de tipos (traits) en lugar de strings mágicos en los handlers evita errores tipográficos y facilita el refactor. |
+
+---
+
+## 👥 BLOQUE VII: SOBERANÍA DE DATOS (CRUD COMPLETE)
+
+### 🧠 Integración: Fase 7.1 - Restauración de Operaciones CRUD
+
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Implementación de las operaciones básicas (Create, Read, Update, Delete) para la entidad de Usuario, siguiendo el flujo Hexagonal completo desde el repositorio hasta el API Handler. |
+| **2** | **¿Para que sirve?** (El Propósito) | Permite la gestión administrativa de los usuarios del sistema. Sin esto, no podríamos listar usuarios, actualizar perfiles o dar de baja cuentas (Soft Delete). |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Domain:** `IUserRepository` define `find_all` y `delete`. <br> 2. **Application:** Casos de uso `ListUsers`, `UpdateUser` y `DeleteUser` manejan la lógica y validación. <br> 3. **Infrastructure:** `SqliteUserRepository` ejecuta el SQL (usando `deleted_at IS NULL` para Soft Delete). <br> 4. **API:** Handlers en `user_handlers.rs` exponen los endpoints protegidos. |
+| **4** | **Ejemplo Práctico 3026** | **Endpoint:** `PUT /api/v1/users/{id}` <br> **Comando:** `cargo check --workspace` para validar que todos los mappers y tipos coinciden entre capas. |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Escalabilidad:** Al usar mappers explícitos, podemos cambiar la estructura de la base de datos sin romper la API externa. <br> **Control total:** El Soft Delete garantiza que los datos no se pierdan accidentalmente. |

@@ -1,36 +1,44 @@
-# Ignorar directorios de dependencias
-/node_modules
-/apps/frontend_astro/node_modules
-
-# Ignorar archivos de compilación y artefactos
+# --- Rust ---
 /target
-/apps/frontend_astro/dist
-/src-tauri/target
-/src-tauri/bin
-/src-tauri/build
-/src-tauri/out
-/src-tauri/release
-/src-tauri/debug
+/crates/**/target
+# Cargo.lock NO debe ignorarse en aplicaciones binarias para garantizar reproducibilidad
+# Cargo.lock
 
-# Ignorar logs y variables de entorno
-*.log
+# --- Bases de Datos (SQLite) ---
+*.db
+*.db-shm
+*.db-wal
+.sqlx/
+
+# --- Entorno y Secretos ---
 .env
 .env.*
-!/.env.example
+!.env.example
+# Certificados SSL locales
+*.pem
+*.key
 
-# Ignorar archivos específicos del sistema operativo
-.DS_Store
-thumbs.db
-
-# Ignorar archivos de caché y temporales
-.cache
-*.swp
-
-# Ignorar binarios y ejecutables
-*.exe
-*.msi
-*.app
-*.dmg
-
-# Lockfiles
+# --- Node / Bun / Frontend ---
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.astro/
+**/ .astro/
 bun.lockb
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Despliegue ---
+/deploy/data/
+/deploy/caddy_data/
+/deploy/caddy_config/
+
+# --- Python (Scripts de utilidad) ---
+__pycache__/
+*.py[cod]
+venv/

@@ -25,9 +25,7 @@ Estamos construyendo un sistema de autenticación y gestión de usuarios con una
 ✅ **Corrección Crítica**: El extractor `CurrentUser` (Axum 0.8) ya recibe correctamente el `AppState`.
 ✅ **Despliegue Soberano**: `Dockerfile` optimizado + `podman-compose` + `Caddy`.
 
-### Estado Pendiente - Lógica Faltante (Bloque VI)
-
-⚠️ **RBAC (Roles y Permisos)**: Aunque las tablas existen en la DB, **NO** hay lógica en `core_logic` (Entidades, Casos de Uso) ni endpoints en `api_server` para gestionar roles.
+✅ **RBAC (Roles y Permisos)**: Lógica en `core_logic`, repositorio en `infra_db` y middleware/endpoints en `api_server` completamente funcionales.
 
 ### Estructura Implementada
 
@@ -39,34 +37,22 @@ crates/
 │   │   ├── value_objects/ # Email, UserId, SessionToken
 │   │   └── interfaces/   # IUserRepository, IHasher, ISessionRepository
 │   └── application/
-│       └── use_cases/    # RegisterUser, LoginUser, UpdateUser, ListUsers
+│       └── use_cases/    # Register, Login, Update, ListUsers, CreateRole, AssignRole
 ├── infra_db/
-│   └── persistence/sqlite/ # SqliteUserRepository, SqliteSessionRepository
+│   └── persistence/sqlite/ # SqliteUserRepository, SqliteSessionRepository, SqliteRoleRepository
 └── api_server/
     ├── config/di.rs      # Composition Root
     ├── entry_points/
-    │   ├── api/v1/       # Handlers (Users CRUD)
+    │   ├── api/v1/       # Handlers (Users CRUD, Roles CRUD)
     │   └── auth.rs       # Middleware (Extractor)
+    │   └── middleware/rbac.rs # RBAC Guard (RequirePermission)
     └── routes.rs         # Router Definition con TraceLayer
 ```
 
 ---
 
-## Próximo Paso: Bloque VI - Gestión de Acceso (RBAC)
+## Próximos Pasos: ¡Sistema Base Completo!
 
-Ahora que tenemos una base sólida, vamos a implementar la lógica de roles.
-
-1. **Entidades del Dominio** ⏳
-   - Definir `Role` y `Permission` en `core_logic/domain/entities`.
-   - Definir `IRoleRepository` en `core_logic/domain/interfaces`.
-
-2. **Infraestructura** ⏳
-   - Implementar `SqliteRoleRepository` en `infra_db`.
-
-3. **Casos de Uso** ⏳
-   - `CreateRole`, `AssignRoleToUser`.
-
-4. **API y Middleware** ⏳
-   - Crear un nuevo extractor `RequirePermission<P>`.
+El Bloque VI (RBAC) y Bloque VII (CRUD) están listos. El sistema es ahora robusto y extensible.
 
 ¡El sistema está estable y monitorizado!

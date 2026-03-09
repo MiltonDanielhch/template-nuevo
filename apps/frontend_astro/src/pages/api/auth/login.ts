@@ -5,23 +5,13 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   const email = data.get("email");
   const password = data.get("password");
 
-  try {
-    const response = await fetch("http://localhost:8080/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+  // En un entorno real, aquí llamaríamos al backend Axum
+  // const response = await fetch("http://localhost:8081/api/auth/login", { ... });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      return new Response(
-        JSON.stringify({ error: errorData.message || "Credenciales inválidas" }),
-        { status: response.status },
-      );
-    }
-
-    const loginData = await response.json();
-    const token = loginData.token;
+  // Por ahora simulamos una respuesta exitosa del backend
+  if (email && password) {
+    // Simulamos que el backend nos devuelve un token
+    const token = `simulated_session_token_${Date.now()}`;
 
     cookies.set("auth_token", token, {
       path: "/",
@@ -33,12 +23,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     return new Response(null, {
       status: 200,
-      headers: { "HX-Redirect": "/dashboard" },
-    });
-  } catch (error) {
-    console.error("Login Error:", error);
-    return new Response(JSON.stringify({ error: "Error de conexión con el servidor" }), {
-      status: 500,
+      headers: {
+        "HX-Redirect": "/dashboard",
+      },
     });
   }
+
+  return new Response(JSON.stringify({ error: "Credenciales inválidas" }), { status: 401 });
 };

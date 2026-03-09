@@ -240,93 +240,7 @@ lighthouse http://localhost:4321 --view
 
 ---
 
-## ⌨️ Nivel 8: Pruebas de Command Palette (Alpine.js)
-
-Validación de la navegación rápida por teclado.
-
-### 🧪 Flujo de Navegación
-
-**1. Abrir/Cerrar**
-1.  Presiona `Ctrl + K` (o `Cmd + K` en Mac).
-2.  Verifica que aparece el buscador y el fondo se oscurece.
-3.  Presiona `ESC` o haz clic fuera para cerrar.
-
-**2. Búsqueda y Filtrado**
-1.  Escribe "Dashboard" en el buscador.
-2.  Verifica que solo aparecen los resultados relacionados.
-3.  Borra el texto y verifica que la lista vuelve a su estado original.
-
-**3. Navegación**
-1.  Haz clic en un resultado (ej: "Usuarios").
-2.  Verifica que la paleta se cierra y eres redirigido a la ruta correcta.
-
----
-
-## 👥 Nivel 10: Pruebas de CRUD de Usuarios (HTMX)
-
-Validación de la gestión administrativa y búsqueda dinámica.
-
-### 🧪 Flujo de Búsqueda Dinámica
-
-**1. Búsqueda en Tiempo Real**
-1.  Ve a `http://localhost:4321/users`.
-2.  Escribe "Admin" en el buscador.
-3.  Verifica que la tabla se actualiza automáticamente con solo los resultados filtrados.
-4.  Observa en Network que la petición es a `/api/users?search=Admin` y la respuesta es solo el fragmento `<tr>...</tr>`.
-
-**2. Indicadores de Carga**
-1.  Verifica que al escribir aparece el mensaje "Buscando..." junto al input.
-2.  Verifica que desaparece una vez completada la búsqueda.
-
----
-
-## 👥 Nivel 11: Pruebas de Creación de Usuarios (Modal + HTMX)
-
-Validación de la creación de registros sin recarga.
-
-### 🧪 Flujo de Creación
-
-**1. Abrir Modal**
-1.  En `http://localhost:4321/users`, haz clic en el botón "Nuevo Usuario".
-2.  Verifica que aparece el modal con el formulario.
-
-**2. Crear Usuario**
-1.  Rellena el nombre, email y selecciona un rol.
-2.  Haz clic en "Guardar Usuario".
-3.  Verifica que:
-    - El modal se cierra automáticamente.
-    - El nuevo usuario aparece al inicio de la tabla con una animación.
-    - El formulario se resetea para la próxima vez.
-
----
-
-## 👥 Nivel 12: Pruebas de CRUD Completo (HTMX + Alpine.js)
-
-Validación de la persistencia y operaciones de datos.
-
-### 🧪 Flujo de Edición
-
-**1. Abrir Edición**
-1.  En la tabla de usuarios, haz clic en el botón "Editar" de cualquier fila.
-2.  Verifica que el modal se abre con el título "Editar Usuario" y los datos ya rellenos.
-
-**2. Guardar Cambios**
-1.  Modifica el nombre o rol y haz clic en "Actualizar Usuario".
-2.  Verifica que solo esa fila de la tabla se actualiza con los nuevos datos.
-
-### 🧪 Flujo de Eliminación
-
-**1. Confirmación**
-1.  Haz clic en el botón "Eliminar" de una fila.
-2.  Verifica que aparece un cuadro de confirmación nativo del navegador.
-
-**2. Ejecución**
-1.  Confirma la eliminación.
-2.  Verifica que la fila desaparece de la tabla instantáneamente.
-
----
-
-## 🔧 Nivel 13: Comandos de Diagnóstico (Forensics)
+## 🔧 Nivel 7: Comandos de Diagnóstico (Forensics)
 
 ### Ver errores en tiempo real
 ```bash
@@ -352,9 +266,6 @@ ls -la apps/frontend_astro/dist/client/
 | Error | Causa Probable | Solución |
 |-------|----------------|----------|
 | **Build fail** | Dependencias faltantes | `bun install` |
-| **404 en /api/auth/me** | Llamada residual en script de dashboard | Se eliminó el script redundante en `dashboard.astro` y se creó el endpoint en `api/auth/me.ts` |
-| **Cursor no cambia a puntero** | Estilos de botón shadcn en Astro | Asegurar clase `cursor-pointer` en el elemento interactivo |
-| **Modal no abre** | Error de JS global o Alpine no cargado | Verificar consola (F12) por errores de tipo o carga de scripts |
 | **HTMX no funciona** | Script no cargado | Verificar CDN en MainLayout |
 | **Alpine no funciona** | Error en `alpine.ts` | Revisar sintaxis TypeScript |
 | **Shadcn/ui no funciona** | Falta `client:load` | Agregar directiva de hydatation |

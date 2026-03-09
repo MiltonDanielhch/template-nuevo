@@ -6,7 +6,7 @@ export const GET: APIRoute = async ({ url, request, cookies }) => {
 
   try {
     // Llamada al backend real de Rust
-    const response = await fetch("http://localhost:8080/users", {
+    const response = await fetch("http://localhost:8081/users", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

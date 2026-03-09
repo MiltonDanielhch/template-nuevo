@@ -15,7 +15,9 @@
 pub mod external_services;
 pub mod persistence;
 
-// Exponemos públicamente el repositorio concreto para que el 'Composition Root' (en api_server) pueda instanciarlo.
-pub use persistence::sqlite::repositories::{SqliteSessionRepository, SqliteUserRepository};
+// Exponemos públicamente los repositorios concretos para que el 'Composition Root' pueda instanciarlos.
+pub use persistence::sqlite::repositories::{
+    SqliteRoleRepository, SqliteSessionRepository, SqliteUserRepository,
+};
 // Exponemos públicamente el hasher concreto para que el 'Composition Root' pueda instanciarlo.
 pub use external_services::Argon2idHasher;

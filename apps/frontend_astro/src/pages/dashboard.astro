@@ -56,17 +56,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                 </svg>
               </CardHeader>
               <CardContent>
-                <div class="flex items-baseline gap-2">
-                  <div class="text-2xl font-bold" x-text="$store.dashboard.latency">--</div>
-                  <div
-                    class="h-2 w-2 rounded-full"
-                    :class="{
-                      'bg-green-500': $store.dashboard.latency < 100,
-                      'bg-yellow-500': $store.dashboard.latency >= 100 && $store.dashboard.latency < 300,
-                      'bg-red-500': $store.dashboard.latency >= 300 || $store.dashboard.latency === 'Error'
-                    }"
-                  ></div>
-                </div>
+                <div class="text-2xl font-bold" x-text="$store.dashboard.latency">--</div>
                 <p class="text-xs text-muted-foreground">ms de latencia</p>
               </CardContent>
             </Card>
@@ -126,7 +116,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                     <div class="h-2 w-2 rounded-full bg-green-500"></div>
                     <div class="flex-1">
                       <p class="text-sm font-medium">Backend API</p>
-                      <p class="text-xs text-muted-foreground">Conectado al puerto 8080</p>
+                      <p class="text-xs text-muted-foreground">Conectado al puerto 8081</p>
                     </div>
                     <span class="text-sm text-green-600">Online</span>
                   </div>
@@ -172,3 +162,20 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
     </div>
   </div>
 </MainLayout>
+
+<script>
+  async function checkLatency() {
+    try {
+      const start = Date.now();
+      await fetch('/api/auth/me', { method: 'HEAD' });
+      const latency = Date.now() - start;
+      const el = document.getElementById('latency');
+      if (el) el.textContent = latency.toString();
+    } catch {
+      const el = document.getElementById('latency');
+      if (el) el.textContent = '--';
+    }
+  }
+  checkLatency();
+  setInterval(checkLatency, 30000);
+</script>

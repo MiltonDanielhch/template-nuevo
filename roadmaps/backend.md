@@ -148,15 +148,15 @@
 ## 🛡️ BLOQUE VI: GESTIÓN DE ACCESO (RBAC)
 
 **Objetivo:** Implementar la lógica de Roles y Permisos (ya existen en DB).
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado
 
 | # | Tarea | Ubicación | Descripción | Estado |
 |---|-------|-----------|-------------|:------:|
-| 1 | Entidades Dominio | `core_logic/domain/entities` | `Role`, `Permission` | ⏳ |
-| 2 | Repositorio Roles | `core_logic` + `infra_db` | `IRoleRepository` y `SqliteRoleRepository` | ⏳ |
-| 3 | Casos de Uso | `core_logic/application` | `CreateRole`, `AssignRoleToUser` | ⏳ |
-| 4 | Middleware RBAC | `api_server/entry_points` | Extractor `RequirePermission<P>` | ⏳ |
-| 5 | API Endpoints | `api_server/api/v1` | CRUD de Roles y asignación | ⏳ |
+| 1 | Entidades Dominio | `core_logic/domain/entities` | `Role`, `Permission` | ✅ |
+| 2 | Repositorio Roles | `core_logic` + `infra_db` | `IRoleRepository` y `SqliteRoleRepository` | ✅ |
+| 3 | Casos de Uso | `core_logic/application` | `CreateRole`, `AssignRoleToUser` | ✅ |
+| 4 | Middleware RBAC | `api_server/entry_points` | Extractor `RequirePermission<P>` | ✅ |
+| 5 | API Endpoints | `api_server/api/v1` | CRUD de Roles y asignación | ✅ |
 
 ---
 

@@ -2,3 +2,4 @@
 //! # Módulo de Puntos de Entrada
 pub mod api;
 pub mod auth;
+pub mod middleware;

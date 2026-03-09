@@ -17,7 +17,7 @@ impl ServerConfig {
         let port = env::var("SERVER_PORT")
             .ok()
             .and_then(|p| p.parse().ok())
-            .unwrap_or(8080); // Puerto por defecto: 8080
+            .unwrap_or(8081); // Puerto por defecto: 8081
 
         let host = env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
 

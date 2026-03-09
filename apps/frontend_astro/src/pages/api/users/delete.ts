@@ -6,7 +6,7 @@ export const DELETE: APIRoute = async ({ url, cookies }) => {
 
   if (id) {
     try {
-      const response = await fetch(`http://localhost:8080/users/${id}`, {
+      const response = await fetch(`http://localhost:8081/users/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

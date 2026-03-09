@@ -23,7 +23,7 @@ export function initHtmxConfig(): void {
   htmx.config.refreshOnHistoryMiss = HTMX_CONFIG.REFRESH_ON_HISTORY_MISS;
 }
 
-export function setupHtmxIndicator(selector: string): void {
+export function setupHtmxIndicator(_selector: string): void {
   document.addEventListener("htmx:beforeRequest", (e) => {
     const target = e.detail?.target as HTMLElement;
     if (!target) return;

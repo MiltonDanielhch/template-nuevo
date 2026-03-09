@@ -21,18 +21,6 @@ Aquí tienes el desglose pedagógico de lo que acabamos de ejecutar: **La Estruc
 
 ---
 
-## 🏛️ Integración: Fase 7 - Telemetría y Depuración de HTMX
-
-| Nivel | Nombre | Descripción |
-| --- | --- | --- |
-| **1** | **¿Qué es?** (Definición Técnica) | Implementación de un sistema de trazabilidad de eventos en el frontend utilizando el logger interno de HTMX y listeners de eventos de error (`htmx:responseError`, `htmx:sendError`). |
-| **2** | **¿Para qué sirve?** (El Propósito) | Permite ver exactamente qué está pasando en cada interacción asíncrona (AJAX) desde la consola del navegador. El desastre que evita es que el usuario haga clic en un botón y "no pase nada" sin que el desarrollador sepa por qué (error 404, 500 o fallo de red). |
-| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Logger Global:** Redirigimos `htmx.logger` a `console.debug`. <br> 2. **Interceptores:** Registramos listeners en `document.body` para capturar cualquier fallo de respuesta o de envío. <br> 3. **Fix de Atributos:** Se implementó `htmx.process(this.$refs.userForm)` en Alpine.js para forzar a HTMX a reconocer cambios en atributos dinámicos como `:hx-post`. |
-| **4** | **Ejemplo Práctico 3026** | **En `MainLayout.astro`:** <br> ```javascript htmx.logger = (elt, event, data) => console.debug("HTMX:", event, elt); document.body.addEventListener('htmx:responseError', (e) => console.error("Error:", e.detail.xhr.status)); ``` |
-| **5** | **¿Por qué es vital para nuestro sistema?** | **Calidad de UX:** Nos permite dar feedback inmediato al usuario ante cualquier fallo de conexión, manteniendo una experiencia robusta y profesional. |
-
----
-
 ## 🏛️ Integración: Fase 6 - CRUD Completo (Listar, Crear, Editar, Eliminar)
 
 | Nivel | Nombre | Descripción |

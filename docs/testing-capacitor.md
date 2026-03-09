@@ -120,7 +120,7 @@ if (Capacitor.isNativePlatform()) {
 ### 2. Vibración Táctica (Haptics Test)
 Verificar que HTMX puede disparar eventos nativos:
 ```html
-<button 
+<button
   hx-post="/api/login"
   onclick="window.testVibrate()"
   class="...">
@@ -137,7 +137,7 @@ Haptics.impact({ style: ImpactStyle.Heavy });
 Aunque la app esté instalada en el celular (`.apk`), **puedes ver el F12 (Consola)** desde tu PC.
 1. Conecta el celular por USB con la App abierta.
 2. Abre Google Chrome en tu PC y navega a: `chrome://inspect/#devices`
-3. Dale a "Inspect" bajo el nombre de tu aplicación. 
+3. Dale a "Inspect" bajo el nombre de tu aplicación.
 4. Tendrás acceso total a la consola, network de HTMX y elementos DOM.
 
 ---

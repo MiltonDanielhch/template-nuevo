@@ -25,17 +25,6 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
         >
           <div class="space-y-4">
             <div class="space-y-2">
-              <Label for="username">Nombre de Usuario</Label>
-              <Input
-                id="username"
-                name="username"
-                type="text"
-                placeholder="Ej: tatiana_3026"
-                required
-              />
-            </div>
-
-            <div class="space-y-2">
               <Label for="email">Email</Label>
               <Input
                 id="email"
@@ -112,7 +101,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
     document.addEventListener('htmx:afterRequest', (e) => {
       if (e.detail.successful) {
         const response = e.detail.xhr;
-        if (response.status === 200 || response.status === 201) {
+        if (response.status === 201) {
           window.location.href = '/dashboard';
         }
       }

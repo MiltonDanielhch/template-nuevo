@@ -1,5 +1,9 @@
 // crates/core_logic/src/application/use_cases/user/list.rs
-use crate::domain::{entities::user::User, interfaces::user_repo::IUserRepository};
+//! # Caso de Uso: ListUsers
+//!
+//! Retorna todos los usuarios activos del sistema.
+
+use crate::domain::{entities::user::User, interfaces::IUserRepository};
 use anyhow::Result;
 use std::sync::Arc;
 

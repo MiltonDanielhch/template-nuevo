@@ -3,31 +3,25 @@ import type { APIRoute } from "astro";
 export const POST: APIRoute = async ({ request, url, cookies }) => {
   const id = url.searchParams.get("id");
   const data = await request.formData();
-  const username = data.get("username");
+  const username = data.get("name");
   const email = data.get("email");
   const password = data.get("password");
   const role = data.get("role");
 
   const token = cookies.get("auth_token")?.value;
 
-  if (!token) {
-    return new Response("No autorizado", { status: 401 });
-  }
-
-  const updateData: any = {
-    username: username?.toString(),
-    email: email?.toString(),
-    role: role?.toString(),
-  };
-
-  if (password && password.toString().length > 0) {
-    updateData.password = password.toString();
-  }
-
   try {
-    console.log(`[API Bridge] Intentando actualizar usuario ${id} con data:`, updateData);
+    const updateData: any = {
+      username: username?.toString(),
+      email: email?.toString(),
+      role: role?.toString(),
+    };
 
-    const response = await fetch(`http://localhost:8080/users/${id}`, {
+    if (password && password.toString().length > 0) {
+      updateData.password = password.toString();
+    }
+
+    const response = await fetch(`http://localhost:8081/users/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -47,7 +41,7 @@ export const POST: APIRoute = async ({ request, url, cookies }) => {
 
     const html = `
       <tr id="user-${user.id}" class="border-b border-border hover:bg-muted/50 transition-colors">
-        <td class="px-4 py-3 text-sm font-medium text-foreground">${user.username || "Sin nombre"}</td>
+        <td class="px-4 py-3 text-sm font-medium text-foreground">${user.username || "N/A"}</td>
         <td class="px-4 py-3 text-sm text-muted-foreground">${user.email}</td>
         <td class="px-4 py-3 text-sm">
           <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${

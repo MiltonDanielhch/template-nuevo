@@ -63,3 +63,28 @@ pub struct DbSession {
     pub last_activity_at: Option<NaiveDateTime>,
     pub is_revoked: Option<bool>,
 }
+
+/// DbRole mapea la tabla `roles`.
+#[derive(Debug, Clone, FromRow)]
+pub struct DbRole {
+    pub id: String,
+    pub name: String,
+    pub description: Option<String>,
+    pub created_at: Option<NaiveDateTime>,
+}
+
+/// DbPermission mapea la tabla `permissions`.
+#[derive(Debug, Clone, FromRow)]
+pub struct DbPermission {
+    pub id: String,
+    pub name: String,
+    pub description: Option<String>,
+}
+
+/// Para joins de role_permissions: extrae el permiso asociado a un rol.
+#[derive(Debug, Clone, FromRow)]
+pub struct DbRolePermission {
+    pub permission_id: String,
+    pub permission_name: String,
+    pub permission_description: Option<String>,
+}

@@ -1,7 +1,7 @@
 ---
 interface Props {
   name: string;
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
+  type?: "text" | "email" | "password" | "number" | "tel" | "url";
   placeholder?: string;
   required?: boolean;
   value?: string;
@@ -12,13 +12,13 @@ interface Props {
 
 const {
   name,
-  type = 'text',
-  placeholder = '',
+  type = "text",
+  placeholder = "",
   required = false,
-  value = '',
+  value = "",
   disabled = false,
   error,
-  class: className = '',
+  class: className = "",
 } = Astro.props;
 ---
 

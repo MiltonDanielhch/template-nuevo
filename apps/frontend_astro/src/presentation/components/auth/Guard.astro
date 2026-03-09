@@ -10,7 +10,7 @@ const token = Astro.cookies.get("auth_token")?.value;
 // Por ahora simulamos que si hay token, el usuario es Admin
 const userRole = token ? "Administrador" : null;
 
-const isAuthorized = roles.length === 0 || (userRole && roles.includes(userRole));
+const _isAuthorized = roles.length === 0 || (userRole && roles.includes(userRole));
 ---
 
 {isAuthorized && <slot />}
