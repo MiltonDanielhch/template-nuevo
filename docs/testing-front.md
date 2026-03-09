@@ -300,7 +300,33 @@ Validación de la creación de registros sin recarga.
 
 ---
 
-## 🔧 Nivel 12: Comandos de Diagnóstico (Forensics)
+## 👥 Nivel 12: Pruebas de CRUD Completo (HTMX + Alpine.js)
+
+Validación de la persistencia y operaciones de datos.
+
+### 🧪 Flujo de Edición
+
+**1. Abrir Edición**
+1.  En la tabla de usuarios, haz clic en el botón "Editar" de cualquier fila.
+2.  Verifica que el modal se abre con el título "Editar Usuario" y los datos ya rellenos.
+
+**2. Guardar Cambios**
+1.  Modifica el nombre o rol y haz clic en "Actualizar Usuario".
+2.  Verifica que solo esa fila de la tabla se actualiza con los nuevos datos.
+
+### 🧪 Flujo de Eliminación
+
+**1. Confirmación**
+1.  Haz clic en el botón "Eliminar" de una fila.
+2.  Verifica que aparece un cuadro de confirmación nativo del navegador.
+
+**2. Ejecución**
+1.  Confirma la eliminación.
+2.  Verifica que la fila desaparece de la tabla instantáneamente.
+
+---
+
+## 🔧 Nivel 13: Comandos de Diagnóstico (Forensics)
 
 ### Ver errores en tiempo real
 ```bash

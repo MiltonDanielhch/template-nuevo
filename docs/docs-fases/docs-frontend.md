@@ -21,6 +21,33 @@ Aquí tienes el desglose pedagógico de lo que acabamos de ejecutar: **La Estruc
 
 ---
 
+## 🏛️ Integración: Fase 6 - CRUD Completo (Listar, Crear, Editar, Eliminar)
+
+| Nivel | Nombre | Descripción |
+| --- | --- | --- |
+| **1** | **¿Qué es?** (Definición Técnica) | Implementación de todas las operaciones fundamentales de datos (CRUD) utilizando una arquitectura híbrida de **Astro (SSR)**, **HTMX (Fragments)** y **Alpine.js (UI State)**. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Proporciona una gestión de datos robusta y persistente (simulada en `src/lib/db.ts`) que permite mantener el estado de la aplicación entre recargas y diferentes acciones del usuario. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Persistencia:** Un módulo `db.ts` centraliza los datos. <br> 2. **HTMX Power:** `hx-delete` para eliminación con confirmación, `hx-post` para creación y edición. <br> 3. **Alpine Logic:** Un solo modal reutilizable para Crear/Editar que cambia su comportamiento dinámicamente. |
+| **4** | **Ejemplo Práctico 3026** | **Eliminación con HTMX:**
+```html
+<button hx-delete="/api/users/delete?id=123" hx-target="#user-123" hx-confirm="¿Seguro?">
+  Eliminar
+</button>
+```
+
+**Edición con Alpine + HTMX:**
+```javascript
+editUser(id, name, email, role) {
+  this.isEdit = true;
+  this.form = { name, email, role };
+  this.openModal = true;
+}
+```
+
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Escalabilidad:** Esta estructura es un espejo de cómo funcionará el backend real en Rust, permitiendo una migración indolora cuando el API de Axum esté listo. |
+
+---
+
 ## 🏛️ Integración: Fase 5 - Modales Reactivos con Alpine.js (Creación de Usuarios)
 
 | Nivel | Nombre | Descripción |

@@ -1,34 +1,10 @@
 import type { APIRoute } from "astro";
+import { getUsers } from "@/lib/db";
 
 export const GET: APIRoute = async ({ url, request }) => {
   const search = url.searchParams.get("search")?.toLowerCase() || "";
 
-  // Datos simulados de usuarios (esto vendría del backend Rust)
-  const allUsers = [
-    {
-      id: "1",
-      name: "Admin Principal",
-      email: "admin@lab3026.com",
-      role: "Administrador",
-      status: "Activo",
-    },
-    { id: "2", name: "Juan Pérez", email: "juan@example.com", role: "Usuario", status: "Activo" },
-    {
-      id: "3",
-      name: "María García",
-      email: "maria@example.com",
-      role: "Editor",
-      status: "Inactivo",
-    },
-    { id: "4", name: "Carlos López", email: "carlos@test.com", role: "Usuario", status: "Activo" },
-    {
-      id: "5",
-      name: "Ana Martínez",
-      email: "ana@lab.com",
-      role: "Administrador",
-      status: "Activo",
-    },
-  ];
+  const allUsers = getUsers();
 
   const filteredUsers = allUsers.filter(
     (user) =>
@@ -40,12 +16,11 @@ export const GET: APIRoute = async ({ url, request }) => {
   const isHtmx = request.headers.get("HX-Request") === "true";
 
   if (isHtmx) {
-    // Si es una petición HTMX, devolvemos solo las filas de la tabla (fragmento)
     const html = filteredUsers
       .map(
         (user) => `
-      <tr class="border-b border-border hover:bg-muted/50 transition-colors">
-        <td class="px-4 py-3 text-sm font-medium">${user.name}</td>
+      <tr id="user-${user.id}" class="border-b border-border hover:bg-muted/50 transition-colors">
+        <td class="px-4 py-3 text-sm font-medium text-foreground">${user.name}</td>
         <td class="px-4 py-3 text-sm text-muted-foreground">${user.email}</td>
         <td class="px-4 py-3 text-sm">
           <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -57,13 +32,29 @@ export const GET: APIRoute = async ({ url, request }) => {
           </span>
         </td>
         <td class="px-4 py-3 text-sm">
-          <span class="inline-flex items-center gap-1.5">
+          <span class="inline-flex items-center gap-1.5 text-foreground">
             <span class="h-1.5 w-1.5 rounded-full ${user.status === "Activo" ? "bg-green-500" : "bg-red-500"}"></span>
             ${user.status}
           </span>
         </td>
         <td class="px-4 py-3 text-right text-sm">
-          <button class="text-muted-foreground hover:text-primary transition-colors">Editar</button>
+          <div class="flex justify-end gap-2">
+            <button
+              class="text-muted-foreground hover:text-primary transition-colors font-medium cursor-pointer"
+              @click="editUser('${user.id}', '${user.name}', '${user.email}', '${user.role}')"
+            >
+              Editar
+            </button>
+            <button
+              class="text-destructive hover:text-destructive/80 transition-colors font-medium cursor-pointer"
+              hx-delete="/api/users/delete?id=${user.id}"
+              hx-target="#user-${user.id}"
+              hx-swap="outerHTML"
+              hx-confirm="¿Estás seguro de eliminar a ${user.name}?"
+            >
+              Eliminar
+            </button>
+          </div>
         </td>
       </tr>
     `,
@@ -84,5 +75,4 @@ export const GET: APIRoute = async ({ url, request }) => {
   });
 };
 
-// Necesitamos pasar 'request' al contexto de Astro
 export const ALL: APIRoute = (context) => GET(context);

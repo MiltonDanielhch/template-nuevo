@@ -63,7 +63,7 @@
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
 | 1 | Role Guard | `presentation/components/auth/Guard.astro`: Control de visibilidad del lado servidor. | ✅ |
-| 2 | Admin Panel | `presentation/pages/admin/`: CRUD de gestión de sintonía de usuarios. | ✅ |
+| 2 | Admin Panel | `presentation/pages/admin/`: CRUD completo (Listar, Crear, Editar, Eliminar) con HTMX. | ✅ |
 
 ---
 

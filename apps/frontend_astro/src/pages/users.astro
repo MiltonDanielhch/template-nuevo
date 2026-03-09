@@ -2,30 +2,40 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { getUsers } from "@/lib/db";
 import Navbar from "@/presentation/components/shared/Navbar.astro";
 import Sidebar from "@/presentation/components/shared/Sidebar.astro";
 import MainLayout from "@/presentation/layouts/MainLayout.astro";
 
 export const prerender = false;
 
-// Por defecto Astro cargará la lista inicial en el servidor
-const allUsers = [
-  {
-    id: "1",
-    name: "Admin Principal",
-    email: "admin@lab3026.com",
-    role: "Administrador",
-    status: "Activo",
-  },
-  { id: "2", name: "Juan Pérez", email: "juan@example.com", role: "Usuario", status: "Activo" },
-  { id: "3", name: "María García", email: "maria@example.com", role: "Editor", status: "Inactivo" },
-  { id: "4", name: "Carlos López", email: "carlos@test.com", role: "Usuario", status: "Activo" },
-  { id: "5", name: "Ana Martínez", email: "ana@lab.com", role: "Administrador", status: "Activo" },
-];
+// Obtenemos los usuarios reales de nuestra "DB" simulada
+const allUsers = getUsers();
 ---
 
 <MainLayout title="Gestión de Usuarios">
-  <div class="flex h-screen flex-col" x-data="{ openModal: false }" @user-created.window="openModal = false">
+  <div
+    class="flex h-screen flex-col"
+    x-data="{
+      openModal: false,
+      isEdit: false,
+      editId: '',
+      form: { name: '', email: '', role: 'Usuario' },
+      editUser(id, name, email, role) {
+        this.isEdit = true;
+        this.editId = id;
+        this.form = { name, email, role };
+        this.openModal = true;
+      },
+      resetForm() {
+        this.isEdit = false;
+        this.editId = '';
+        this.form = { name: '', email: '', role: 'Usuario' };
+      }
+    }"
+    @user-created.window="openModal = false; resetForm()"
+    @user-updated.window="openModal = false; resetForm()"
+  >
     <Navbar />
     <div class="flex flex-1 overflow-hidden">
       <Sidebar />
@@ -86,7 +96,7 @@ const allUsers = [
                   </thead>
                   <tbody id="users-table-body" class="divide-y divide-border">
                     {allUsers.map((user) => (
-                      <tr class="border-b border-border hover:bg-muted/50 transition-colors">
+                      <tr id={`user-${user.id}`} class="border-b border-border hover:bg-muted/50 transition-colors">
                         <td class="px-4 py-3 text-sm font-medium text-foreground">{user.name}</td>
                         <td class="px-4 py-3 text-sm text-muted-foreground">{user.email}</td>
                         <td class="px-4 py-3 text-sm">
@@ -103,7 +113,23 @@ const allUsers = [
                           </span>
                         </td>
                         <td class="px-4 py-3 text-right text-sm">
-                          <button class="text-muted-foreground hover:text-primary transition-colors font-medium">Editar</button>
+                          <div class="flex justify-end gap-2">
+                            <button
+                              class="text-muted-foreground hover:text-primary transition-colors font-medium cursor-pointer"
+                              @click={`editUser('${user.id}', '${user.name}', '${user.email}', '${user.role}')`}
+                            >
+                              Editar
+                            </button>
+                            <button
+                              class="text-destructive hover:text-destructive/80 transition-colors font-medium cursor-pointer"
+                              hx-delete={`/api/users/delete?id=${user.id}`}
+                              hx-target={`#user-${user.id}`}
+                              hx-swap="outerHTML"
+                              hx-confirm={`¿Estás seguro de eliminar a ${user.name}?`}
+                            >
+                              Eliminar
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -137,27 +163,27 @@ const allUsers = [
         class="w-full max-w-md overflow-hidden rounded-xl border border-border bg-card shadow-2xl"
       >
         <div class="flex items-center justify-between border-b border-border p-4">
-          <h2 class="text-lg font-semibold">Crear Nuevo Usuario</h2>
-          <button @click="openModal = false" class="text-muted-foreground hover:text-foreground">
+          <h2 class="text-lg font-semibold" x-text="isEdit ? 'Editar Usuario' : 'Crear Nuevo Usuario'"></h2>
+          <button @click="openModal = false; resetForm()" class="text-muted-foreground hover:text-foreground">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
 
         <form
-          hx-post="/api/users/create"
-          hx-target="#users-table-body"
-          hx-swap="afterbegin"
+          :hx-post="isEdit ? `/api/users/edit?id=${editId}` : '/api/users/create'"
+          :hx-target="isEdit ? `#user-${editId}` : '#users-table-body'"
+          :hx-swap="isEdit ? 'outerHTML' : 'afterbegin'"
           class="p-4 space-y-4"
-          @submit="setTimeout(() => $el.reset(), 100)"
+          @submit="setTimeout(() => { if(!isEdit) $el.reset() }, 100)"
         >
           <div class="space-y-2">
             <label for="name" class="text-sm font-medium">Nombre Completo</label>
-            <Input id="name" name="name" placeholder="Ej: Juan Pérez" required />
+            <Input id="name" name="name" x-model="form.name" placeholder="Ej: Juan Pérez" required />
           </div>
 
           <div class="space-y-2">
             <label for="email" class="text-sm font-medium">Correo Electrónico</label>
-            <Input id="email" name="email" type="email" placeholder="ejemplo@test.com" required />
+            <Input id="email" name="email" type="email" x-model="form.email" placeholder="ejemplo@test.com" required />
           </div>
 
           <div class="space-y-2">
@@ -165,6 +191,7 @@ const allUsers = [
             <select
               id="role"
               name="role"
+              x-model="form.role"
               class="flex h-9 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               required
             >
@@ -175,8 +202,8 @@ const allUsers = [
           </div>
 
           <div class="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="outline" @click="openModal = false">Cancelar</Button>
-            <Button type="submit">Guardar Usuario</Button>
+            <Button type="button" variant="outline" @click="openModal = false; resetForm()">Cancelar</Button>
+            <Button type="submit" x-text="isEdit ? 'Actualizar Usuario' : 'Guardar Usuario'"></Button>
           </div>
         </form>
       </div>
