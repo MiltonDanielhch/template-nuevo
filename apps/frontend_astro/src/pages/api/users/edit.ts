@@ -6,14 +6,21 @@ export const POST: APIRoute = async ({ request, url }) => {
   const data = await request.formData();
   const name = data.get("name");
   const email = data.get("email");
+  const password = data.get("password");
   const role = data.get("role");
 
   if (id && name && email && role) {
-    const user = updateUser(id, {
+    const updateData: any = {
       name: name.toString(),
       email: email.toString(),
       role: role.toString(),
-    });
+    };
+
+    if (password && password.toString().length > 0) {
+      updateData.password = password.toString();
+    }
+
+    const user = updateUser(id, updateData);
 
     if (!user) {
       return new Response(JSON.stringify({ error: "Usuario no encontrado" }), { status: 404 });

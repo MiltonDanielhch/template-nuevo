@@ -5,12 +5,14 @@ export const POST: APIRoute = async ({ request }) => {
   const data = await request.formData();
   const name = data.get("name");
   const email = data.get("email");
+  const password = data.get("password");
   const role = data.get("role");
 
   if (name && email && role) {
     const newUser = addUser({
       name: name.toString(),
       email: email.toString(),
+      password: password?.toString(),
       role: role.toString(),
     });
 
