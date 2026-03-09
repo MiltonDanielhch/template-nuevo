@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { title } = Astro.props;
-const _token = Astro.cookies.get("auth_token")?.value || "";
+const token = Astro.cookies.get("auth_token")?.value || "";
 ---
 
 <!DOCTYPE html>

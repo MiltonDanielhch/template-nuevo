@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
   <p class="text-sm text-muted-foreground mb-4">
     Esta tarjeta demuestra capacidades nativas adicionales usando <code>tauri-plugin-fs</code> y <code>tauri-plugin-dialog</code>.
   </p>
-
+  
   <div class="flex flex-col sm:flex-row gap-3">
     <button
       id="btn-save-file"
@@ -28,7 +28,7 @@ import { Card } from "@/components/ui/card";
       Leer Archivo
     </button>
   </div>
-
+  
   <div id="fs-status" class="mt-3 text-sm hidden p-2 rounded bg-background border"></div>
 </Card>
 
@@ -52,7 +52,7 @@ import { Card } from "@/components/ui/card";
       showStatus("Esta funcionalidad solo está disponible en la app de escritorio (Tauri).", true);
       return;
     }
-
+    
     try {
       const filePath = await save({
         title: 'Guardar Log de la App',

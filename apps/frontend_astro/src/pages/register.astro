@@ -25,7 +25,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
         >
           <div class="space-y-4">
             <div class="space-y-2">
-              <Label for="email">Email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 name="email"
@@ -36,7 +36,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
             </div>
 
             <div class="space-y-2">
-              <Label for="password">Contraseña</Label>
+              <Label htmlFor="password">Contraseña</Label>
               <Input
                 id="password"
                 name="password"
@@ -47,7 +47,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
             </div>
 
             <div class="space-y-2">
-              <Label for="confirmPassword">Confirmar Contraseña</Label>
+              <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
               <Input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -65,7 +65,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                 required
                 class="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               />
-              <Label for="terms" class="text-sm text-muted-foreground">
+              <Label htmlFor="terms" class="text-sm text-muted-foreground">
                 Acepto los
                 <a href="/terms" class="text-primary hover:underline">Términos</a>
                 y la

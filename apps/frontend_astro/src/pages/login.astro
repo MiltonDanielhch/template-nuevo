@@ -25,7 +25,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
         >
           <div class="space-y-4">
             <div class="space-y-2">
-              <Label for="email">Email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 name="email"
@@ -37,7 +37,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
 
             <div class="space-y-2">
               <div class="flex items-center justify-between">
-                <Label for="password">Contraseña</Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <a href="/forgot-password" class="text-sm text-primary hover:underline">
                   ¿Olvidaste tu contraseña?
                 </a>
@@ -58,7 +58,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                 name="remember"
                 class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               />
-              <Label for="remember" class="text-sm text-muted-foreground">
+              <Label htmlFor="remember" class="text-sm text-muted-foreground">
                 Recordarme
               </Label>
             </div>
