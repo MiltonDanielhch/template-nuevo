@@ -11,13 +11,13 @@ export const POST: APIRoute = async ({ request, url }) => {
 
   if (id && name && email && role) {
     const updateData: any = {
-      name: name.toString(),
+      username: name.toString(),
       email: email.toString(),
       role: role.toString(),
     };
 
     if (password && password.toString().length > 0) {
-      updateData.password = password.toString();
+      updateData.password_hash = password.toString();
     }
 
     const user = updateUser(id, updateData);
@@ -28,13 +28,11 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     const html = `
       <tr id="user-${user.id}" class="border-b border-border hover:bg-muted/50 transition-colors">
-        <td class="px-4 py-3 text-sm font-medium text-foreground">${user.name}</td>
+        <td class="px-4 py-3 text-sm font-medium text-foreground">${user.username}</td>
         <td class="px-4 py-3 text-sm text-muted-foreground">${user.email}</td>
         <td class="px-4 py-3 text-sm">
           <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-            user.role === "Administrador"
-              ? "bg-primary/10 text-primary"
-              : "bg-muted text-muted-foreground"
+            user.role === "Admin" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
           }">
             ${user.role}
           </span>
@@ -49,7 +47,7 @@ export const POST: APIRoute = async ({ request, url }) => {
           <div class="flex justify-end gap-2">
             <button
               class="text-muted-foreground hover:text-primary transition-colors font-medium cursor-pointer"
-              @click="editUser('${user.id}', '${user.name}', '${user.email}', '${user.role}')"
+              @click="editUser('${user.id}', '${user.username}', '${user.email}', '${user.role}')"
             >
               Editar
             </button>
@@ -58,7 +56,7 @@ export const POST: APIRoute = async ({ request, url }) => {
               hx-delete="/api/users/delete?id=${user.id}"
               hx-target="#user-${user.id}"
               hx-swap="outerHTML"
-              hx-confirm="¿Estás seguro de eliminar a ${user.name}?"
+              hx-confirm="¿Estás seguro de eliminar a ${user.username}?"
             >
               Eliminar
             </button>

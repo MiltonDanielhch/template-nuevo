@@ -3,34 +3,35 @@
 
 export interface User {
   id: string;
-  name: string;
+  username: string;
   email: string;
-  password?: string;
+  password_hash: string;
   role: string;
   status: "Activo" | "Inactivo";
+  created_at: string;
 }
 
+// Datos reales del Seed de la base de datos Rust
 let users: User[] = [
   {
-    id: "1",
-    name: "Admin Principal",
+    id: "user_00000001",
+    username: "admin_3026",
     email: "admin@lab3026.com",
-    role: "Administrador",
+    password_hash: "$argon2id$v=19$m=19456,t=2,p=1$...", // Simulado
+    role: "Admin",
     status: "Activo",
+    created_at: new Date().toISOString(),
   },
-  { id: "2", name: "Juan Pérez", email: "juan@example.com", role: "Usuario", status: "Activo" },
-  { id: "3", name: "María García", email: "maria@example.com", role: "Editor", status: "Inactivo" },
-  { id: "4", name: "Carlos López", email: "carlos@test.com", role: "Usuario", status: "Activo" },
-  { id: "5", name: "Ana Martínez", email: "ana@lab.com", role: "Administrador", status: "Activo" },
 ];
 
 export const getUsers = () => users;
 
-export const addUser = (user: Omit<User, "id" | "status">) => {
+export const addUser = (userData: Omit<User, "id" | "status" | "created_at">) => {
   const newUser: User = {
-    ...user,
-    id: Math.random().toString(36).substr(2, 9),
+    ...userData,
+    id: `user_${Math.random().toString(36).substr(2, 8)}`,
     status: "Activo",
+    created_at: new Date().toISOString(),
   };
   users = [newUser, ...users];
   return newUser;
