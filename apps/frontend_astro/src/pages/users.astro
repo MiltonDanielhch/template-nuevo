@@ -68,31 +68,6 @@ try {
         if (preview) preview.innerHTML = '<span class="text-sm text-muted-foreground">Sin imagen</span>';
         this.$nextTick(() => htmx.process(this.$refs.userForm));
       },
-      async uploadAvatar() {
-        const fileInput = document.getElementById('avatar') as HTMLInputElement;
-        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-          return null;
-        }
-
-        const file = fileInput.files[0];
-        const formData = new FormData();
-        formData.append('avatar', file);
-
-        try {
-          const response = await fetch('/api/upload/avatar', {
-            method: 'POST',
-            body: formData
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            return data.url;
-          }
-        } catch (error) {
-          console.error('Error uploading avatar:', error);
-        }
-        return null;
-      },
     }"
     @user-created.window="openModal = false; resetForm(); htmx.process(document.body)"
      @user-updated.window="openModal = false; resetForm(); htmx.process(document.body)"
@@ -248,15 +223,8 @@ try {
           @submit="async (e) => {
             e.preventDefault();
 
-            // Subir avatar si hay archivo seleccionado
-            let avatarUrl = form.avatar_url;
-            const fileInput = document.getElementById('avatar') as HTMLInputElement;
-            if (fileInput && fileInput.files && fileInput.files.length > 0) {
-              const uploadedUrl = await this.uploadAvatar();
-              if (uploadedUrl) {
-                avatarUrl = uploadedUrl;
-              }
-            }
+            // El avatar ya está en base64 en form.avatar_url (comprimido)
+            const avatarUrl = form.avatar_url;
 
             const formData = new FormData();
             formData.append('username', form.username);
@@ -266,7 +234,6 @@ try {
             formData.append('role', form.role);
 
             const url = isEdit ? '/api/users/edit?id=' + editId : '/api/users/create';
-            const targetId = isEdit ? '#user-' + editId : '#users-table-body';
 
             try {
               const response = await fetch(url, {
@@ -277,7 +244,6 @@ try {
               if (response.ok) {
                 openModal = false;
                 resetForm();
-                // Recargar página para ver cambios
                 window.location.reload();
               } else {
                 const error = await response.json();
@@ -311,10 +277,33 @@ try {
                   name="avatar"
                   type="file"
                   accept="image/*"
-                  @change="const file = $event.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (e) => { const preview = document.getElementById('avatar-preview'); if (preview) preview.innerHTML = `<img src='${e.target.result}' class='h-16 w-16 object-cover rounded-full' />`; }; reader.readAsDataURL(file); }"
+                  @change="const file = $event.target.files[0]; if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      const img = new Image();
+                      img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const maxSize = 150;
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > height) { if (width > maxSize) { height *= maxSize / width; width = maxSize; } }
+                        else { if (height > maxSize) { width *= maxSize / height; height = maxSize; } }
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const compressed = canvas.toDataURL('image/jpeg', 0.7);
+                        form.avatar_url = compressed;
+                        const preview = document.getElementById('avatar-preview');
+                        if (preview) preview.innerHTML = '<img src=' + compressed + ' class=\"h-16 w-16 object-cover rounded-full\" />';
+                      };
+                      img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                  }"
                   class="text-sm"
                 />
-                <p class="text-xs text-muted-foreground mt-1">JPG, PNG o GIF. Se comprime automáticamente.</p>
+                <p class="text-xs text-muted-foreground mt-1">JPG, PNG o GIF. Se comprime a 150px y 70% calidad.</p>
               </div>
             </div>
           </div>
