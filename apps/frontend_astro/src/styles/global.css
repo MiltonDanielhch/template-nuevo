@@ -83,6 +83,27 @@
   .htmx-request.htmx-indicator {
     opacity: 1;
   }
+
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  @media (max-width: 768px) {
+    button,
+    a,
+    [role="button"],
+    input[type="checkbox"],
+    input[type="radio"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    .btn-mobile {
+      padding: 12px 24px;
+      font-size: 16px;
+    }
+  }
 }
 
 :root {

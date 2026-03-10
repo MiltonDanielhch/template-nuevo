@@ -13,6 +13,37 @@ const token = Astro.cookies.get("auth_token")?.value || "";
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    <!-- Capacitor Plugins -->
+    <script src="https://unpkg.com/@capacitor/core@6/dist/capacitor.js"></script>
+    <script is:inline>
+      // Capacitor Auth Storage
+      window.CapacitorStorage = {
+        async getToken() {
+          if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+            const { Preferences } = window.Capacitor.Plugins;
+            const result = await Preferences.get({ key: 'auth_token' });
+            return result.value;
+          }
+          return localStorage.getItem('auth_token');
+        },
+        async setToken(token) {
+          if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+            const { Preferences } = window.Capacitor.Plugins;
+            await Preferences.set({ key: 'auth_token', value: token });
+          } else {
+            localStorage.setItem('auth_token', token);
+          }
+        },
+        async removeToken() {
+          if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+            const { Preferences } = window.Capacitor.Plugins;
+            await Preferences.remove({ key: 'auth_token' });
+          } else {
+            localStorage.removeItem('auth_token');
+          }
+        }
+      };
+    </script>
     <script is:inline>
       (function() {
         const theme = localStorage.getItem('theme');
@@ -24,9 +55,11 @@ const token = Astro.cookies.get("auth_token")?.value || "";
       })();
     </script>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="description" content="Laboratorio 3026 - Sistema de Gestión" />
+    <meta name="theme-color" content="#0ea5e9" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
     <title>{title} | Laboratorio 3026</title>
     <meta name="auth-token" content={token} />
 
