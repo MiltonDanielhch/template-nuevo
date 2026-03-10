@@ -42,22 +42,57 @@ try {
       openModal: false,
       isEdit: false,
       editId: '',
-      form: { username: '', email: '', password: '', avatar_url: '', role: 'User' },
+      form: { username: '', email: '', password: '', avatar_url: '', avatar_file: null, role: 'User' },
       editUser(id, username, email, roles, avatar_url) {
         console.log('Editing user:', { id, username, email, roles, avatar_url });
         this.isEdit = true;
         this.editId = id;
-        this.form = { username: username || '', email: email || '', password: '', avatar_url: avatar_url || '', role: (roles && roles.length > 0) ? roles[0] : 'User' };
+        this.form = { username: username || '', email: email || '', password: '', avatar_url: avatar_url || '', avatar_file: null, role: (roles && roles.length > 0) ? roles[0] : 'User' };
+
+        // Mostrar preview si tiene avatar
+        setTimeout(() => {
+          const preview = document.getElementById('avatar-preview');
+          if (preview && avatar_url) {
+            preview.innerHTML = `<img src='${avatar_url}' class='h-16 w-16 object-cover rounded-full' />`;
+          }
+        }, 100);
+
         this.openModal = true;
-        // Forzamos a HTMX a reconocer el cambio de atributos
         this.$nextTick(() => htmx.process(this.$refs.userForm));
       },
       resetForm() {
         this.isEdit = false;
         this.editId = '';
-        this.form = { username: '', email: '', password: '', avatar_url: '', role: 'User' };
+        this.form = { username: '', email: '', password: '', avatar_url: '', avatar_file: null, role: 'User' };
+        const preview = document.getElementById('avatar-preview');
+        if (preview) preview.innerHTML = '<span class="text-sm text-muted-foreground">Sin imagen</span>';
         this.$nextTick(() => htmx.process(this.$refs.userForm));
-      }
+      },
+      async uploadAvatar() {
+        const fileInput = document.getElementById('avatar') as HTMLInputElement;
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+          return null;
+        }
+
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        try {
+          const response = await fetch('/api/upload/avatar', {
+            method: 'POST',
+            body: formData
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            return data.url;
+          }
+        } catch (error) {
+          console.error('Error uploading avatar:', error);
+        }
+        return null;
+      },
     }"
     @user-created.window="openModal = false; resetForm(); htmx.process(document.body)"
      @user-updated.window="openModal = false; resetForm(); htmx.process(document.body)"
@@ -209,11 +244,50 @@ try {
 
         <form
           x-ref="userForm" method="POST" @submit.prevent
-          :hx-post="isEdit ? `/api/users/edit?id=${editId}` : '/api/users/create'"
-          :hx-target="isEdit ? `#user-${editId}` : '#users-table-body'"
-          :hx-swap="isEdit ? 'outerHTML' : 'afterbegin'"
           class="p-4 space-y-4"
-          @htmx:after-request="if($event.detail.successful) { openModal = false; resetForm(); htmx.process(document.body); }"
+          @submit="async (e) => {
+            e.preventDefault();
+
+            // Subir avatar si hay archivo seleccionado
+            let avatarUrl = form.avatar_url;
+            const fileInput = document.getElementById('avatar') as HTMLInputElement;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+              const uploadedUrl = await this.uploadAvatar();
+              if (uploadedUrl) {
+                avatarUrl = uploadedUrl;
+              }
+            }
+
+            const formData = new FormData();
+            formData.append('username', form.username);
+            formData.append('email', form.email);
+            if (form.password) formData.append('password', form.password);
+            if (avatarUrl) formData.append('avatar_url', avatarUrl);
+            formData.append('role', form.role);
+
+            const url = isEdit ? '/api/users/edit?id=' + editId : '/api/users/create';
+            const targetId = isEdit ? '#user-' + editId : '#users-table-body';
+
+            try {
+              const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+              });
+
+              if (response.ok) {
+                openModal = false;
+                resetForm();
+                // Recargar página para ver cambios
+                window.location.reload();
+              } else {
+                const error = await response.json();
+                alert(error.message || 'Error al guardar usuario');
+              }
+            } catch (err) {
+              console.error('Error:', err);
+              alert('Error al guardar usuario');
+            }
+          }"
         >
           <div class="space-y-2">
             <label for="username" class="text-sm font-medium">Nombre de Usuario</label>
@@ -226,8 +300,23 @@ try {
           </div>
 
           <div class="space-y-2">
-            <label for="avatar_url" class="text-sm font-medium">Avatar (URL)</label>
-            <Input id="avatar_url" name="avatar_url" type="url" x-model="form.avatar_url" placeholder="https://ejemplo.com/avatar.jpg" />
+            <label for="avatar" class="text-sm font-medium">Avatar</label>
+            <div class="flex items-center gap-4">
+              <div id="avatar-preview" class="h-16 w-16 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                <span class="text-sm text-muted-foreground">Sin imagen</span>
+              </div>
+              <div class="flex-1">
+                <Input
+                  id="avatar"
+                  name="avatar"
+                  type="file"
+                  accept="image/*"
+                  @change="const file = $event.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (e) => { const preview = document.getElementById('avatar-preview'); if (preview) preview.innerHTML = `<img src='${e.target.result}' class='h-16 w-16 object-cover rounded-full' />`; }; reader.readAsDataURL(file); }"
+                  class="text-sm"
+                />
+                <p class="text-xs text-muted-foreground mt-1">JPG, PNG o GIF. Se comprime automáticamente.</p>
+              </div>
+            </div>
           </div>
 
           <div class="space-y-2">
