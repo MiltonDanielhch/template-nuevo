@@ -155,8 +155,7 @@ try {
                           </span>
                         </td>
                         <td class="px-4 py-3 text-sm">
-                          <span class="inline-flex items-center gap-1.5 text-foreground">
-                            <span class={`h-1.5 w-1.5 rounded-full ${(user.status || 'Activo') === 'Activo' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                          <span class={`h-1.5 w-1.5 rounded-full ${(user.status || 'Activo') === 'Activo' ? 'bg-green-500' : 'bg-red-500'}`}></span>
                             {user.status || 'Activo'}
                           </span>
                         </td>
@@ -295,7 +294,7 @@ try {
                         const compressed = canvas.toDataURL('image/jpeg', 0.7);
                         form.avatar_url = compressed;
                         const preview = document.getElementById('avatar-preview');
-                        if (preview) preview.innerHTML = '<img src=' + compressed + ' class=\"h-16 w-16 object-cover rounded-full\" />';
+                        if (preview) preview.innerHTML = '<img src="' + compressed + '" class="h-16 w-16 object-cover rounded-full" />';
                       };
                       img.src = e.target.result;
                     };
