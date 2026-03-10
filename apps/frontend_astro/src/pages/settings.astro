@@ -10,6 +10,7 @@ export const prerender = false;
 
 const token = Astro.cookies.get("auth_token")?.value;
 let user = null;
+let userRoles = [];
 
 try {
   const response = await fetch("http://localhost:8081/me", {
@@ -20,9 +21,18 @@ try {
   if (response.ok) {
     user = await response.json();
   }
+  
+  const rolesRes = await fetch("http://localhost:8081/users/me/roles", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (rolesRes.ok) {
+    userRoles = await rolesRes.json();
+  }
 } catch (error) {
   console.error("Error fetching user profile:", error);
 }
+
+const currentRole = userRoles.length > 0 ? userRoles.map((r: any) => r.name).join(", ") : (user?.role || "Sin rol");
 
 if (!user) {
   return Astro.redirect("/login");
@@ -130,7 +140,7 @@ if (!user) {
               </CardHeader>
               <CardContent>
                 <p class="text-sm text-muted-foreground mb-4">
-                  Actualmente tienes el rol de <strong class="text-foreground">{user.role}</strong>.
+                  Actualmente tienes el rol de <strong class="text-foreground">{currentRole}</strong>.
                   Si necesitas eliminar tu cuenta, por favor contacta con un administrador.
                 </p>
                 <Button variant="destructive" disabled>Eliminar Cuenta</Button>
