@@ -42,11 +42,7 @@ const token = Astro.cookies.get("auth_token")?.value || "";
     <meta name="auth-token" content={token} />
 
     <!-- HTMX -->
-    <script is:inline src="https://unpkg.com/htmx.org@2.0.8"></script>
-
-    <!-- HTMX Extensions -->
-    <script is:inline src="https://unpkg.com/htmx.org@2.0.8/dist/ext/json-enc.js"></script>
-    <script is:inline src="https://unpkg.com/htmx.org@2.0.8/dist/ext/csrf.js"></script>
+    <script is:inline src="https://unpkg.com/htmx.org@2.0.8/dist/htmx.min.js" crossorigin="anonymous"></script>
 
     <!-- Alpine.js Plugins -->
 
@@ -58,13 +54,7 @@ const token = Astro.cookies.get("auth_token")?.value || "";
           htmx.config.historyCacheSize = 0;
           htmx.config.refreshOnHistoryMiss = false;
 
-          // --- LOGS DE FRONTEND (DEBUG) ---
-          htmx.logger = function(elt, event, data) {
-            if(console) {
-              console.debug("HTMX Event:", event, elt, data);
-            }
-          };
-
+          // Logs de errores solo cuando falla
           document.body.addEventListener('htmx:responseError', (e) => {
             console.error("HTMX Response Error:", e.detail.xhr.status, e.detail.xhr.responseText);
           });

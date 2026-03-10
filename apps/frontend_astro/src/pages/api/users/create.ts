@@ -6,6 +6,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   const email = data.get("email")?.toString();
   const password = data.get("password")?.toString();
   const role = data.get("role")?.toString() || "User";
+  const avatar_url = data.get("avatar_url")?.toString();
 
   const token = cookies.get("auth_token")?.value;
 
@@ -21,6 +22,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         password,
         username,
         role,
+        avatar_url,
       }),
     });
 
@@ -32,40 +34,27 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     const newUser = await response.json();
+    const userRole = newUser.roles && newUser.roles.length > 0 ? newUser.roles[0] : "User";
 
     const html = `
       <tr id="user-${newUser.id}" class="border-b border-border hover:bg-muted/50 transition-colors animate-in fade-in slide-in-from-top-1 duration-500">
-        <td class="px-4 py-3 text-sm font-medium text-foreground">${newUser.username || username || "N/A"}</td>
-        <td class="px-4 py-3 text-sm text-muted-foreground">${newUser.email}</td>
-        <td class="px-4 py-3 text-sm">
-          <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-muted text-muted-foreground">
-            User
+        <td class="px-4 py-3">
+          ${
+            newUser.avatar_url
+              ? `<img src="${newUser.avatar_url}" class="h-10 w-10 rounded-full object-cover" />`
+              : `<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">${(newUser.username || newUser.email || "U").charAt(0).toUpperCase()}</div>`
+          }
+        </td>
+        <td class="px-4 py-3 font-medium">${newUser.username || "Sin nombre"}</td>
+        <td class="px-4 py-3 text-muted-foreground">${newUser.email}</td>
+        <td class="px-4 py-3">
+          <span class="px-2 py-1 rounded-full text-xs ${userRole === "Admin" ? "bg-primary/10 text-primary" : "bg-muted"}">
+            ${userRole}
           </span>
         </td>
-        <td class="px-4 py-3 text-sm">
-          <span class="inline-flex items-center gap-1.5 text-foreground">
-            <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
-            Activo
-          </span>
-        </td>
-        <td class="px-4 py-3 text-right text-sm">
-          <div class="flex justify-end gap-2">
-            <button
-              class="text-muted-foreground hover:text-primary transition-colors font-medium cursor-pointer"
-              @click="editUser('${newUser.id}', '${newUser.username || username || ""}', '${newUser.email}', 'User')"
-            >
-              Editar
-            </button>
-            <button
-              class="text-destructive hover:text-destructive/80 transition-colors font-medium cursor-pointer"
-              hx-delete="/api/users/delete?id=${newUser.id}"
-              hx-target="#user-${newUser.id}"
-              hx-swap="outerHTML"
-              hx-confirm="¿Estás seguro de eliminar a ${newUser.username || username || newUser.email}?"
-            >
-              Eliminar
-            </button>
-          </div>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-id="${newUser.id}" data-user="${newUser.username || ""}" data-email="${newUser.email}" data-role="${userRole}" data-avatar="${newUser.avatar_url || ""}" onclick="openEdit(this)" class="text-sm text-muted-foreground hover:text-primary mr-3">Editar</button>
+          <button type="button" data-id="${newUser.id}" data-name="${newUser.username || newUser.email}" onclick="deleteUser(this)" class="text-sm text-red-500 hover:text-red-700">Eliminar</button>
         </td>
       </tr>
     `;

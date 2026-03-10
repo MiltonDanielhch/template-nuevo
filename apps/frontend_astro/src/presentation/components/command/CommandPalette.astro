@@ -52,14 +52,14 @@
 
       <!-- Results -->
       <ul class="max-h-96 scroll-py-2 overflow-y-auto py-2 text-sm text-foreground" x-show="$store.commandPalette.filteredItems.length > 0">
-        <template x-for="item in $store.commandPalette.filteredItems" :key="item.label">
+        <template x-for="(item, idx) in $store.commandPalette.filteredItems" :key="item.label">
           <li>
             <button
               @click="$store.commandPalette.execute(item)"
               class="flex w-full cursor-default select-none items-center px-4 py-2 hover:bg-muted"
-              :class="{ 'bg-muted': $store.commandPalette.selectedIndex === $store.commandPalette.filteredItems.indexOf(item) }"
+              :class="{ 'bg-primary/10 text-primary': $store.commandPalette.selectedIndex === idx }"
             >
-              <svg class="h-5 w-5 flex-none text-muted-foreground" :class="{ 'text-primary': $store.commandPalette.selectedIndex === $store.commandPalette.filteredItems.indexOf(item) }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="h-5 w-5 flex-none" :class="$store.commandPalette.selectedIndex === idx ? 'text-primary' : 'text-muted-foreground'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon" />
               </svg>
               <span class="ml-3 flex-auto truncate" x-text="item.label"></span>

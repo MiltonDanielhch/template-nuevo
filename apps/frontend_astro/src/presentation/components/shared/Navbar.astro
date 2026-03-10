@@ -188,35 +188,29 @@ import { Button } from "@/components/ui/button";
         </div>
       </template>
 
-      <template x-for="(result, index) in results" :key="result.href">
-        <a
-          :href="result.href"
-          class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors"
-          :class="selectedIndex === index ? 'bg-primary/10 text-primary' : 'hover:bg-muted'"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
-            <template x-if="result.icon === 'home'">
-              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            </template>
-            <template x-if="result.icon === 'users'">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-            </template>
-            <template x-if="result.icon === 'shield'">
-              <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-            </template>
-            <template x-if="result.icon === 'settings'">
-              <circle cx="12" cy="12" r="3"></circle>
-            </template>
-            <template x-if="result.icon === 'logout'">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-            </template>
-          </svg>
-          <div class="flex-1">
-            <span class="font-medium" x-text="result.title"></span>
-            <span class="text-muted-foreground text-xs ml-2" x-text="result.description"></span>
-          </div>
-          <span x-show="selectedIndex === index" class="text-xs text-muted-foreground">Enter</span>
-        </a>
+      <template x-if="results.length > 0">
+        <div class="space-y-1">
+          <template x-for="(item, idx) in results" :key="idx">
+            <a
+              :href="item.href"
+              class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors"
+              :class="selectedIndex === idx ? 'bg-primary/10 text-primary' : 'hover:bg-muted'"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground flex-none">
+                <path x-show="item.icon === 'home'" d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <path x-show="item.icon === 'users'" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <path x-show="item.icon === 'shield'" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                <circle x-show="item.icon === 'settings'" cx="12" cy="12" r="3"></circle>
+                <path x-show="item.icon === 'logout'" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              </svg>
+              <div class="flex-1 min-w-0">
+                <span class="font-medium block truncate" x-text="item.title"></span>
+                <span class="text-muted-foreground text-xs block truncate" x-text="item.description"></span>
+              </div>
+              <span x-show="selectedIndex === idx" class="text-xs text-muted-foreground flex-none">Enter</span>
+            </a>
+          </template>
+        </div>
       </template>
     </div>
 

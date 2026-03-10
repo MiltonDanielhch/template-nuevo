@@ -18,7 +18,7 @@ use crate::{
 };
 use axum::{
     Json,
-    extract::{Path, State},
+    extract::{Path, State, Query},
     http::StatusCode,
 };
 use core_logic::{
@@ -37,6 +37,7 @@ pub struct RegisterUserRequest {
     pub password: String,
     pub username: Option<String>,
     pub role: Option<String>,
+    pub avatar_url: Option<String>,
 }
 
 /// DTO para la respuesta exitosa de registro de usuario.
@@ -47,17 +48,8 @@ pub struct RegisterUserResponse {
     pub email: String,
     pub username: Option<String>,
     pub role: String,
-}
-
-impl From<User> for RegisterUserResponse {
-    fn from(user: User) -> Self {
-        Self {
-            id: user.id().to_string(),
-            email: user.email().to_string(),
-            username: user.username().clone(),
-            role: "User".to_string(), // TODO: Cargar del repo de roles
-        }
-    }
+    pub roles: Vec<String>,
+    pub avatar_url: Option<String>,
 }
 
 /// Handler para `POST /register`.
@@ -72,11 +64,25 @@ pub async fn register_user_handler(
         email: payload.email,
         password: payload.password,
         username: payload.username,
+        avatar_url: payload.avatar_url.clone(),
+        role: payload.role.clone(),
     };
 
     let new_user = state.register_user.execute(command).await?;
 
-    Ok(Json(new_user.into()))
+    let role = payload.role.unwrap_or_else(|| "User".to_string());
+    let roles = vec![role.clone()];
+
+    let response = RegisterUserResponse {
+        id: new_user.id().to_string(),
+        email: new_user.email().to_string(),
+        username: new_user.username().clone(),
+        role,
+        roles,
+        avatar_url: new_user.avatar_url().clone(),
+    };
+
+    Ok(Json(response))
 }
 
 #[derive(Deserialize)]
@@ -230,19 +236,67 @@ pub async fn logout_handler(
 
 // ---- CRUD Handlers ----
 
+#[derive(Deserialize, Default)]
+pub struct ListUsersQuery {
+    pub search: Option<String>,
+    pub page: Option<usize>,
+    pub per_page: Option<usize>,
+}
+
+#[derive(Serialize)]
+pub struct PaginatedUsersResponse {
+    pub users: Vec<MeResponse>,
+    pub total: usize,
+    pub page: usize,
+    pub per_page: usize,
+    pub total_pages: usize,
+}
+
 /// GET /api/v1/users
 pub async fn list_users_handler(
     State(state): State<AppState>,
     _current_user: CurrentUser,
-) -> Result<Json<Vec<MeResponse>>, ApiError> {
-    let users = state.list_users.execute().await?;
-    let mut response = Vec::with_capacity(users.len());
-    for user in users {
+    Query(query): Query<ListUsersQuery>,
+) -> Result<Json<PaginatedUsersResponse>, ApiError> {
+    let search = query.search.clone();
+    let page = query.page.unwrap_or(1).max(1);
+    let per_page = query.per_page.unwrap_or(10).min(50);
+    
+    let all_users = state.list_users.execute().await?;
+    
+    // Filter by search
+    let filtered: Vec<_> = if let Some(ref s) = search {
+        let s_lower = s.to_lowercase();
+        all_users.into_iter().filter(|u| {
+            let email = u.email().as_str().to_lowercase();
+            let username = u.username().as_ref().map(|n| n.to_lowercase()).unwrap_or_default();
+            email.contains(&s_lower) || username.contains(&s_lower)
+        }).collect()
+    } else {
+        all_users
+    };
+    
+    let total = filtered.len();
+    let total_pages = (total as f64 / per_page as f64).ceil() as usize;
+    
+    // Paginate
+    let start = (page - 1) * per_page;
+    let paginated: Vec<_> = filtered.into_iter().skip(start).take(per_page).collect();
+    
+    let mut response = Vec::with_capacity(paginated.len());
+    for user in paginated {
         let user_roles = state.role_repo.get_user_roles(user.id()).await?;
         let roles: Vec<String> = user_roles.iter().map(|r| r.name().to_string()).collect();
         response.push((user, roles).into());
     }
-    Ok(Json(response))
+    
+    Ok(Json(PaginatedUsersResponse {
+        users: response,
+        total,
+        page,
+        per_page,
+        total_pages,
+    }))
 }
 
 #[derive(Deserialize)]
@@ -251,6 +305,7 @@ pub struct UpdateUserRequest {
     pub email: Option<String>,
     pub password: Option<String>,
     pub avatar_url: Option<String>,
+    pub role: Option<String>,
 }
 
 /// PUT /api/v1/users/:id
@@ -273,6 +328,14 @@ pub async fn update_user_handler(
     };
 
     let user = state.update_user.execute(command).await?;
+
+    // Asignar rol si se proporcionó
+    if let Some(role_name) = payload.role {
+        if let Ok(Some(role)) = state.role_repo.find_role_by_name(&role_name).await {
+            let _ = state.role_repo.assign_role_to_user(user.id(), role.id()).await;
+        }
+    }
+
     let roles = state
         .role_repo
         .get_user_permissions(user.id())

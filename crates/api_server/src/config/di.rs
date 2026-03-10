@@ -48,7 +48,11 @@ pub fn create_app_state(pool: sqlx::SqlitePool) -> AppState {
     let hasher = Arc::new(Argon2idHasher {});
 
     // User use cases
-    let register_user = Arc::new(RegisterUser::new(user_repo.clone(), hasher.clone()));
+    let register_user = Arc::new(RegisterUser::new(
+        user_repo.clone(),
+        hasher.clone(),
+        role_repo.clone(),
+    ));
     let login_user = Arc::new(LoginUser::new(user_repo.clone(), hasher.clone()));
     let list_users = Arc::new(ListUsers::new(user_repo.clone()));
     let update_user = Arc::new(UpdateUser::new(user_repo.clone(), hasher.clone()));

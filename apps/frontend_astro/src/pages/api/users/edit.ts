@@ -7,6 +7,7 @@ export const POST: APIRoute = async ({ request, url, cookies }) => {
   const email = data.get("email");
   const password = data.get("password");
   const role = data.get("role") || "User";
+  const avatar_url = data.get("avatar_url");
 
   const token = cookies.get("auth_token")?.value;
 
@@ -19,6 +20,10 @@ export const POST: APIRoute = async ({ request, url, cookies }) => {
 
     if (password && password.toString().length > 0) {
       updateData.password = password.toString();
+    }
+
+    if (avatar_url && avatar_url.toString().length > 0) {
+      updateData.avatar_url = avatar_url.toString();
     }
 
     const response = await fetch(`http://localhost:8081/users/${id}`, {
@@ -38,42 +43,27 @@ export const POST: APIRoute = async ({ request, url, cookies }) => {
     }
 
     const user = await response.json();
+    const userRole = user.roles && user.roles.length > 0 ? user.roles[0] : "User";
 
     const html = `
       <tr id="user-${user.id}" class="border-b border-border hover:bg-muted/50 transition-colors">
-        <td class="px-4 py-3 text-sm font-medium text-foreground">${user.username || "Sin nombre"}</td>
-        <td class="px-4 py-3 text-sm text-muted-foreground">${user.email}</td>
-        <td class="px-4 py-3 text-sm">
-          <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-            role === "Admin" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
-          }">
-            ${role}
+        <td class="px-4 py-3">
+          ${
+            user.avatar_url
+              ? `<img src="${user.avatar_url}" class="h-10 w-10 rounded-full object-cover" />`
+              : `<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">${(user.username || "U").charAt(0).toUpperCase()}</div>`
+          }
+        </td>
+        <td class="px-4 py-3 font-medium">${user.username || "Sin nombre"}</td>
+        <td class="px-4 py-3 text-muted-foreground">${user.email}</td>
+        <td class="px-4 py-3">
+          <span class="px-2 py-1 rounded-full text-xs ${userRole === "Admin" ? "bg-primary/10 text-primary" : "bg-muted"}">
+            ${userRole}
           </span>
         </td>
-        <td class="px-4 py-3 text-sm">
-          <span class="inline-flex items-center gap-1.5 text-foreground">
-            <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
-            Activo
-          </span>
-        </td>
-        <td class="px-4 py-3 text-right text-sm">
-          <div class="flex justify-end gap-2">
-            <button
-              class="text-muted-foreground hover:text-primary transition-colors font-medium cursor-pointer"
-              @click="editUser('${user.id}', '${user.username || ""}', '${user.email}', '${role}')"
-            >
-              Editar
-            </button>
-            <button
-              class="text-destructive hover:text-destructive/80 transition-colors font-medium cursor-pointer"
-              hx-delete="/api/users/delete?id=${user.id}"
-              hx-target="#user-${user.id}"
-              hx-swap="outerHTML"
-              hx-confirm="¿Estás seguro de eliminar a ${user.username || user.email}?"
-            >
-              Eliminar
-            </button>
-          </div>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-id="${user.id}" data-user="${user.username || ""}" data-email="${user.email}" data-role="${userRole}" data-avatar="${user.avatar_url || ""}" onclick="openEdit(this)" class="text-sm text-muted-foreground hover:text-primary mr-3">Editar</button>
+          <button type="button" data-id="${user.id}" data-name="${user.username || user.email}" onclick="deleteUser(this)" class="text-sm text-red-500 hover:text-red-700">Eliminar</button>
         </td>
       </tr>
     `;

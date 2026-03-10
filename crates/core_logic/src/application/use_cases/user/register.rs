@@ -22,7 +22,7 @@
 use crate::domain::{
     entities::user::User,
     errors::DomainError,
-    interfaces::{IHasher, IUserRepository},
+    interfaces::{IHasher, IUserRepository, IRoleRepository},
     value_objects::Email,
 };
 use anyhow::{Context, Result};
@@ -33,6 +33,8 @@ pub struct RegisterUserCommand {
     pub email: String,
     pub password: String,
     pub username: Option<String>,
+    pub avatar_url: Option<String>,
+    pub role: Option<String>,
 }
 
 /// Caso de uso para registrar un nuevo usuario.
@@ -40,12 +42,13 @@ pub struct RegisterUserCommand {
 pub struct RegisterUser {
     user_repo: Arc<dyn IUserRepository>,
     hasher: Arc<dyn IHasher>,
+    role_repo: Arc<dyn IRoleRepository>,
 }
 
 impl RegisterUser {
     /// Crea una nueva instancia del caso de uso `RegisterUser`.
-    pub fn new(user_repo: Arc<dyn IUserRepository>, hasher: Arc<dyn IHasher>) -> Self {
-        Self { user_repo, hasher }
+    pub fn new(user_repo: Arc<dyn IUserRepository>, hasher: Arc<dyn IHasher>, role_repo: Arc<dyn IRoleRepository>) -> Self {
+        Self { user_repo, hasher, role_repo }
     }
 
     /// Ejecuta el caso de uso.
@@ -67,7 +70,12 @@ impl RegisterUser {
             .context("Error al hashear la contraseña")?;
 
         // 4. Crear la entidad de dominio User
-        let new_user = User::new(email, password_hash, command.username);
+        let mut new_user = User::new(email, password_hash, command.username);
+
+        // 4.1 Set avatar_url if provided
+        if let Some(avatar_url) = command.avatar_url {
+            new_user.set_avatar_url(Some(avatar_url));
+        }
 
         // 5. Guardar el usuario usando el repositorio
         self.user_repo
@@ -75,7 +83,14 @@ impl RegisterUser {
             .await
             .context("Error al guardar el usuario en la base de datos")?;
 
-        // 6. Devolver la entidad creada (o un DTO de respuesta si se prefiere)
+        // 6. Asignar rol si se proporcionó
+        if let Some(role_name) = command.role {
+            if let Ok(Some(role)) = self.role_repo.find_role_by_name(&role_name).await {
+                let _ = self.role_repo.assign_role_to_user(new_user.id(), role.id()).await;
+            }
+        }
+
+        // 7. Devolver la entidad creada
         Ok(new_user)
     }
 }
