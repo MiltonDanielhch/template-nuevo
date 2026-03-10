@@ -34,10 +34,10 @@ const search = Astro.url.searchParams.get("search") || "";
           <div class="mb-4 flex items-center gap-2">
             <input type="hidden" id="page-input" value={page} />
             <div class="flex items-center gap-2">
-              <input 
+              <input
                 type="text"
-                id="users-search-input" 
-                placeholder="Buscar por nombre o email..." 
+                id="users-search-input"
+                placeholder="Buscar por nombre o email..."
                 oninput="window.handleSearch(this.value)"
                 name="search"
                 class="h-9 w-full max-w-sm rounded-lg border border-input bg-transparent px-3 py-1 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
@@ -59,7 +59,7 @@ const search = Astro.url.searchParams.get("search") || "";
                   <th class="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="users-container" 
+              <tbody id="users-container"
                 hx-get="/api/users/list"
                 hx-vals={`{"page": "${page}", "search": "${search}"}`}
                 hx-target="#users-container"
@@ -87,18 +87,18 @@ const search = Astro.url.searchParams.get("search") || "";
 
       <form id="user-form" onsubmit="saveUser(event)">
         <input type="hidden" id="user-id" />
-        
+
         <div class="space-y-4">
           <div>
             <label class="text-sm font-medium">Usuario</label>
             <Input id="username" required placeholder="Nombre de usuario" autocomplete="username" />
           </div>
-          
+
           <div>
             <label class="text-sm font-medium">Email</label>
             <Input id="email" type="email" required placeholder="correo@ejemplo.com" autocomplete="email" />
           </div>
-          
+
           <div>
             <label class="text-sm font-medium">Avatar</label>
             <div class="flex items-center gap-4">
@@ -108,13 +108,13 @@ const search = Astro.url.searchParams.get("search") || "";
               <input type="file" id="avatar-input" accept="image/*" onchange="compressAvatar(this)" class="text-sm" />
             </div>
           </div>
-          
+
           <div>
             <label class="text-sm font-medium">Contraseña</label>
             <Input id="password" type="password" placeholder="•••••••" autocomplete="current-password" />
             <p id="password-hint" class="text-xs text-muted-foreground mt-1 hidden">(Dejar en blanco para no cambiar)</p>
           </div>
-          
+
           <div>
             <label class="text-sm font-medium">Rol</label>
             <select id="role-select" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm" required>
@@ -146,14 +146,14 @@ window.handleSearch = function(value) {
 
 window.doSearch = function(searchValue) {
   const value = searchValue !== undefined ? searchValue : document.getElementById('users-search-input').value;
-  
+
   const url = '/api/users/list?search=' + encodeURIComponent(value) + '&page=1';
-  
+
   fetch(url, {
     headers: { 'HX-Request': 'true' }
   })
-  .then(function(res) { 
-    return res.text(); 
+  .then(function(res) {
+    return res.text();
   })
   .then(function(html) {
     document.getElementById('users-container').innerHTML = html;
@@ -166,7 +166,7 @@ window.doSearch = function(searchValue) {
 window.goToPage = function(pageNum) {
   const value = document.getElementById('users-search-input').value;
   const url = '/api/users/list?search=' + encodeURIComponent(value) + '&page=' + pageNum;
-  
+
   fetch(url, {
     headers: { 'HX-Request': 'true' }
   })
@@ -206,25 +206,25 @@ window.openEdit = function(btn) {
   const email = btn.dataset.email;
   const role = btn.dataset.role;
   const avatar = btn.dataset.avatar;
-  
+
   document.getElementById('user-id').value = id;
   document.getElementById('username').value = username;
   document.getElementById('email').value = email;
   document.getElementById('role-select').value = role || 'User';
   document.getElementById('password').value = '';
   window.currentAvatar = avatar || '';
-  
+
   if (avatar) {
     document.getElementById('avatar-preview').innerHTML = '<img src="' + avatar + '" class="h-16 w-16 object-cover rounded-full" />';
   }
-  
+
   window.showModal(true);
 };
 
 window.compressAvatar = function(input) {
   const file = input.files[0];
   if (!file) return;
-  
+
   const reader = new FileReader();
   reader.onload = function(e) {
     const img = new Image();
@@ -248,7 +248,7 @@ window.compressAvatar = function(input) {
 
 window.saveUser = function(e) {
   e.preventDefault();
-  
+
   const id = document.getElementById('user-id').value;
   const data = new FormData();
   data.append('username', document.getElementById('username').value);
@@ -256,9 +256,9 @@ window.saveUser = function(e) {
   data.append('password', document.getElementById('password').value);
   data.append('role', document.getElementById('role-select').value);
   if (window.currentAvatar) data.append('avatar_url', window.currentAvatar);
-  
+
   const url = id ? '/api/users/edit?id=' + id : '/api/users/create';
-  
+
   fetch(url, { method: 'POST', body: data })
     .then(function(res) {
       if (res.ok) window.location.reload();
@@ -269,7 +269,7 @@ window.saveUser = function(e) {
 
 window.deleteUser = function(btn) {
   if (!confirm('¿Eliminar usuario ' + btn.dataset.name + '?')) return;
-  
+
   fetch('/api/users/delete?id=' + btn.dataset.id, { method: 'DELETE' })
     .then(function(res) {
       if (res.ok) window.location.reload();

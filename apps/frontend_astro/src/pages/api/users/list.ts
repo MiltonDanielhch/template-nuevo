@@ -28,10 +28,10 @@ export const GET: APIRoute = async ({ url, request, cookies }) => {
       total = 0;
       total_pages = 1;
     }
-    
+
     // Filtrar usuarios undefined o inválidos
-    users = users.filter(u => u && typeof u === 'object' && u.id);
-    
+    users = users.filter((u) => u && typeof u === "object" && u.id);
+
     // Recalcular totales basados en los usuarios filtrados
     total = users.length;
     total_pages = Math.ceil(total / perPage) || 1;
@@ -45,11 +45,11 @@ export const GET: APIRoute = async ({ url, request, cookies }) => {
     }
 
     const renderUser = (user: any) => {
-      if (!user || typeof user !== 'object') return '';
+      if (!user || typeof user !== "object") return "";
       const roles = user.roles || [];
-      const primaryRole = user.role || (roles[0]) || "Sin rol";
+      const primaryRole = user.role || roles[0] || "Sin rol";
       const isAdmin = roles.includes("Admin") || primaryRole === "Admin";
-      
+
       return `
       <tr class="hover:bg-muted/50">
         <td class="px-4 py-3">
@@ -73,7 +73,8 @@ export const GET: APIRoute = async ({ url, request, cookies }) => {
           <button type="button" data-id="${user.id}" data-name="${user.username || user.email}" onclick="deleteUser(this)" class="text-sm text-red-500 hover:text-red-700">Eliminar</button>
         </td>
       </tr>
-    `};
+    `;
+    };
 
     const tbodyHtml =
       users && users.length > 0
@@ -89,7 +90,7 @@ export const GET: APIRoute = async ({ url, request, cookies }) => {
       total_pages > 1
         ? `
       <div id="pagination-container" class="mt-4 flex items-center justify-end gap-1 w-full" hx-swap-oob="true">
-        <button ${page <= 1 ? "disabled" : ""} 
+        <button ${page <= 1 ? "disabled" : ""}
           onclick="goToPage(${prevPage})"
           class="px-3 py-1 text-sm border rounded hover:bg-muted ${page <= 1 ? "opacity-50 cursor-not-allowed" : ""}">Anterior</button>
         <span class="px-3 py-1 text-sm">Página ${page} de ${total_pages}</span>

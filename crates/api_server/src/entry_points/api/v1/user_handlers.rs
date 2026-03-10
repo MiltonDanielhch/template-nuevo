@@ -261,9 +261,9 @@ pub async fn list_users_handler(
     let search = query.search.clone();
     let page = query.page.unwrap_or(1).max(1);
     let per_page = query.per_page.unwrap_or(10).min(50);
-    
+
     let all_users = state.list_users.execute().await?;
-    
+
     // Filter by search
     let filtered: Vec<_> = if let Some(ref s) = search {
         let s_lower = s.to_lowercase();
@@ -275,21 +275,21 @@ pub async fn list_users_handler(
     } else {
         all_users
     };
-    
+
     let total = filtered.len();
     let total_pages = (total as f64 / per_page as f64).ceil() as usize;
-    
+
     // Paginate
     let start = (page - 1) * per_page;
     let paginated: Vec<_> = filtered.into_iter().skip(start).take(per_page).collect();
-    
+
     let mut response = Vec::with_capacity(paginated.len());
     for user in paginated {
         let user_roles = state.role_repo.get_user_roles(user.id()).await?;
         let roles: Vec<String> = user_roles.iter().map(|r| r.name().to_string()).collect();
         response.push((user, roles).into());
     }
-    
+
     Ok(Json(PaginatedUsersResponse {
         users: response,
         total,
