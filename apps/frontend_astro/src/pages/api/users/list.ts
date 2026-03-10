@@ -1,5 +1,31 @@
 import type { APIRoute } from "astro";
 
+interface User {
+  id: string;
+  username?: string;
+  email?: string;
+  role?: string;
+  roles?: string[];
+  avatar_url?: string;
+  email_verified?: boolean;
+}
+
+interface UsersResponse {
+  users: User[];
+  total?: number;
+  total_pages?: number;
+}
+
+function escapeHtml(str: string | undefined): string {
+  if (!str) return "";
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 export const GET: APIRoute = async ({ url, request, cookies }) => {
   const search = url.searchParams.get("search") || "";
   const page = parseInt(url.searchParams.get("page") || "1");
@@ -18,8 +44,10 @@ export const GET: APIRoute = async ({ url, request, cookies }) => {
       throw new Error("Error al obtener usuarios");
     }
 
-    const data: any = await response.json();
-    let { users, total, total_pages } = data;
+    const data: UsersResponse = await response.json();
+    let users: User[] = data.users || [];
+    let total = data.total || 0;
+    let total_pages = data.total_pages || 1;
 
     // El backend Rust ya filtra cuando se pasa search, no necesitamos filtrar de nuevo
     // Solo verificamos que users sea un array válido
@@ -44,33 +72,37 @@ export const GET: APIRoute = async ({ url, request, cookies }) => {
       });
     }
 
-    const renderUser = (user: any) => {
+    const renderUser = (user: User) => {
       if (!user || typeof user !== "object") return "";
       const roles = user.roles || [];
       const primaryRole = user.role || roles[0] || "Sin rol";
       const isAdmin = roles.includes("Admin") || primaryRole === "Admin";
+      const safeUsername = escapeHtml(user.username);
+      const safeEmail = escapeHtml(user.email);
+      const safeAvatar = escapeHtml(user.avatar_url);
+      const safeId = escapeHtml(user.id);
 
       return `
       <tr class="hover:bg-muted/50">
         <td class="px-4 py-3">
           ${
             user.avatar_url
-              ? `<img src="${user.avatar_url}" class="h-10 w-10 rounded-full object-cover" />`
+              ? `<img src="${safeAvatar}" class="h-10 w-10 rounded-full object-cover" />`
               : `<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <span class="text-sm font-bold text-primary">${(user.username || user.email || "U").charAt(0).toUpperCase()}</span>
+                <span class="text-sm font-bold text-primary">${(safeUsername || safeEmail || "U").charAt(0).toUpperCase()}</span>
                </div>`
           }
         </td>
-        <td class="px-4 py-3 font-medium">${user.username || "Sin nombre"}</td>
-        <td class="px-4 py-3 text-muted-foreground">${user.email || ""}</td>
+        <td class="px-4 py-3 font-medium">${safeUsername || "Sin nombre"}</td>
+        <td class="px-4 py-3 text-muted-foreground">${safeEmail}</td>
         <td class="px-4 py-3">
           <span class="px-2 py-1 rounded-full text-xs ${isAdmin ? "bg-primary/10 text-primary" : "bg-muted"}">
-            ${primaryRole}
+            ${escapeHtml(primaryRole)}
           </span>
         </td>
         <td class="px-4 py-3 text-right">
-          <button type="button" data-id="${user.id}" data-user="${user.username || ""}" data-email="${user.email}" data-role="${primaryRole}" data-avatar="${user.avatar_url || ""}" onclick="openEdit(this)" class="text-sm text-muted-foreground hover:text-primary mr-3">Editar</button>
-          <button type="button" data-id="${user.id}" data-name="${user.username || user.email}" onclick="deleteUser(this)" class="text-sm text-red-500 hover:text-red-700">Eliminar</button>
+          <button type="button" data-id="${safeId}" data-user="${safeUsername}" data-email="${safeEmail}" data-role="${escapeHtml(primaryRole)}" data-avatar="${safeAvatar}" onclick="openEdit(this)" class="text-sm text-muted-foreground hover:text-primary mr-3">Editar</button>
+          <button type="button" data-id="${safeId}" data-name="${safeUsername || safeEmail}" onclick="deleteUser(this)" class="text-sm text-red-500 hover:text-red-700">Eliminar</button>
         </td>
       </tr>
     `;
