@@ -20,59 +20,12 @@ use api_server::{
     config::{di::create_app_state, env::ServerConfig},
     routes::create_router,
 };
-use core_logic::domain::{
-    entities::user::User,
-    interfaces::{IHasher, IRoleRepository, IUserRepository},
-    value_objects::Email,
-};
 use dotenvy::dotenv;
-use infra_db::{Argon2idHasher, SqliteRoleRepository, SqliteUserRepository};
 use sqlx::migrate::Migrator;
 use sqlx::sqlite::SqlitePoolOptions;
 use std::env;
 use std::{net::SocketAddr, path::Path};
 use tokio::net::TcpSocket;
-
-async fn seed_admin_user(pool: &sqlx::SqlitePool) {
-    let user_repo = SqliteUserRepository::new(pool.clone());
-    let role_repo = SqliteRoleRepository::new(pool.clone());
-    let hasher = Argon2idHasher {};
-
-    let admin_email = Email::parse("admin@admin.com".to_string()).unwrap();
-
-    // Buscar o crear usuario admin
-    let admin_user = if let Some(existing) = user_repo.find_by_email(&admin_email).await.unwrap() {
-        println!("ℹ️ Usuario admin ya existe");
-        existing
-    } else {
-        println!("🔧 Creando usuario admin por defecto...");
-
-        let password_hash = hasher.hash("12345678").await.unwrap();
-
-        let user = User::new(
-            admin_email.clone(),
-            password_hash,
-            Some("admin".to_string()),
-        );
-
-        user_repo.save(&user).await.unwrap();
-        println!("✅ Usuario admin creado (email: admin@admin.com, password: 12345678)");
-        user_repo
-            .find_by_email(&admin_email)
-            .await
-            .unwrap()
-            .unwrap()
-    };
-
-    // Asignar rol Admin
-    if let Some(role) = role_repo.find_role_by_name("Admin").await.unwrap() {
-        println!("🔧 Asignando rol Admin al usuario...");
-        let _ = role_repo
-            .assign_role_to_user(admin_user.id(), role.id())
-            .await;
-        println!("✅ Rol Admin asignado");
-    }
-}
 
 #[tokio::main]
 async fn main() {
@@ -114,9 +67,6 @@ async fn main() {
         .await
         .expect("Error Crítico: Fallaron las migraciones de la base de datos.");
     println!("✅ Migraciones aplicadas correctamente.");
-
-    // 3. Seed de datos iniciales (Usuario Admin)
-    seed_admin_user(&pool).await;
 
     // 1. Construir el AppState (Inyección de Dependencias)
     let app_state = create_app_state(pool);

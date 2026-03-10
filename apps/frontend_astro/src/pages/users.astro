@@ -42,12 +42,12 @@ try {
       openModal: false,
       isEdit: false,
       editId: '',
-      form: { username: '', email: '', password: '', role: 'User' },
-      editUser(id, username, email, role) {
-        console.log('Editing user:', { id, username, email, role });
+      form: { username: '', email: '', password: '', avatar_url: '', role: 'User' },
+      editUser(id, username, email, roles, avatar_url) {
+        console.log('Editing user:', { id, username, email, roles, avatar_url });
         this.isEdit = true;
         this.editId = id;
-        this.form = { username: username || '', email: email || '', password: '', role: role || 'User' };
+        this.form = { username: username || '', email: email || '', password: '', avatar_url: avatar_url || '', role: (roles && roles.length > 0) ? roles[0] : 'User' };
         this.openModal = true;
         // Forzamos a HTMX a reconocer el cambio de atributos
         this.$nextTick(() => htmx.process(this.$refs.userForm));
@@ -55,7 +55,7 @@ try {
       resetForm() {
         this.isEdit = false;
         this.editId = '';
-        this.form = { username: '', email: '', password: '', role: 'User' };
+        this.form = { username: '', email: '', password: '', avatar_url: '', role: 'User' };
         this.$nextTick(() => htmx.process(this.$refs.userForm));
       }
     }"
@@ -113,6 +113,7 @@ try {
                 <table class="w-full">
                   <thead class="bg-muted/50 border-b border-border">
                     <tr>
+                      <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Avatar</th>
                       <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Usuario</th>
                       <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Email</th>
                       <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Rol</th>
@@ -123,13 +124,24 @@ try {
                   <tbody id="users-table-body" class="divide-y divide-border">
                     {allUsers.map((user) => (
                       <tr id={`user-${user.id}`} class="border-b border-border hover:bg-muted/50 transition-colors">
+                        <td class="px-4 py-3 text-sm">
+                          {user.avatar_url ? (
+                            <img src={user.avatar_url} alt="Avatar" class="h-10 w-10 rounded-full object-cover" />
+                          ) : (
+                            <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                              <span class="text-sm font-bold text-primary">
+                                {(user.username || user.email).charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+                        </td>
                         <td class="px-4 py-3 text-sm font-medium text-foreground">{user.username || 'Sin nombre'}</td>
                         <td class="px-4 py-3 text-sm text-muted-foreground">{user.email}</td>
                         <td class="px-4 py-3 text-sm">
                           <span class={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                            user.role === 'Admin' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+                            user.roles && user.roles.includes('Admin') ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
                           }`}>
-                            {user.role}
+                            {user.roles && user.roles.length > 0 ? user.roles.join(', ') : 'Sin rol'}
                           </span>
                         </td>
                         <td class="px-4 py-3 text-sm">
@@ -142,7 +154,7 @@ try {
                           <div class="flex justify-end gap-2">
                             <button
                               class="text-muted-foreground hover:text-primary transition-colors font-medium cursor-pointer"
-                              @click={`editUser('${user.id}', '${user.username || ''}', '${user.email}', '${user.role}')`}
+                              @click={`editUser('${user.id}', '${user.username || ''}', '${user.email}', ${JSON.stringify(user.roles || [])}, '${user.avatar_url || ''}')`}
                             >
                               Editar
                             </button>
@@ -211,6 +223,11 @@ try {
           <div class="space-y-2">
             <label for="email" class="text-sm font-medium">Correo Electrónico</label>
             <Input id="email" name="email" type="email" x-model="form.email" placeholder="ejemplo@test.com" required />
+          </div>
+
+          <div class="space-y-2">
+            <label for="avatar_url" class="text-sm font-medium">Avatar (URL)</label>
+            <Input id="avatar_url" name="avatar_url" type="url" x-model="form.avatar_url" placeholder="https://ejemplo.com/avatar.jpg" />
           </div>
 
           <div class="space-y-2">

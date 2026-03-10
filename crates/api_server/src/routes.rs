@@ -13,8 +13,9 @@ use crate::{
             update_role_handler,
         },
         user_handlers::{
-            delete_user_handler, list_users_handler, login_user_handler, logout_handler,
-            me_handler, register_user_handler, update_me_handler, update_user_handler,
+            delete_user_handler, get_my_roles_handler, list_users_handler, login_user_handler,
+            logout_handler, me_handler, register_user_handler, update_me_handler,
+            update_user_handler,
         },
     },
 };
@@ -39,6 +40,7 @@ pub fn create_router(app_state: AppState) -> Router {
         .route("/roles/{id}", axum::routing::delete(delete_role_handler))
         .route("/permissions", get(list_permissions_handler))
         .route("/users/{user_id}/roles", post(assign_role_to_user_handler))
+        .route("/users/me/roles", get(get_my_roles_handler))
         .route("/users/me/permissions", get(get_my_permissions_handler))
         .with_state(app_state)
 }

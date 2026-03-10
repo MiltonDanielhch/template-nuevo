@@ -31,6 +31,9 @@ pub trait IRoleRepository: Send + Sync {
     /// Elimina la asignación de un rol a un usuario.
     async fn remove_role_from_user(&self, user_id: &UserId, role_id: &RoleId) -> Result<()>;
 
+    /// Retorna todos los roles asociados a un usuario.
+    async fn get_user_roles(&self, user_id: &UserId) -> Result<Vec<Role>>;
+
     /// Retorna todos los permisos asociados a un usuario (via sus roles).
     async fn get_user_permissions(&self, user_id: &UserId) -> Result<Vec<Permission>>;
 

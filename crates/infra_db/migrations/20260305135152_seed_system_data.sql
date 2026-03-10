@@ -1,6 +1,10 @@
 -- 20260305135152_seed_system_data.sql
 -- c:\laravel\templates\template1\crates\infra_db\migrations\20260305135152_seed_system_data.sql
 
+-- Usuario admin (password: 12345678)
+INSERT OR IGNORE INTO users (id, username, email, password_hash, email_verified) VALUES
+('user_admin_3026', 'admin', 'admin@admin.com', '$argon2id$v=19$m=19456,t=2,p=1$pUHJ1Wcp6e6KUSiVvEfNjA$29CF+JW7MEf13DJhfxV2MKp0Yq7xVUpL3fyu92mhv3E', 1);
+
 -- Roles iniciales
 INSERT OR IGNORE INTO roles (id, name, description) VALUES
 ('role_00000001', 'Admin', 'Acceso total al sistema'),
@@ -18,3 +22,8 @@ INSERT OR IGNORE INTO permissions (id, name, description) VALUES
 INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id FROM roles r CROSS JOIN permissions p
 WHERE r.name = 'Admin';
+
+-- Asignar rol Admin al usuario admin
+INSERT OR IGNORE INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u CROSS JOIN roles r
+WHERE u.username = 'admin' AND r.name = 'Admin';

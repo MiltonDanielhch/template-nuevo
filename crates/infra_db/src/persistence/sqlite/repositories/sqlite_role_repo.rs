@@ -167,6 +167,39 @@ impl IRoleRepository for SqliteRoleRepository {
         Ok(())
     }
 
+    async fn get_user_roles(&self, user_id: &UserId) -> Result<Vec<Role>> {
+        let uid = user_id.as_str();
+        let rows = sqlx::query_as!(
+            DbRole,
+            r#"
+            SELECT r.id, r.name, r.description, r.created_at
+            FROM roles r
+            INNER JOIN user_roles ur ON ur.role_id = r.id
+            WHERE ur.user_id = ?
+            "#,
+            uid
+        )
+        .fetch_all(&self.pool)
+        .await
+        .context("Error obteniendo roles del usuario")?;
+
+        let mut roles = Vec::with_capacity(rows.len());
+        for row in rows {
+            let permissions = self.load_permissions_for_role(&row.id).await?;
+            let created_at = row
+                .created_at
+                .map(|dt| chrono::DateTime::from_naive_utc_and_offset(dt, chrono::Utc));
+            roles.push(Role::from_persistence(
+                RoleId::from_string(row.id),
+                row.name,
+                row.description,
+                created_at.unwrap_or_else(chrono::Utc::now),
+                permissions,
+            ));
+        }
+        Ok(roles)
+    }
+
     async fn get_user_permissions(&self, user_id: &UserId) -> Result<Vec<Permission>> {
         let uid = user_id.as_str();
         let rows = sqlx::query_as!(

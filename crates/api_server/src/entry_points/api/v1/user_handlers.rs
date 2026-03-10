@@ -129,27 +129,66 @@ pub struct MeResponse {
     pub id: String,
     pub email: String,
     pub username: Option<String>,
+    pub avatar_url: Option<String>,
     pub role: String,
+    pub roles: Vec<String>,
     pub email_verified: bool,
 }
 
-impl From<User> for MeResponse {
-    fn from(user: User) -> Self {
+impl From<(User, Vec<String>)> for MeResponse {
+    fn from((user, roles): (User, Vec<String>)) -> Self {
+        let primary_role = roles.first().cloned().unwrap_or_else(|| "User".to_string());
         Self {
             id: user.id().to_string(),
             email: user.email().to_string(),
             username: user.username().clone(),
-            role: "User".to_string(), // TODO: Cargar del repositorio de roles en el futuro
+            avatar_url: user.avatar_url().clone(),
+            role: primary_role,
+            roles,
             email_verified: user.is_email_verified(),
         }
     }
 }
 
+#[derive(Serialize)]
+pub struct UserRoleResponse {
+    pub id: String,
+    pub name: String,
+    pub description: Option<String>,
+}
+
+pub async fn get_my_roles_handler(
+    State(state): State<AppState>,
+    current_user: CurrentUser,
+) -> Result<Json<Vec<UserRoleResponse>>, ApiError> {
+    let roles = state
+        .role_repo
+        .get_user_roles(current_user.user.id())
+        .await?;
+    let response: Vec<UserRoleResponse> = roles
+        .into_iter()
+        .map(|r| UserRoleResponse {
+            id: r.id().to_string(),
+            name: r.name().to_string(),
+            description: r.description().map(|s| s.to_string()),
+        })
+        .collect();
+    Ok(Json(response))
+}
+
 pub async fn me_handler(
-    _state: State<AppState>,
+    State(state): State<AppState>,
     current_user: CurrentUser,
 ) -> Result<Json<MeResponse>, ApiError> {
-    Ok(Json(current_user.user.into()))
+    let roles = state
+        .role_repo
+        .get_user_permissions(current_user.user.id())
+        .await?
+        .iter()
+        .map(|p| p.name().to_string())
+        .collect();
+
+    Ok(Json((current_user.user, roles).into()))
 }
 
 pub async fn update_me_handler(
@@ -166,7 +205,14 @@ pub async fn update_me_handler(
     };
 
     let user = state.update_user.execute(command).await?;
-    Ok(Json(user.into()))
+    let roles = state
+        .role_repo
+        .get_user_permissions(user.id())
+        .await?
+        .iter()
+        .map(|p| p.name().to_string())
+        .collect();
+    Ok(Json((user, roles).into()))
 }
 
 pub async fn logout_handler(
@@ -190,7 +236,12 @@ pub async fn list_users_handler(
     _current_user: CurrentUser,
 ) -> Result<Json<Vec<MeResponse>>, ApiError> {
     let users = state.list_users.execute().await?;
-    let response: Vec<MeResponse> = users.into_iter().map(Into::into).collect();
+    let mut response = Vec::with_capacity(users.len());
+    for user in users {
+        let user_roles = state.role_repo.get_user_roles(user.id()).await?;
+        let roles: Vec<String> = user_roles.iter().map(|r| r.name().to_string()).collect();
+        response.push((user, roles).into());
+    }
     Ok(Json(response))
 }
 
@@ -222,7 +273,14 @@ pub async fn update_user_handler(
     };
 
     let user = state.update_user.execute(command).await?;
-    Ok(Json(user.into()))
+    let roles = state
+        .role_repo
+        .get_user_permissions(user.id())
+        .await?
+        .iter()
+        .map(|p| p.name().to_string())
+        .collect();
+    Ok(Json((user, roles).into()))
 }
 
 /// DELETE /api/v1/users/:id

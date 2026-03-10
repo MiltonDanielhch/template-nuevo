@@ -3,6 +3,57 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Navbar from "@/presentation/components/shared/Navbar.astro";
 import Sidebar from "@/presentation/components/shared/Sidebar.astro";
 import MainLayout from "@/presentation/layouts/MainLayout.astro";
+
+export const prerender = false;
+
+const token = Astro.cookies.get("auth_token")?.value || "";
+
+let currentUser = null;
+let totalUsers = 0;
+let totalRoles = 0;
+let userRoles: string[] = [];
+let isAdmin = false;
+
+try {
+  const [meRes, usersRes, rolesRes] = await Promise.all([
+    fetch("http://localhost:8081/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+    fetch("http://localhost:8081/users", {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+    fetch("http://localhost:8081/roles", {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+  ]);
+
+  if (meRes.ok) {
+    currentUser = await meRes.json();
+    const rolesResponse = await fetch("http://localhost:8081/users/me/roles", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (rolesResponse.ok) {
+      userRoles = await rolesResponse.json();
+      isAdmin = userRoles.some((r: any) => r.name === "Admin");
+    }
+  }
+
+  if (usersRes.ok) {
+    const users = await usersRes.json();
+    totalUsers = Array.isArray(users) ? users.length : 0;
+  }
+
+  if (rolesRes.ok) {
+    const roles = await rolesRes.json();
+    totalRoles = Array.isArray(roles) ? roles.length : 0;
+  }
+} catch (error) {
+  console.error("Error fetching dashboard data:", error);
+}
+
+const now = new Date();
+const greeting =
+  now.getHours() < 12 ? "Buenos días" : now.getHours() < 18 ? "Buenas tardes" : "Buenas noches";
 ---
 
 <MainLayout title="Dashboard">
@@ -13,11 +64,13 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
       <main class="flex-1 overflow-y-auto bg-background p-6">
         <div class="mx-auto max-w-6xl">
           <div class="mb-8">
-            <h1 class="text-3xl font-bold tracking-tight">Dashboard</h1>
-            <p class="text-muted-foreground">Bienvenido a Laboratorio 3026</p>
+            <h1 class="text-3xl font-bold tracking-tight">{greeting}</h1>
+            <p class="text-muted-foreground">
+              {currentUser?.username ? `Bienvenido, ${currentUser.username}` : "Bienvenido a Laboratorio 3026"}
+            </p>
           </div>
 
-          <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4" x-data>
+          <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle class="text-sm font-medium">Usuarios Totales</CardTitle>
@@ -29,139 +82,177 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                 </svg>
               </CardHeader>
               <CardContent>
-                <div class="text-2xl font-bold">128</div>
-                <p class="text-xs text-muted-foreground">+12% desde el último mes</p>
+                <div class="text-2xl font-bold">{totalUsers}</div>
+                <p class="text-xs text-muted-foreground">Usuarios registrados</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle class="text-sm font-medium">Sesiones Activas</CardTitle>
+                <CardTitle class="text-sm font-medium">Roles del Sistema</CardTitle>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
+                  <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+              </CardHeader>
+              <CardContent>
+                <div class="text-2xl font-bold">{totalRoles}</div>
+                <p class="text-xs text-muted-foreground">Roles configurados</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle class="text-sm font-medium">Tu Rol</CardTitle>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </CardHeader>
+              <CardContent>
+                <div class="text-2xl font-bold">{userRoles.length > 0 ? userRoles.map((r: any) => r.name).join(", ") : "Sin rol"}</div>
+                <p class="text-xs text-muted-foreground">{isAdmin ? "Administrador del sistema" : "Usuario estándar"}</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle class="text-sm font-medium">Estado</CardTitle>
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
                   <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
                   <path d="M12 6v6l4 2"></path>
                 </svg>
               </CardHeader>
               <CardContent>
-                <div class="text-2xl font-bold">14</div>
-                <p class="text-xs text-muted-foreground">Usuarios conectados ahora</p>
+                <div class="flex items-center gap-2">
+                  <div class="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
+                  <span class="text-2xl font-bold">Online</span>
+                </div>
+                <p class="text-xs text-muted-foreground">Sistema operativo</p>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle class="text-sm font-medium">API Latency</CardTitle>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div class="text-2xl font-bold" x-text="$store.dashboard.latency">--</div>
-                <p class="text-xs text-muted-foreground">ms de latencia</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle class="text-sm font-medium">Uptime</CardTitle>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div class="text-2xl font-bold">100%</div>
-                <p class="text-xs text-muted-foreground">Disponibilidad del sistema</p>
-              </CardContent>
-            </Card>
-
-            <script is:inline>
-              document.addEventListener('alpine:init', () => {
-                // El store 'dashboard' se inicializa ahora en src/lib/alpine.ts
-                // para evitar conflictos y asegurar robustez.
-                const store = Alpine.store('dashboard');
-                if (store) {
-                  store.updateLatency();
-                  setInterval(() => store.updateLatency(), 5000);
-                }
-              });
-            </script>
           </div>
 
-          <div class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <Card class="col-span-4">
+          <div class="mt-8 grid gap-4 md:grid-cols-1">
+            <Card class="w-full">
               <CardHeader>
-                <CardTitle>Resumen</CardTitle>
+                <CardTitle>Información del Usuario</CardTitle>
                 <CardDescription>
-                  Estado general del sistema
+                  Tus datos de perfil
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div class="space-y-4">
-                  <div class="flex items-center gap-3 rounded-lg border p-3">
-                    <div class="h-2 w-2 rounded-full bg-green-500"></div>
-                    <div class="flex-1">
-                      <p class="text-sm font-medium">Backend API</p>
-                      <p class="text-xs text-muted-foreground">Conectado al puerto 8081</p>
+                {currentUser ? (
+                  <div class="space-y-6">
+                    <div class="flex items-center gap-6">
+                      <div class="h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span class="text-4xl font-bold text-primary">
+                          {currentUser.username ? currentUser.username.charAt(0).toUpperCase() : currentUser.email.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-2xl font-semibold">{currentUser.username || "Sin username"}</p>
+                        <p class="text-lg text-muted-foreground">{currentUser.email}</p>
+                      </div>
                     </div>
-                    <span class="text-sm text-green-600">Online</span>
-                  </div>
-                  <div class="flex items-center gap-3 rounded-lg border p-3">
-                    <div class="h-2 w-2 rounded-full bg-green-500"></div>
-                    <div class="flex-1">
-                      <p class="text-sm font-medium">Base de Datos</p>
-                      <p class="text-xs text-muted-foreground">SQLite conectado</p>
+                    <div class="grid grid-cols-2 gap-6 pt-4 border-t">
+                      <div>
+                        <p class="text-sm text-muted-foreground">ID</p>
+                        <p class="text-sm font-mono" title={currentUser.id}>{currentUser.id}</p>
+                      </div>
+                      <div>
+                        <p class="text-sm text-muted-foreground">Email Verificado</p>
+                        <p class="text-sm">{currentUser.email_verified ? "✓ Verificado" : "✗ No verificado"}</p>
+                      </div>
                     </div>
-                    <span class="text-sm text-green-600">Online</span>
                   </div>
-                  <div class="flex items-center gap-3 rounded-lg border p-3">
-                    <div class="h-2 w-2 rounded-full bg-green-500"></div>
-                    <div class="flex-1">
-                      <p class="text-sm font-medium">Servidor Frontend</p>
-                      <p class="text-xs text-muted-foreground">Astro SSR activo</p>
-                    </div>
-                    <span class="text-sm text-green-600">Online</span>
-                  </div>
-                </div>
+                ) : (
+                  <p class="text-muted-foreground">Cargando información...</p>
+                )}
               </CardContent>
             </Card>
 
-            <Card class="col-span-3">
+            <Card class="w-full">
               <CardHeader>
                 <CardTitle>Acciones Rápidas</CardTitle>
                 <CardDescription>
-                  tareas disponibles
+                  Tareas disponibles
                 </CardDescription>
               </CardHeader>
-              <CardContent class="grid gap-2">
-                <a href="/users" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-muted hover:text-muted-foreground h-9 px-4 py-2 border">
-                  Gestionar Usuarios
-                </a>
-                <a href="/settings" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-muted hover:text-muted-foreground h-9 px-4 py-2 border">
-                  Configuración
-                </a>
+              <CardContent>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {isAdmin && (
+                    <a href="/users" class="inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors hover:bg-muted hover:text-muted-foreground h-12 px-6 py-3 border">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <line x1="19" x2="19" y1="8"></line>
+                        <line x1="19" x2="15" y1="10"></line>
+                      </svg>
+                      Gestionar Usuarios
+                    </a>
+                  )}
+                  {isAdmin && (
+                    <a href="/roles" class="inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors hover:bg-muted hover:text-muted-foreground h-12 px-6 py-3 border">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3">
+                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                      </svg>
+                      Gestionar Roles
+                    </a>
+                  )}
+                  <a href="/settings" class="inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors hover:bg-muted hover:text-muted-foreground h-12 px-6 py-3 border">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3">
+                      <circle cx="12" cy="12" r="3"></circle>
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"></path>
+                    </svg>
+                    Configuración
+                  </a>
+                </div>
               </CardContent>
             </Card>
           </div>
+
+          {isAdmin && (
+            <div class="mt-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Estado de Servicios</CardTitle>
+                  <CardDescription>
+                    Estado general del sistema
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div class="space-y-4">
+                    <div class="flex items-center gap-3 rounded-lg border p-3">
+                      <div class="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
+                      <div class="flex-1">
+                        <p class="text-sm font-medium">Backend API</p>
+                        <p class="text-xs text-muted-foreground">Conectado al puerto 8081</p>
+                      </div>
+                      <span class="text-sm text-green-600">Online</span>
+                    </div>
+                    <div class="flex items-center gap-3 rounded-lg border p-3">
+                      <div class="h-3 w-3 rounded-full bg-green-500"></div>
+                      <div class="flex-1">
+                        <p class="text-sm font-medium">Base de Datos</p>
+                        <p class="text-xs text-muted-foreground">SQLite conectado</p>
+                      </div>
+                      <span class="text-sm text-green-600">Online</span>
+                    </div>
+                    <div class="flex items-center gap-3 rounded-lg border p-3">
+                      <div class="h-3 w-3 rounded-full bg-green-500"></div>
+                      <div class="flex-1">
+                        <p class="text-sm font-medium">Servidor Frontend</p>
+                        <p class="text-xs text-muted-foreground">Astro SSR activo</p>
+                      </div>
+                      <span class="text-sm text-green-600">Online</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </main>
     </div>
   </div>
 </MainLayout>
-
-<script>
-  async function checkLatency() {
-    try {
-      const start = Date.now();
-      await fetch('/api/auth/me', { method: 'HEAD' });
-      const latency = Date.now() - start;
-      const el = document.getElementById('latency');
-      if (el) el.textContent = latency.toString();
-    } catch {
-      const el = document.getElementById('latency');
-      if (el) el.textContent = '--';
-    }
-  }
-  checkLatency();
-  setInterval(checkLatency, 30000);
-</script>
