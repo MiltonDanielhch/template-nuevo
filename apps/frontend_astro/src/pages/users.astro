@@ -49,27 +49,29 @@ const search = Astro.url.searchParams.get("search") || "";
           </div>
 
           <Card class="p-0 overflow-hidden">
-            <table class="w-full">
-              <thead class="bg-muted/50">
-                <tr>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase w-16">Avatar</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Usuario</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Email</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Rol</th>
-                  <th class="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="users-container"
-                hx-get="/api/users/list"
-                hx-vals={`{"page": "${page}", "search": "${search}"}`}
-                hx-target="#users-container"
-                hx-trigger="load"
-              >
-                <tr>
-                  <td colspan="5" class="px-4 py-8 text-center text-muted-foreground">Cargando...</td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[700px]">
+                <thead class="bg-muted/50">
+                  <tr>
+                    <th class="px-3 py-3 text-left text-xs font-medium text-muted-foreground uppercase whitespace-nowrap">Usuario</th>
+                    <th class="px-3 py-3 text-left text-xs font-medium text-muted-foreground uppercase whitespace-nowrap">Email</th>
+                    <th class="px-3 py-3 text-center text-xs font-medium text-muted-foreground uppercase whitespace-nowrap">Rol</th>
+                    <th class="px-3 py-3 text-center text-xs font-medium text-muted-foreground uppercase whitespace-nowrap">Estado</th>
+                    <th class="px-3 py-3 text-right text-xs font-medium text-muted-foreground uppercase whitespace-nowrap">Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="users-container"
+                  hx-get="/api/users/list"
+                  hx-vals={`{"page": "${page}", "search": "${search}"}`}
+                  hx-target="#users-container"
+                  hx-trigger="load"
+                >
+                  <tr>
+                    <td colspan="5" class="px-4 py-8 text-center text-muted-foreground">Cargando...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </Card>
           <div id="pagination-container" class="mt-4 flex justify-end w-full"></div>
         </div>
@@ -146,8 +148,9 @@ window.handleSearch = function(value) {
 
 window.doSearch = function(searchValue) {
   const value = searchValue !== undefined ? searchValue : document.getElementById('users-search-input').value;
-
-  const url = '/api/users/list?search=' + encodeURIComponent(value) + '&page=1';
+  const isMobile = window.innerWidth < 768;
+  
+  const url = '/api/users/list?search=' + encodeURIComponent(value) + '&page=1' + (isMobile ? '&mobile=true' : '');
 
   fetch(url, {
     headers: { 'HX-Request': 'true' }
@@ -156,7 +159,11 @@ window.doSearch = function(searchValue) {
     return res.text();
   })
   .then(function(html) {
-    document.getElementById('users-container').innerHTML = html;
+    if (isMobile) {
+      document.getElementById('users-container-mobile').innerHTML = html;
+    } else {
+      document.getElementById('users-container').innerHTML = html;
+    }
   })
   .catch(function(err) {
     console.error('Error en búsqueda:', err);
@@ -165,14 +172,19 @@ window.doSearch = function(searchValue) {
 
 window.goToPage = function(pageNum) {
   const value = document.getElementById('users-search-input').value;
-  const url = '/api/users/list?search=' + encodeURIComponent(value) + '&page=' + pageNum;
+  const isMobile = window.innerWidth < 768;
+  const url = '/api/users/list?search=' + encodeURIComponent(value) + '&page=' + pageNum + (isMobile ? '&mobile=true' : '');
 
   fetch(url, {
     headers: { 'HX-Request': 'true' }
   })
   .then(function(res) { return res.text(); })
   .then(function(html) {
-    document.getElementById('users-container').innerHTML = html;
+    if (isMobile) {
+      document.getElementById('users-container-mobile').innerHTML = html;
+    } else {
+      document.getElementById('users-container').innerHTML = html;
+    }
   })
   .catch(function(err) {
     console.error('Error en paginación:', err);

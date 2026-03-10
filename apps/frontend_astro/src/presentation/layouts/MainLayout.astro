@@ -11,18 +11,7 @@ const token = Astro.cookies.get("auth_token")?.value || "";
 ---
 
 <!DOCTYPE html>
-<html lang="es" x-data="{
-  darkMode: document.documentElement.classList.contains('dark'),
-  sidebarOpen: window.innerWidth > 1024,
-  toggleDarkMode() {
-    this.darkMode = !this.darkMode;
-    localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
-    document.documentElement.classList.toggle('dark', this.darkMode);
-  },
-  toggleSidebar() {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
-}" @resize.window="if (window.innerWidth > 1024) sidebarOpen = true">
+<html lang="es">
   <head>
     <script is:inline>
       (function() {
@@ -82,6 +71,14 @@ const token = Astro.cookies.get("auth_token")?.value || "";
         }
       });
 
+      document.addEventListener('alpine:initialized', () => {
+        window.addEventListener('resize', () => {
+          if (window.innerWidth >= 1024 && Alpine.store('app')) {
+            Alpine.store('app').sidebarOpen = true;
+          }
+        });
+      });
+
       document.addEventListener('htmx:afterRequest', (e) => {
         const target = e.detail?.target;
         if (!target) return;
@@ -133,6 +130,31 @@ const token = Astro.cookies.get("auth_token")?.value || "";
     </script>
   </head>
   <body class="min-h-screen bg-background text-text">
+    <script is:inline>
+      window.sidebarOpen = window.innerWidth >= 1024;
+      function toggleSidebar() {
+        window.sidebarOpen = !window.sidebarOpen;
+        updateSidebar();
+      }
+      function updateSidebar() {
+        const sidebar = document.getElementById('main-sidebar');
+        const btn = document.getElementById('sidebar-toggle-btn');
+        const closeBtn = document.getElementById('sidebar-close-btn');
+        if (sidebar) {
+          if (window.sidebarOpen) {
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
+          } else {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
+          }
+        }
+        if (btn) btn.style.display = window.innerWidth < 1024 ? 'flex' : 'none';
+        if (closeBtn) closeBtn.style.display = window.innerWidth < 1024 && window.sidebarOpen ? 'flex' : 'none';
+      }
+      document.addEventListener('DOMContentLoaded', updateSidebar);
+      window.addEventListener('resize', updateSidebar);
+    </script>
     <CommandPalette />
     <div id="app">
       <slot />

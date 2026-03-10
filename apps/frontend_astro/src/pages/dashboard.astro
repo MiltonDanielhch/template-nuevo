@@ -27,6 +27,9 @@ try {
     }),
   ]);
 
+  console.log('Token:', token);
+  console.log('Me response:', meRes.status);
+
   if (meRes.ok) {
     currentUser = await meRes.json();
     const rolesResponse = await fetch("http://localhost:8081/users/me/roles", {
@@ -39,13 +42,15 @@ try {
   }
 
   if (usersRes.ok) {
-    const users = await usersRes.json();
-    totalUsers = Array.isArray(users) ? users.length : 0;
+    const usersData = await usersRes.json();
+    totalUsers = usersData.users ? usersData.users.length : 0;
+    console.log('Users response:', usersRes.status, 'Data:', usersData, 'Total:', totalUsers);
   }
 
   if (rolesRes.ok) {
     const roles = await rolesRes.json();
     totalRoles = Array.isArray(roles) ? roles.length : 0;
+    console.log('Roles response:', rolesRes.status, 'Total:', totalRoles);
   }
 } catch (error) {
   console.error("Error fetching dashboard data:", error);
