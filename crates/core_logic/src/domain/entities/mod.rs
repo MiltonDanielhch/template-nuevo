@@ -12,10 +12,12 @@
 //! - `value_objects`: Para componer las entidades con atributos validados.
 //! - `chrono`: Para el manejo de fechas.
 
+pub mod audit;
 pub mod role;
 pub mod session;
 pub mod user;
 
+pub use audit::{AuditLog, CreateAuditLogCommand};
 pub use role::{Permission, PermissionId, Role, RoleId};
 pub use session::Session;
 pub use user::User;

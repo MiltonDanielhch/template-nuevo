@@ -42,11 +42,20 @@ Vamos a crear:
 
 ---
 
-🛠️ 5. STACK Y REGLAS (Fase 5)
+🧭 5. SEGURIDAD AVANZADA (Rate Limiting)
+- ✅ **Rate Limit Handling**: El frontend ahora maneja errores 429 del backend.
+- ✅ **RateLimitError Class**: Exposición de clase de error para manejo en cliente.
+- ✅ **HTMX Error Handling**: Visualización de errores 429 en login/register.
+- ✅ **Retry-After Support**: Respeto del header Retry-After en respuestas 429.
+- ✅ **Updated Entities**: Campos de usuario actualizados (username, avatar_url, email_verified).
+
+---
+
+🛠️ 6. STACK Y REGLAS (Fase 5)
 - Integración: HTMX OOB Swaps para actualizaciones parciales.
 - UX: Feedback instantáneo con Alpine e indicadores de carga.
 - Reglas: Protocolo 3026, código limpio y modular.
 
 ---
 
-🚀 ACCIÓN: Inicia la implementación del CRUD de Usuarios.
+🚀 ACCIÓN: El frontend está listo para producción con manejo de rate limiting.

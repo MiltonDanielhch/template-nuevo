@@ -12,12 +12,14 @@
 //! ## Dependencias
 //! - Ninguna, más allá de los tipos definidos en el propio dominio.
 
+pub mod audit_repo;
 pub mod hasher;
 pub mod role_repository;
 pub mod session_repo;
 pub mod user_repo;
 
 // Exponemos los traits (puertos) que el dominio define.
+pub use self::audit_repo::IAuditRepository;
 pub use self::hasher::IHasher;
 pub use self::role_repository::IRoleRepository;
 pub use self::session_repo::ISessionRepository;

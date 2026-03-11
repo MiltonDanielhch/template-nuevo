@@ -99,3 +99,48 @@ Herramienta final para convertirte en maestro. Cada vez que la IA termine un pun
 | **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Extracción:** El handler `update_me_handler` usa el extractor `CurrentUser` para obtener el ID del usuario directamente del token de sesión. <br> 2. **Comando:** Se reutiliza el caso de uso `UpdateUser` pero forzando el ID del usuario autenticado. <br> 3. **Seguridad:** No se permite cambiar el rol en este endpoint, solo datos personales. |
 | **4** | **Ejemplo Práctico 3026** | **Backend:** `PUT /api/v1/me` <br> **Frontend:** Página de `/settings` con formularios reactivos que llaman al proxy `/api/users/me`. |
 | **5** | **¿Por qué es vital para nuestro sistema?** | **UX Profesional:** Los usuarios esperan poder gestionar su propia identidad. <br> **Escalabilidad:** Automatiza el mantenimiento de cuentas, permitiendo que el sistema crezca sin necesidad de un equipo de soporte numeroso. |
+
+---
+
+## 🔒 BLOQUE II: EL ESCUDO (Seguridad y Protocolo)
+
+### 🧠 Integración: Fase 2.1 - Contratos Binarios (ProtoBuf + Mappers)
+
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Generación de código Rust desde archivos `.proto` usando `prost` y creación de mappers entre las estructuras Protobuf y las entidades del dominio. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Define un contrato binario inmutable entre el frontend y backend. Evita el desastre de tener cambios incompatibles entre clientes y servidor sin detección. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Proto Definition:** Archivos en `proto/auth/v1/auth.proto` definen mensajes y servicios. <br> 2. **Code Generation:** `prost` genera estructuras Rust en `core_logic/src/proto_generated/`. <br> 3. **Mappers:** `ProtoMapper` en `core_logic/src/adapters/proto/mod.rs` traduce entre tipos Protobuf y entidades de dominio. |
+| **4** | **Ejemplo Práctico 3026** | **Proto:** `message User { Uuid id = 1; string email = 3; ... }` <br> **Mapper:** `ProtoMapper::to_domain_user(proto_user)` convierte `ProtoUser` → `domain::User`. |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Type Safety:** Errors de serialización se detectan en compilación. <br> **Documentación Viva:** El `.proto` es la documentación definitiva de la API. |
+
+---
+
+## 🛡️ BLOQUE VIII: PERFIL Y AUDITORÍA (Continuación)
+
+### 🧠 Integración: Fase 8.2 - Auditoría Estricta
+
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Middleware que registra acciones sensibles (login, register, logout, delete, update) en la tabla `audit_logs`, capturando IP, user-agent y payload. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Proporciona trazabilidad completa del sistema. Evita el desastre de no saber quién hizo qué en caso de incidentes de seguridad o auditorías. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Entidad:** `AuditLog` en `core_logic/domain/entities/audit.rs`. <br> 2. **Puerto:** `IAuditRepository` trait en `core_logic/domain/interfaces/audit_repo.rs`. <br> 3. **Adaptador:** `SqliteAuditRepository` en `infra_db`. <br> 4. **Middleware:** `audit_middleware` en `api_server/entry_points/middleware/audit.rs` registra acciones sensibles. |
+| **4** | **Ejemplo Práctico 3026** | **Middleware:** `audit_middleware` se aplica a todas las rutas. <br> **Acciones auditadas:** `POST /login`, `POST /register`, `DELETE /users/{id}`, etc. |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Cumplimiento:** Necesario para auditorías de seguridad. <br> **Forense:** Permite investigar incidentes post-mortem. |
+
+### 🧠 Integración: Fase 8.3 - Rate Limiting
+
+| Nivel | Nombre | Descripción |
+|-------|--------|-------------|
+| **1** | **¿Qué es?** (Definición Técnica) | Middleware que limita requests por IP (10 req/min) usando un `RwLock<HashMap>` en memoria. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Protege contra ataques de fuerza bruta y DoS. Evita el desastre de que un atacante sature el servidor con múltiples requests. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **Estado:** `RateLimiter` con `HashMap<IP, Vec<Instant>>`. <br> 2. **Ventana:** 60 segundos de ventana móvil. <br> 3. **Límite:** 10 requests por IP por ventana. <br> 4. **Respuesta:** Retorna `429 Too Many Requests` con header `Retry-After`. |
+| **4** | **Ejemplo Práctico 3026** | **Middleware:** `rate_limit_middleware` aplicado a todas las rutas. <br> **Config:** `MAX_REQUESTS = 10`, `WINDOW_SECS = 60`. |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Seguridad:** Detiene ataques automatizados. <br> **Costo:** Evita consumo excesivo de recursos en el VPS de $5. |
+
+---
+
+## Próximos Pasos
+
+1. **Notificaciones**: Sistema base para envío de correos (Verificación de cuenta, Reseteo de contraseña).
+2. **Health Extended**: Endpoints de salud más detallados (uso de memoria, conexiones DB).

@@ -31,6 +31,7 @@
 | 4 | HTMX Bridge | `infrastructure/api/hx-bridge.ts`: Configuración de headers HTMX y telemetría de eventos. | ✅ |
 | 5 | Sincronía de Estado | `application/stores/`: Nanostores solo para sesión; HTMX para datos de vista. | ✅ |
 | 6 | Middleware Auth | `src/middleware.ts`: Validación de JWT/Session en cada petición SSR. | ✅ |
+| 7 | Rate Limit Handling | `infrastructure/api/auth-client.ts`: Manejo de errores 429 del backend. | ✅ |
 
 ---
 
@@ -74,8 +75,8 @@
 
 ```
 BLOQUE I: ████████████ 100% (7/7 completados)
-BLOQUE II: ████████████ 100% (6/6 completados)
+BLOQUE II: ████████████ 100% (7/7 completados)
 BLOQUE III: ████████████ 100% (5/5 completados)
 BLOQUE IV: ██░░░░░░░░░░ 0% (0/3 completados)
-BLOQUE V: ████████████ 100% (2/2 completados)
+BLOQUE V: ████████████ 100% (4/4 completados)
 ```

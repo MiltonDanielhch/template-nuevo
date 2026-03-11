@@ -21,7 +21,7 @@ try {
   if (response.ok) {
     user = await response.json();
   }
-  
+
   const rolesRes = await fetch("http://localhost:8081/users/me/roles", {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -32,7 +32,8 @@ try {
   console.error("Error fetching user profile:", error);
 }
 
-const currentRole = userRoles.length > 0 ? userRoles.map((r: any) => r.name).join(", ") : (user?.role || "Sin rol");
+const _currentRole =
+  userRoles.length > 0 ? userRoles.map((r: any) => r.name).join(", ") : user?.role || "Sin rol";
 
 if (!user) {
   return Astro.redirect("/login");
@@ -47,7 +48,7 @@ if (!user) {
       <main class="flex-1 overflow-y-auto bg-background p-6">
         <div class="mx-auto max-w-2xl">
           <div class="mb-8">
-            <h1 class="text-3xl font-bold tracking-tight">Configuración</h1>
+            <h1 class="text-3xl font-bold tracking-tight text-foreground">Configuración</h1>
             <p class="text-muted-foreground">Gestiona tu información personal y seguridad</p>
           </div>
 
@@ -140,7 +141,7 @@ if (!user) {
               </CardHeader>
               <CardContent>
                 <p class="text-sm text-muted-foreground mb-4">
-                  Actualmente tienes el rol de <strong class="text-foreground">{currentRole}</strong>.
+                  Actualmente tienes el rol de <strong class="text-foreground">{_currentRole}</strong>.
                   Si necesitas eliminar tu cuenta, por favor contacta con un administrador.
                 </p>
                 <Button variant="destructive" disabled>Eliminar Cuenta</Button>

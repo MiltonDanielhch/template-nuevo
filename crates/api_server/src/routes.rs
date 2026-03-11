@@ -4,6 +4,7 @@
 //! Define el router principal de la aplicación Axum y asocia las rutas
 //! con sus respectivos handlers.
 
+use crate::entry_points::middleware::rate_limit::RateLimiter;
 use crate::{
     config::di::AppState,
     entry_points::api::v1::{
@@ -18,10 +19,17 @@ use crate::{
             update_user_handler,
         },
     },
+    entry_points::middleware::{audit::audit_middleware, rate_limit::rate_limit_middleware},
 };
-use axum::routing::{Router, get, post, put};
+use axum::Router;
+use axum::routing::{get, post, put};
+use std::sync::Arc;
+use tokio::sync::RwLock;
 
 pub fn create_router(app_state: AppState) -> Router {
+    let state = Arc::new(app_state);
+    let rate_limiter = Arc::new(RwLock::new(RateLimiter::new()));
+
     Router::new()
         // Auth & User routes
         .route("/register", post(register_user_handler))
@@ -30,8 +38,8 @@ pub fn create_router(app_state: AppState) -> Router {
         .route("/me", put(update_me_handler))
         .route("/logout", post(logout_handler))
         .route("/users", get(list_users_handler))
-        .route("/users/{id}", get(me_handler)) // reuse me logic for one user if needed, or just list
-        .route("/users/{id}", axum::routing::put(update_user_handler))
+        .route("/users/{id}", get(me_handler))
+        .route("/users/{id}", put(update_user_handler))
         .route("/users/{id}", axum::routing::delete(delete_user_handler))
         // RBAC routes
         .route("/roles", post(create_role_handler))
@@ -42,5 +50,13 @@ pub fn create_router(app_state: AppState) -> Router {
         .route("/users/{user_id}/roles", post(assign_role_to_user_handler))
         .route("/users/me/roles", get(get_my_roles_handler))
         .route("/users/me/permissions", get(get_my_permissions_handler))
-        .with_state(app_state)
+        .layer(axum::middleware::from_fn_with_state(
+            state.clone(),
+            audit_middleware,
+        ))
+        .layer(axum::middleware::from_fn_with_state(
+            rate_limiter,
+            rate_limit_middleware,
+        ))
+        .with_state((*state).clone())
 }

@@ -2,8 +2,7 @@
 ---
 <div
   x-data
-  @keydown.window.prevent.cmd.k="$store.commandPalette.toggle()"
-  @keydown.window.prevent.ctrl.k="$store.commandPalette.toggle()"
+  @keydown.window.k.prevent="if ($event.ctrlKey || $event.metaKey) Alpine.store('commandPalette').toggle()"
   class="relative z-[100]"
   role="dialog"
   aria-modal="true"

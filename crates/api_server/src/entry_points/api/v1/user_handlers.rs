@@ -18,7 +18,7 @@ use crate::{
 };
 use axum::{
     Json,
-    extract::{Path, State, Query},
+    extract::{Path, Query, State},
     http::StatusCode,
 };
 use core_logic::{
@@ -267,11 +267,18 @@ pub async fn list_users_handler(
     // Filter by search
     let filtered: Vec<_> = if let Some(ref s) = search {
         let s_lower = s.to_lowercase();
-        all_users.into_iter().filter(|u| {
-            let email = u.email().as_str().to_lowercase();
-            let username = u.username().as_ref().map(|n| n.to_lowercase()).unwrap_or_default();
-            email.contains(&s_lower) || username.contains(&s_lower)
-        }).collect()
+        all_users
+            .into_iter()
+            .filter(|u| {
+                let email = u.email().as_str().to_lowercase();
+                let username = u
+                    .username()
+                    .as_ref()
+                    .map(|n| n.to_lowercase())
+                    .unwrap_or_default();
+                email.contains(&s_lower) || username.contains(&s_lower)
+            })
+            .collect()
     } else {
         all_users
     };
@@ -330,10 +337,13 @@ pub async fn update_user_handler(
     let user = state.update_user.execute(command).await?;
 
     // Asignar rol si se proporcionó
-    if let Some(role_name) = payload.role {
-        if let Ok(Some(role)) = state.role_repo.find_role_by_name(&role_name).await {
-            let _ = state.role_repo.assign_role_to_user(user.id(), role.id()).await;
-        }
+    if let Some(role_name) = payload.role
+        && let Ok(Some(role)) = state.role_repo.find_role_by_name(&role_name).await
+    {
+        let _ = state
+            .role_repo
+            .assign_role_to_user(user.id(), role.id())
+            .await;
     }
 
     let roles = state

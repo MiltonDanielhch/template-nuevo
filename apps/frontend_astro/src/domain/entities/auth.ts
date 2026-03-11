@@ -1,7 +1,11 @@
 export interface User {
   id: string;
   email: string;
-  createdAt: string;
+  username?: string;
+  avatar_url?: string;
+  email_verified: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Session {

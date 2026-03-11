@@ -354,3 +354,15 @@ Has completado el **Flujo de Autenticación HTMX**. Ahora tienes:
 3.  **Middleware Auth**: Validar JWT en SSR
 
 Dime cuál quieres integrar ahora en tu cerebro.
+
+---
+
+## 🏛️ Integración: Fase 8 - Rate Limit Handling (Seguridad Frontend)
+
+| Nivel | Nombre | Descripción |
+| --- | --- | --- |
+| **1** | **¿Qué es?** (Definición Técnica) | Implementación del manejo de errores **429 Too Many Requests** en el frontend, incluyendo la clase `RateLimitError`, visualización de mensajes en formularios HTMX y soporte para el header `Retry-After`. |
+| **2** | **¿Para qué sirve?** (El Propósito) | Proporciona feedback claro al usuario cuando el backend detecta intentos excesivos de login/register, mejorando la UX y evitando confusión ante errores 429. |
+| **3** | **¿Cómo funciona?** (La Anatomía) | 1. **AuthClient:** Se añade check para `response.status === 429` y se lanza `RateLimitError`. <br> 2. **HTMX Handlers:** `htmx:responseError` captura el error y muestra mensaje visual. <br> 3. **API Proxies:** Retornan el header `Retry-After` al cliente. <br> 4. **Entities:** Se actualizan campos de usuario (`username`, `avatar_url`, `email_verified`). |
+| **4** | **Ejemplo Práctico 3026** | **AuthClient:** <br> ```typescript if (response.status === 429) { const retryAfter = response.headers.get("Retry-After"); throw new RateLimitError(`Too many requests. Try again in ${retryAfter} seconds.`); } ``` <br> **HTMX Handler:** <br> ```typescript document.addEventListener('htmx:responseError', (e) => { if (e.detail.xhr.status === 429) { // Mostrar mensaje de error } }); ``` |
+| **5** | **¿Por qué es vital para nuestro sistema?** | **Seguridad:** Completa el ciclo de rate limiting del backend. <br> **UX:** El usuario sabe cuándo puede intentar de nuevo. |

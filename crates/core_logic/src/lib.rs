@@ -8,5 +8,7 @@
 //! Se divide en dos capas principales:
 //! - **Domain**: Entidades, Value Objects, e interfaces (Puertos).
 //! - **Application**: Casos de uso que orquestan la lógica del dominio.
+pub mod adapters;
 pub mod application;
 pub mod domain;
+pub mod proto_generated;

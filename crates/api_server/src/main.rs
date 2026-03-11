@@ -49,13 +49,16 @@ async fn main() {
     println!("📡 Sintonizando la base de datos: aplicando migraciones...");
 
     // Sintonía de Rutas: Buscamos las migraciones tanto en local (Workspace) como en Docker.
-    let migrations_path = if Path::new("./migrations").exists() {
-        Path::new("./migrations")
+    // Necesitamos buscar desde la raíz del workspace.
+    let migrations_path = if Path::new("migrations").exists() {
+        Path::new("migrations")
+    } else if Path::new("../infra_db/migrations").exists() {
+        Path::new("../infra_db/migrations")
     } else if Path::new("crates/infra_db/migrations").exists() {
         Path::new("crates/infra_db/migrations")
     } else {
         panic!(
-            "Error Crítico: No se encontraron las migraciones. Se buscaron en './migrations' (Docker) y 'crates/infra_db/migrations' (Local)."
+            "Error Crítico: No se encontraron las migraciones. Se buscaron en './migrations' (Docker), '../infra_db/migrations' y 'crates/infra_db/migrations'."
         );
     };
 

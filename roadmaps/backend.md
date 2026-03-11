@@ -72,9 +72,9 @@
 ### 📅 Fase 2.1: Contratos Binarios
 
 | # | Tarea | Descripción | Estado |
-|---|-------|-------------|--------|
-| 1 | Proto Gen | Generar código Rust desde `.proto` usando buf | ⏳ |
-| 2 | Mappers | Traductores entre Proto Structs <-> Domain Entities | ⏳ |
+|---|-------|-------------|:------:|
+| 1 | Proto Gen | Generar código Rust desde `.proto` usando prost | ✅ |
+| 2 | Mappers | Traductores entre Proto Structs <-> Domain Entities | ✅ |
 
 ### 📅 Fase 2.2: Identidad 3026
 
@@ -179,11 +179,11 @@
 ## 🛡️ BLOQUE VIII: PERFIL Y AUDITORÍA
 
 **Objetivo:** Completar la soberanía del usuario sobre sus datos y la trazabilidad del sistema.
-**Estado:** [/] En Progreso
+**Estado:** ✅ Completado
 
 | # | Tarea | Ubicación | Descripción | Estado |
 |---|-------|-----------|-------------|:------:|
 | 1 | Profile Update | `api_server` | Endpoint `PUT /me` para actualización propia. | ✅ |
 | 2 | Role Discovery | `api_server` | Endpoint `GET /roles` para listar roles disponibles. | ✅ |
-| 3 | Audit Middleware | `api_server` | Registrar acciones en `audit_logs`. | ⏳ |
-| 4 | Rate Limiting | `api_server` | Protección contra fuerza bruta. | ⏳ |
+| 3 | Audit Middleware | `api_server` | Registrar acciones en `audit_logs`. | ✅ |
+| 4 | Rate Limiting | `api_server` | Protección contra fuerza bruta. | ✅ |

@@ -19,20 +19,31 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       body: JSON.stringify({ email, password, username }),
     });
 
+    if (registerResponse.status === 429) {
+      const retryAfter = registerResponse.headers.get("Retry-After") || "60";
+      return new Response(
+        `<div class="bg-destructive/10 text-destructive text-sm p-3 rounded-md mb-4 animate-in fade-in slide-in-from-top-1">
+          Demasiados intentos. Intenta de nuevo en ${retryAfter} segundos.
+        </div>`,
+        {
+          status: 429,
+          headers: { "Content-Type": "text/html", "Retry-After": retryAfter },
+        },
+      );
+    }
+
     if (!registerResponse.ok) {
       const errorData = await registerResponse.json();
       const errorMessage = errorData.error || "Error en el registro";
 
       // Si es una petición HTMX, devolvemos un pequeño fragmento HTML para el error
-      // o podemos devolver el formulario completo con el error.
-      // Para simplificar, devolvemos un mensaje que HTMX pueda manejar.
       return new Response(
         `<div class="bg-destructive/10 text-destructive text-sm p-3 rounded-md mb-4 animate-in fade-in slide-in-from-top-1">
           ${errorMessage}
           <button class="ml-2 underline" onclick="window.location.reload()">Reintentar</button>
         </div>`,
         {
-          status: 200, // Devolvemos 200 para que HTMX haga el swap en el target
+          status: 200,
           headers: { "Content-Type": "text/html" },
         },
       );
@@ -46,7 +57,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     if (!loginResponse.ok) {
-      // Si el registro funcionó pero el login falló, redirigimos al login
       return new Response(null, {
         status: 200,
         headers: { "HX-Redirect": "/login" },

@@ -1,10 +1,15 @@
 ---
-const navItems = [
+const _currentPath = Astro.url.pathname;
+
+const _mainNavItems = [
   {
     href: "/dashboard",
     label: "Dashboard",
     icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
   },
+];
+
+const _managementNavItems = [
   {
     href: "/users",
     label: "Usuarios",
@@ -15,28 +20,30 @@ const navItems = [
     label: "Roles",
     icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
   },
+];
+
+const _systemNavItems = [
   {
     href: "/settings",
     label: "Configuración",
     icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
   },
 ];
-
-const currentPath = Astro.url.pathname;
 ---
 
 <aside
   id="main-sidebar"
-  class="fixed inset-y-0 left-0 z-50 h-full w-64 transform border-r border-border bg-surface transition-transform duration-300 lg:static lg:h-screen lg:w-64 lg:translate-x-0"
+  class="fixed inset-y-0 left-0 z-50 h-full w-64 transform border-r border-border bg-surface text-foreground transition-transform duration-300 lg:static lg:h-screen lg:w-64 lg:translate-x-0"
   :class="window.sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+  transition:persist
 >
-  <div class="flex h-full flex-col gap-4 p-4">
-    <!-- Título con botón cerrar -->
-    <div class="flex items-center justify-between mb-2">
+  <div class="flex h-full flex-col">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-border p-4">
       <span class="font-bold text-lg">Menú</span>
-      <button 
+      <button
         id="sidebar-close-btn"
-        type="button" 
+        type="button"
         onclick="toggleSidebar()"
         class="lg:hidden inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-9 w-9 px-0"
       >
@@ -47,29 +54,100 @@ const currentPath = Astro.url.pathname;
       </button>
     </div>
 
-    <nav class="flex flex-1 flex-col gap-1 overflow-y-auto">
-      {navItems.map((item) => (
-        <a
-          href={item.href}
-          class:list={[
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
-            currentPath === item.href || currentPath.startsWith(item.href + "/")
-              ? "bg-primary/10 text-primary"
-              : "text-muted-foreground hover:bg-muted hover:text-foreground"
-          ]}
+    <!-- Navegación -->
+    <nav class="flex flex-1 flex-col gap-6 overflow-y-auto p-4">
+      <!-- Principal -->
+      <div class="space-y-1">
+        <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Principal</p>
+        {_mainNavItems.map((item) => (
+          <a
+            href={item.href}
+            class="nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200"
+            data-href={item.href}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d={item.icon}></path>
+            </svg>
+            <span class="truncate">{item.label}</span>
+          </a>
+        ))}
+      </div>
+
+      <!-- Gestión con Dropdown -->
+      <div class="space-y-1" x-data="{ open: false }" x-init="open = window.location.pathname.startsWith('/users') || window.location.pathname.startsWith('/roles')">
+        <button
+          type="button"
+          @click="open = !open"
+          class="nav-item flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm transition-all duration-200"
+          :class="(open || window.location.pathname.startsWith('/users') || window.location.pathname.startsWith('/roles')) ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d={item.icon}></path>
+          <span class="flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span class="truncate">Gestión</span>
+          </span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="transition-transform duration-200"
+            :class="open ? 'rotate-180' : ''"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
-          <span class="truncate">{item.label}</span>
-        </a>
-      ))}
+        </button>
+
+        <!-- Dropdown Items -->
+        <div x-show="open" class="ml-4 mt-1 space-y-1 border-l-2 border-border pl-3 overflow-hidden transition-all" :class="open ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'">
+          {_managementNavItems.map((item) => (
+            <a
+              href={item.href}
+              class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200"
+              data-href={item.href}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d={item.icon}></path>
+              </svg>
+              <span class="truncate">{item.label}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Sistema -->
+      <div class="space-y-1">
+        <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Sistema</p>
+        {_systemNavItems.map((item) => (
+          <a
+            href={item.href}
+            class="nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200"
+            data-href={item.href}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d={item.icon}></path>
+            </svg>
+            <span class="truncate">{item.label}</span>
+          </a>
+        ))}
+      </div>
     </nav>
 
-    <div class="border-t border-border pt-4">
+    <!-- Footer -->
+    <div class="border-t border-border p-4">
       <a
         href="/logout"
-        class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        class="nav-item flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground"
+        data-href="/logout"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -81,3 +159,31 @@ const currentPath = Astro.url.pathname;
     </div>
   </div>
 </aside>
+
+<script is:inline>
+  function updateNavActive() {
+    const path = window.location.pathname;
+    document.querySelectorAll('.nav-item').forEach(el => {
+      const href = el.getAttribute('data-href');
+      if (path === href || (href && path.startsWith(href) && href !== '/')) {
+        el.classList.add('bg-primary', 'text-primary-foreground', 'font-medium', 'shadow-sm');
+        el.classList.remove('text-muted-foreground', 'hover:bg-muted', 'hover:text-foreground');
+      } else if (path.startsWith('/users') && href === '/users') {
+        el.classList.add('bg-primary/10', 'text-primary', 'font-medium');
+        el.classList.remove('text-muted-foreground', 'hover:bg-muted', 'hover:text-foreground');
+      } else if (path.startsWith('/roles') && href === '/roles') {
+        el.classList.add('bg-primary/10', 'text-primary', 'font-medium');
+        el.classList.remove('text-muted-foreground', 'hover:bg-muted', 'hover:text-foreground');
+      } else {
+        el.classList.remove('bg-primary', 'text-primary-foreground', 'bg-primary/10', 'text-primary', 'font-medium', 'shadow-sm');
+        el.classList.add('text-muted-foreground', 'hover:bg-muted', 'hover:text-foreground');
+      }
+    });
+  }
+
+  // Ejecutar al cargar
+  document.addEventListener('DOMContentLoaded', updateNavActive);
+
+  // Ejecutar después de View Transition
+  document.addEventListener('astro:page-load', updateNavActive);
+</script>

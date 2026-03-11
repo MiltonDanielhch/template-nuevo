@@ -22,7 +22,7 @@
 use crate::domain::{
     entities::user::User,
     errors::DomainError,
-    interfaces::{IHasher, IUserRepository, IRoleRepository},
+    interfaces::{IHasher, IRoleRepository, IUserRepository},
     value_objects::Email,
 };
 use anyhow::{Context, Result};
@@ -47,8 +47,16 @@ pub struct RegisterUser {
 
 impl RegisterUser {
     /// Crea una nueva instancia del caso de uso `RegisterUser`.
-    pub fn new(user_repo: Arc<dyn IUserRepository>, hasher: Arc<dyn IHasher>, role_repo: Arc<dyn IRoleRepository>) -> Self {
-        Self { user_repo, hasher, role_repo }
+    pub fn new(
+        user_repo: Arc<dyn IUserRepository>,
+        hasher: Arc<dyn IHasher>,
+        role_repo: Arc<dyn IRoleRepository>,
+    ) -> Self {
+        Self {
+            user_repo,
+            hasher,
+            role_repo,
+        }
     }
 
     /// Ejecuta el caso de uso.
@@ -84,10 +92,13 @@ impl RegisterUser {
             .context("Error al guardar el usuario en la base de datos")?;
 
         // 6. Asignar rol si se proporcionó
-        if let Some(role_name) = command.role {
-            if let Ok(Some(role)) = self.role_repo.find_role_by_name(&role_name).await {
-                let _ = self.role_repo.assign_role_to_user(new_user.id(), role.id()).await;
-            }
+        if let Some(role_name) = command.role
+            && let Ok(Some(role)) = self.role_repo.find_role_by_name(&role_name).await
+        {
+            let _ = self
+                .role_repo
+                .assign_role_to_user(new_user.id(), role.id())
+                .await;
         }
 
         // 7. Devolver la entidad creada

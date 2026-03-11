@@ -98,5 +98,19 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
         }
       }
     });
+
+    document.addEventListener('htmx:responseError', (e: any) => {
+      const xhr = e.detail.xhr;
+      if (xhr.status === 429) {
+        const form = document.getElementById('login-form');
+        if (form) {
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
+          errorDiv.textContent = 'Demasiados intentos. Por favor espera un momento e intenta de nuevo.';
+          form.insertBefore(errorDiv, form.firstChild);
+        }
+        e.preventDefault();
+      }
+    });
   </script>
 </MainLayout>

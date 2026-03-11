@@ -7,6 +7,7 @@ export const loginSchema = type({
 
 export const registerSchema = type({
   email: "string.email",
+  username: "string?",
   password: "string.min(8).regex(/[A-Z]/).regex(/[0-9]/)",
   confirmPassword: "string",
 });

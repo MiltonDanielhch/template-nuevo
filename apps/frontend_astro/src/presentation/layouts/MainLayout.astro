@@ -1,18 +1,20 @@
 ---
 import "../../styles/global.css";
+import { ViewTransitions } from "astro:transitions";
 import CommandPalette from "../components/command/CommandPalette.astro";
 
 interface Props {
   title: string;
 }
 
-const { title } = Astro.props;
-const token = Astro.cookies.get("auth_token")?.value || "";
+const { title: _title } = Astro.props;
+const _token = Astro.cookies.get("auth_token")?.value || "";
 ---
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" transition:persist>
   <head>
+    <ViewTransitions />
     <!-- Capacitor Plugins -->
     <script src="https://unpkg.com/@capacitor/core@6/dist/capacitor.js"></script>
     <script is:inline>
@@ -53,6 +55,16 @@ const token = Astro.cookies.get("auth_token")?.value || "";
           document.documentElement.classList.remove('dark');
         }
       })();
+
+      // Mantener tema en View Transitions
+      document.addEventListener('astro:after-swap', () => {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      });
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -60,8 +72,8 @@ const token = Astro.cookies.get("auth_token")?.value || "";
     <meta name="theme-color" content="#0ea5e9" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.json" />
-    <title>{title} | Laboratorio 3026</title>
-    <meta name="auth-token" content={token} />
+    <title>{_title} | Laboratorio 3026</title>
+    <meta name="auth-token" content={_token} />
 
     <!-- HTMX -->
     <script is:inline src="https://unpkg.com/htmx.org@2.0.8/dist/htmx.min.js" crossorigin="anonymous"></script>

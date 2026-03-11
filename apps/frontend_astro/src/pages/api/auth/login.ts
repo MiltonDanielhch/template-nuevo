@@ -14,6 +14,19 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       body: JSON.stringify({ email, password }),
     });
 
+    if (response.status === 429) {
+      const retryAfter = response.headers.get("Retry-After") || "60";
+      return new Response(
+        JSON.stringify({
+          error: `Demasiados intentos. Intenta de nuevo en ${retryAfter} segundos.`,
+        }),
+        {
+          status: 429,
+          headers: { "Retry-After": retryAfter },
+        },
+      );
+    }
+
     if (response.ok) {
       const respData = await response.json();
       const token = respData.token;

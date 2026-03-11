@@ -12,7 +12,7 @@ let currentUser = null;
 let totalUsers = 0;
 let totalRoles = 0;
 let userRoles: string[] = [];
-let isAdmin = false;
+let _isAdmin = false;
 
 try {
   const [meRes, usersRes, rolesRes] = await Promise.all([
@@ -27,8 +27,8 @@ try {
     }),
   ]);
 
-  console.log('Token:', token);
-  console.log('Me response:', meRes.status);
+  console.log("Token:", token);
+  console.log("Me response:", meRes.status);
 
   if (meRes.ok) {
     currentUser = await meRes.json();
@@ -37,27 +37,31 @@ try {
     });
     if (rolesResponse.ok) {
       userRoles = await rolesResponse.json();
-      isAdmin = userRoles.some((r: any) => r.name === "Admin");
+      _isAdmin = userRoles.some((r: any) => r.name === "Admin");
     }
   }
 
   if (usersRes.ok) {
     const usersData = await usersRes.json();
     totalUsers = usersData.users ? usersData.users.length : 0;
-    console.log('Users response:', usersRes.status, 'Data:', usersData, 'Total:', totalUsers);
+    console.log("Users response:", usersRes.status, "Data:", usersData, "Total:", totalUsers);
   }
 
   if (rolesRes.ok) {
     const roles = await rolesRes.json();
     totalRoles = Array.isArray(roles) ? roles.length : 0;
-    console.log('Roles response:', rolesRes.status, 'Total:', totalRoles);
+    console.log("Roles response:", rolesRes.status, "Total:", totalRoles);
   }
 } catch (error) {
   console.error("Error fetching dashboard data:", error);
 }
 
+if (!currentUser) {
+  return Astro.redirect("/login");
+}
+
 const now = new Date();
-const greeting =
+const _greeting =
   now.getHours() < 12 ? "Buenos días" : now.getHours() < 18 ? "Buenas tardes" : "Buenas noches";
 ---
 
@@ -69,7 +73,7 @@ const greeting =
       <main class="flex-1 overflow-y-auto bg-background p-6">
         <div class="mx-auto max-w-6xl">
           <div class="mb-8">
-            <h1 class="text-3xl font-bold tracking-tight">{greeting}</h1>
+            <h1 class="text-3xl font-bold tracking-tight text-foreground">{_greeting}</h1>
             <p class="text-muted-foreground">
               {currentUser?.username ? `Bienvenido, ${currentUser.username}` : "Bienvenido a Laboratorio 3026"}
             </p>

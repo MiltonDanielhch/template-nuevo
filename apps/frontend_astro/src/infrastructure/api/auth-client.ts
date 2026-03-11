@@ -2,6 +2,13 @@ import type { ApiError, AuthResponse } from "../../domain/entities/auth";
 
 const API_BASE = "/api/auth";
 
+export class RateLimitError extends Error {
+  constructor(message: string = "Too many requests. Please try again later.") {
+    super(message);
+    this.name = "RateLimitError";
+  }
+}
+
 class AuthClient {
   private token: string | null = null;
 
@@ -26,6 +33,15 @@ class AuthClient {
       ...options,
       headers,
     });
+
+    if (response.status === 429) {
+      const retryAfter = response.headers.get("Retry-After");
+      throw new RateLimitError(
+        retryAfter
+          ? `Too many requests. Try again in ${retryAfter} seconds.`
+          : "Too many requests. Please try again later.",
+      );
+    }
 
     if (!response.ok) {
       const error: ApiError = await response.json().catch(() => ({
@@ -87,3 +103,4 @@ class AuthClient {
 }
 
 export const authClient = new AuthClient();
+export { RateLimitError };

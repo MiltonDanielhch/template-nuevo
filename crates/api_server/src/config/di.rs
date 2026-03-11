@@ -11,10 +11,11 @@ use core_logic::{
             CreateSession, DeleteUser, GetUserById, ListUsers, LoginUser, RegisterUser, UpdateUser,
         },
     },
-    domain::interfaces::{IRoleRepository, ISessionRepository},
+    domain::interfaces::{IAuditRepository, IRoleRepository, ISessionRepository},
 };
 use infra_db::{
-    Argon2idHasher, SqliteRoleRepository, SqliteSessionRepository, SqliteUserRepository,
+    Argon2idHasher, SqliteAuditRepository, SqliteRoleRepository, SqliteSessionRepository,
+    SqliteUserRepository,
 };
 use std::sync::Arc;
 
@@ -39,6 +40,8 @@ pub struct AppState {
     pub delete_role: Arc<DeleteRole>,
     pub list_permissions: Arc<ListPermissions>,
     pub role_repo: Arc<dyn IRoleRepository>,
+    // Audit
+    pub audit_repo: Arc<dyn IAuditRepository>,
 }
 
 pub fn create_app_state(pool: sqlx::SqlitePool) -> AppState {
@@ -68,6 +71,9 @@ pub fn create_app_state(pool: sqlx::SqlitePool) -> AppState {
     let delete_role = Arc::new(DeleteRole::new(role_repo.clone()));
     let list_permissions = Arc::new(ListPermissions::new(role_repo.clone()));
 
+    // Audit
+    let audit_repo: Arc<dyn IAuditRepository> = Arc::new(SqliteAuditRepository::new(pool));
+
     AppState {
         register_user,
         login_user,
@@ -84,5 +90,6 @@ pub fn create_app_state(pool: sqlx::SqlitePool) -> AppState {
         delete_role,
         list_permissions,
         role_repo,
+        audit_repo,
     }
 }

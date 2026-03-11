@@ -28,20 +28,36 @@ function escapeHtml(str: string | undefined): string {
 
 export const GET: APIRoute = async ({ url, request, cookies }) => {
   const search = url.searchParams.get("search") || "";
-  const page = parseInt(url.searchParams.get("page") || "1");
+  const page = parseInt(url.searchParams.get("page") || "1", 10);
   const perPage = 10;
   const token = cookies.get("auth_token")?.value;
+
+  if (!token || token === "undefined" || token === "null") {
+    return new Response(JSON.stringify({ error: "Sin token de sesión" }), { status: 401 });
+  }
 
   try {
     const params = new URLSearchParams({ page: page.toString(), per_page: perPage.toString() });
     if (search) params.set("search", search);
 
     const response = await fetch(`http://localhost:8081/users?${params}`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
 
+    if (response.status === 401 || response.status === 403) {
+      return new Response(JSON.stringify({ error: "Sesión expirada" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     if (!response.ok) {
-      throw new Error("Error al obtener usuarios");
+      const errText = await response.text();
+      console.log("Backend error:", response.status, errText);
+      throw new Error(`Error al obtener usuarios: ${response.status}`);
     }
 
     const data: UsersResponse = await response.json();
@@ -113,8 +129,8 @@ export const GET: APIRoute = async ({ url, request, cookies }) => {
         ? users.map(renderUser).join("")
         : `<tr><td colspan="5" class="px-4 py-8 text-center text-muted-foreground">No se encontraron usuarios</td></tr>`;
 
-    const start = Math.min((page - 1) * perPage + 1, total);
-    const end = Math.min(page * perPage, total);
+    const _start = Math.min((page - 1) * perPage + 1, total);
+    const _end = Math.min(page * perPage, total);
     const prevPage = page > 1 ? page - 1 : 1;
     const nextPage = page < total_pages ? page + 1 : total_pages;
 
