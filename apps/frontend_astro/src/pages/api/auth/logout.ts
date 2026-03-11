@@ -4,9 +4,9 @@ export const POST: APIRoute = async ({ cookies }) => {
   cookies.delete("auth_token", { path: "/" });
 
   return new Response(null, {
-    status: 200,
+    status: 302,
     headers: {
-      "HX-Redirect": "/login",
+      Location: "/login",
     },
   });
 };

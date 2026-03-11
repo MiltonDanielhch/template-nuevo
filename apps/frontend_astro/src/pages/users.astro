@@ -14,7 +14,7 @@ const search = Astro.url.searchParams.get("search") || "";
 
 // Fetch users server-side
 let usersData: any = { users: [], total: 0, page: 1, total_pages: 1 };
-let __fetchError = "";
+let fetchError = "";
 
 if (token) {
   try {
@@ -28,16 +28,16 @@ if (token) {
     if (response.ok) {
       usersData = await response.json();
     } else {
-      _fetchError = "Error al cargar usuarios";
+      fetchError = "Error al cargar usuarios";
     }
   } catch (_e) {
-    _fetchError = "Error de conexión";
+    fetchError = "Error de conexión";
   }
 } else {
-  _fetchError = "Sin sesión";
+  fetchError = "Sin sesión";
 }
 
-const _users = usersData.users || [];
+const users = usersData.users || [];
 ---
 
 <MainLayout title="Gestión de Usuarios">
@@ -88,8 +88,8 @@ const _users = usersData.users || [];
                   </tr>
                 </thead>
                 <tbody id="users-container">
-                  {_fetchError ? (
-                    <tr><td colspan="5" class="px-4 py-8 text-center text-red-500">{_fetchError}</td></tr>
+                  {fetchError ? (
+                    <tr><td colspan="5" class="px-4 py-8 text-center text-red-500">{fetchError}</td></tr>
                   ) : users.length === 0 ? (
                     <tr><td colspan="5" class="px-4 py-8 text-center text-muted-foreground">No se encontraron usuarios</td></tr>
                   ) : (
@@ -121,10 +121,22 @@ const _users = usersData.users || [];
                 </tbody>
               </table>
             </div>
+            {usersData.total_pages > 1 && (
+              <div id="pagination-ssr" class="mt-4 flex items-center justify-end gap-1 w-full">
+                <button
+                  disabled={page <= 1}
+                  onclick={`goToPage(${page - 1})`}
+                  class={`px-3 py-1 text-sm border rounded hover:bg-muted ${page <= 1 ? "opacity-50 cursor-not-allowed" : ""}`}>Anterior</button>
+                <span class="px-3 py-1 text-sm">Página {page} de {usersData.total_pages}</span>
+                <button
+                  disabled={page >= usersData.total_pages}
+                  onclick={`goToPage(${page + 1})`}
+                  class={`px-3 py-1 text-sm border rounded hover:bg-muted ${page >= usersData.total_pages ? "opacity-50 cursor-not-allowed" : ""}`}>Siguiente</button>
+              </div>
+            )}
           </Card>
-          <div id="pagination-container" class="mt-4 flex justify-end w-full"></div>
         </div>
-      </main>
+        </main>
     </div>
   </div>
 
@@ -221,23 +233,9 @@ window.doSearch = function(searchValue) {
 
 window.goToPage = function(pageNum) {
   const value = document.getElementById('users-search-input').value;
-  const isMobile = window.innerWidth < 768;
-  const url = '/api/users/list?search=' + encodeURIComponent(value) + '&page=' + pageNum + (isMobile ? '&mobile=true' : '');
-
-  fetch(url, {
-    headers: { 'HX-Request': 'true' }
-  })
-  .then(function(res) { return res.text(); })
-  .then(function(html) {
-    if (isMobile) {
-      document.getElementById('users-container-mobile').innerHTML = html;
-    } else {
-      document.getElementById('users-container').innerHTML = html;
-    }
-  })
-  .catch(function(err) {
-    console.error('Error en paginación:', err);
-  });
+  const baseUrl = '/users?page=' + pageNum;
+  const url = value ? baseUrl + '&search=' + encodeURIComponent(value) : baseUrl;
+  window.location.href = url;
 };
 
 window.showModal = function(isEdit) {

@@ -32,7 +32,7 @@ try {
   console.error("Error fetching user profile:", error);
 }
 
-const _currentRole =
+const currentRole =
   userRoles.length > 0 ? userRoles.map((r: any) => r.name).join(", ") : user?.role || "Sin rol";
 
 if (!user) {
@@ -120,13 +120,14 @@ if (!user) {
                       })
                   "
                 >
+                  <input type="text" name="username" value={user?.email || ""} autocomplete="username" class="sr-only" />
                   <div class="space-y-2">
                     <label for="password" class="text-sm font-medium">Nueva Contraseña</label>
-                    <Input id="password" name="password" type="password" placeholder="••••••••" required />
+                    <Input id="password" name="password" type="password" placeholder="••••••••" autocomplete="new-password" required />
                   </div>
                   <div class="space-y-2">
                     <label for="confirm_password" class="text-sm font-medium">Confirmar Contraseña</label>
-                    <Input id="confirm_password" name="confirm_password" type="password" placeholder="••••••••" required />
+                    <Input id="confirm_password" name="confirm_password" type="password" placeholder="••••••••" autocomplete="new-password" required />
                   </div>
                   <Button type="submit" variant="outline" class="w-full sm:w-auto">Actualizar Contraseña</Button>
                 </form>
@@ -141,7 +142,7 @@ if (!user) {
               </CardHeader>
               <CardContent>
                 <p class="text-sm text-muted-foreground mb-4">
-                  Actualmente tienes el rol de <strong class="text-foreground">{_currentRole}</strong>.
+                  Actualmente tienes el rol de <strong class="text-foreground">{currentRole}</strong>.
                   Si necesitas eliminar tu cuenta, por favor contacta con un administrador.
                 </p>
                 <Button variant="destructive" disabled>Eliminar Cuenta</Button>

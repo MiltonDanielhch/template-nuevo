@@ -7,8 +7,8 @@ interface Props {
   title: string;
 }
 
-const { title: _title } = Astro.props;
-const _token = Astro.cookies.get("auth_token")?.value || "";
+const { title } = Astro.props;
+const token = Astro.cookies.get("auth_token")?.value || "";
 ---
 
 <!DOCTYPE html>
@@ -72,8 +72,8 @@ const _token = Astro.cookies.get("auth_token")?.value || "";
     <meta name="theme-color" content="#0ea5e9" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.json" />
-    <title>{_title} | Laboratorio 3026</title>
-    <meta name="auth-token" content={_token} />
+    <title>{title} | Laboratorio 3026</title>
+    <meta name="auth-token" content={token} />
 
     <!-- HTMX -->
     <script is:inline src="https://unpkg.com/htmx.org@2.0.8/dist/htmx.min.js" crossorigin="anonymous"></script>
@@ -199,6 +199,67 @@ const _token = Astro.cookies.get("auth_token")?.value || "";
       }
       document.addEventListener('DOMContentLoaded', updateSidebar);
       window.addEventListener('resize', updateSidebar);
+
+      window.__registerRolesAlpine = function() {
+        if (typeof Alpine === 'undefined' || !Alpine) return;
+
+        Alpine.data('rolesManagement', () => ({
+          openModal: false,
+          isEdit: false,
+          editId: '',
+          form: { name: '', description: '', permissions: [] },
+          availablePermissions: window.__rolesPermissions || [],
+
+          init() {
+            console.log('Roles Management initialized');
+          },
+
+          editRole(roleData) {
+            const role = typeof roleData === 'string' ? JSON.parse(roleData) : roleData;
+            this.isEdit = true;
+            this.editId = role.id;
+            this.form = {
+              name: role.name,
+              description: role.description || '',
+              permissions: role.permissions.map(p => p.id)
+            };
+            this.openModal = true;
+          },
+
+          resetForm() {
+            this.isEdit = false;
+            this.editId = '';
+            this.form = { name: '', description: '', permissions: [] };
+          },
+
+          async submitForm() {
+            const url = this.isEdit ? `/api/roles/${this.editId}` : '/api/roles';
+            try {
+              const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.form)
+              });
+              if (response.ok) {
+                window.location.reload();
+              } else {
+                const data = await response.json();
+                alert(data.message || 'Error al procesar');
+              }
+            } catch (e) {
+              alert('Error de conexión');
+            }
+          }
+        }));
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => window.__registerRolesAlpine());
+      } else {
+        window.__registerRolesAlpine();
+      }
+
+      document.addEventListener('astro:page-load', () => window.__registerRolesAlpine());
     </script>
     <CommandPalette />
     <div id="app">

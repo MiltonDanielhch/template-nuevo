@@ -1,14 +1,15 @@
 ---
 Astro.cookies.delete("auth_token", { path: "/" });
-return Astro.redirect("/login");
 ---
 
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Cerrando Sesión...</title>
+    <title>Cerrando Sesión</title>
+    <meta http-equiv="refresh" content="0;url=/login">
+    <style>
+      body { margin: 0; padding: 0; display: none; }
+    </style>
   </head>
-  <body>
-    <p> cerrando sesión...</p>
-  </body>
+  <body></body>
 </html>

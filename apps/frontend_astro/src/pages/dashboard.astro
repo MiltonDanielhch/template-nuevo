@@ -12,7 +12,7 @@ let currentUser = null;
 let totalUsers = 0;
 let totalRoles = 0;
 let userRoles: string[] = [];
-let _isAdmin = false;
+let isAdmin = false;
 
 try {
   const [meRes, usersRes, rolesRes] = await Promise.all([
@@ -37,7 +37,7 @@ try {
     });
     if (rolesResponse.ok) {
       userRoles = await rolesResponse.json();
-      _isAdmin = userRoles.some((r: any) => r.name === "Admin");
+      isAdmin = userRoles.some((r: any) => r.name === "Admin");
     }
   }
 
@@ -61,7 +61,7 @@ if (!currentUser) {
 }
 
 const now = new Date();
-const _greeting =
+const greeting =
   now.getHours() < 12 ? "Buenos días" : now.getHours() < 18 ? "Buenas tardes" : "Buenas noches";
 ---
 
@@ -73,7 +73,7 @@ const _greeting =
       <main class="flex-1 overflow-y-auto bg-background p-6">
         <div class="mx-auto max-w-6xl">
           <div class="mb-8">
-            <h1 class="text-3xl font-bold tracking-tight text-foreground">{_greeting}</h1>
+            <h1 class="text-3xl font-bold tracking-tight text-foreground">{greeting}</h1>
             <p class="text-muted-foreground">
               {currentUser?.username ? `Bienvenido, ${currentUser.username}` : "Bienvenido a Laboratorio 3026"}
             </p>

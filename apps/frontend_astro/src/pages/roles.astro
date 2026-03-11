@@ -153,58 +153,8 @@ try {
 </MainLayout>
 
 <script is:inline define:vars={{ initialAvailablePermissions: availablePermissions }}>
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('rolesManagement', () => ({
-      openModal: false,
-      isEdit: false,
-      editId: '',
-      form: { name: '', description: '', permissions: [] },
-      availablePermissions: initialAvailablePermissions || [],
-
-      init() {
-        console.log('Roles Management initialized with permissions:', this.availablePermissions);
-      },
-
-      editRole(roleData) {
-        const role = typeof roleData === 'string' ? JSON.parse(roleData) : roleData;
-        console.log('Editing role:', role);
-        this.isEdit = true;
-        this.editId = role.id;
-        this.form = {
-          name: role.name,
-          description: role.description || '',
-          // Extract just IDs for the checkboxes
-          permissions: role.permissions.map(p => p.id)
-        };
-        this.openModal = true;
-      },
-
-      resetForm() {
-        this.isEdit = false;
-        this.editId = '';
-        this.form = { name: '', description: '', permissions: [] };
-      },
-
-      async submitForm() {
-        const url = this.isEdit ? `/api/roles/${this.editId}` : '/api/roles';
-
-        try {
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.form)
-          });
-
-          if (response.ok) {
-            window.location.reload();
-          } else {
-            const data = await response.json();
-            alert(data.message || 'Error al procesar la solicitud');
-          }
-        } catch (e) {
-          alert('Error de conexión');
-        }
-      }
-    }));
-  });
+  window.__rolesPermissions = initialAvailablePermissions;
+  if (window.__registerRolesAlpine) {
+    window.__registerRolesAlpine();
+  }
 </script>
