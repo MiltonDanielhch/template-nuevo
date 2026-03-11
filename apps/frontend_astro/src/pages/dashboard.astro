@@ -12,7 +12,7 @@ let currentUser = null;
 let totalUsers = 0;
 let totalRoles = 0;
 let userRoles: string[] = [];
-let __isAdmin = false;
+let _isAdmin = false;
 
 try {
   const [meRes, usersRes, rolesRes] = await Promise.all([
@@ -37,7 +37,7 @@ try {
     });
     if (rolesResponse.ok) {
       userRoles = await rolesResponse.json();
-      __isAdmin = userRoles.some((r: any) => r.name === "Admin");
+      _isAdmin = userRoles.some((r: any) => r.name === "Admin");
     }
   }
 
@@ -119,7 +119,7 @@ const _greeting =
               </CardHeader>
               <CardContent>
                 <div class="text-2xl font-bold">{userRoles.length > 0 ? userRoles.map((r: any) => r.name).join(", ") : "Sin rol"}</div>
-                <p class="text-xs text-muted-foreground">{_isAdmin ? "Administrador del sistema" : "Usuario estándar"}</p>
+                <p class="text-xs text-muted-foreground">{isAdmin ? "Administrador del sistema" : "Usuario estándar"}</p>
               </CardContent>
             </Card>
 
@@ -189,7 +189,7 @@ const _greeting =
               </CardHeader>
               <CardContent>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {_isAdmin && (
+                  {isAdmin && (
                     <a href="/users" class="inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors hover:bg-muted hover:text-muted-foreground h-12 px-6 py-3 border">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -200,7 +200,7 @@ const _greeting =
                       Gestionar Usuarios
                     </a>
                   )}
-                  {_isAdmin && (
+                  {isAdmin && (
                     <a href="/roles" class="inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors hover:bg-muted hover:text-muted-foreground h-12 px-6 py-3 border">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3">
                         <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
@@ -220,7 +220,7 @@ const _greeting =
             </Card>
           </div>
 
-          {_isAdmin && (
+          {isAdmin && (
             <div class="mt-8">
               <Card>
                 <CardHeader>
