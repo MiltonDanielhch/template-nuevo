@@ -134,6 +134,13 @@ const token = Astro.cookies.get("auth_token")?.value || "";
         }
       });
 
+      document.addEventListener('htmx:responseError', (e) => {
+        const xhr = e.detail?.xhr;
+        if (xhr && (xhr.status === 401 || xhr.status === 403)) {
+          window.location.href = '/login';
+        }
+      });
+
       document.addEventListener('htmx:afterSwap', (e) => {
         try {
           const response = e.detail?.xhr?.response;
@@ -201,7 +208,17 @@ const token = Astro.cookies.get("auth_token")?.value || "";
       window.addEventListener('resize', updateSidebar);
 
       window.__registerRolesAlpine = function() {
-        if (typeof Alpine === 'undefined' || !Alpine) return;
+        if (typeof Alpine === 'undefined' || !Alpine) {
+          console.log('Alpine not found');
+          return;
+        }
+
+        console.log('Registering rolesManagement component');
+
+        if (Alpine.data('rolesManagement')) {
+          console.log('Component already registered');
+          return;
+        }
 
         Alpine.data('rolesManagement', () => ({
           openModal: false,
@@ -254,12 +271,12 @@ const token = Astro.cookies.get("auth_token")?.value || "";
       };
 
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => window.__registerRolesAlpine());
+        document.addEventListener('DOMContentLoaded', () => setTimeout(() => window.__registerRolesAlpine(), 100));
       } else {
-        window.__registerRolesAlpine();
+        setTimeout(() => window.__registerRolesAlpine(), 100);
       }
 
-      document.addEventListener('astro:page-load', () => window.__registerRolesAlpine());
+      document.addEventListener('astro:page-load', () => setTimeout(() => window.__registerRolesAlpine(), 100));
     </script>
     <CommandPalette />
     <div id="app">

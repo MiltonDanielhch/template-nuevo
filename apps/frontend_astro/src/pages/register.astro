@@ -22,8 +22,22 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
           hx-target="#register-form"
           hx-swap="outerHTML"
           hx-indicator=".htmx-indicator"
+          hx-redirect="/dashboard"
+          autocomplete="off"
         >
           <div class="space-y-4">
+            <div class="space-y-2">
+              <Label htmlFor="username">Usuario</Label>
+              <Input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Tu usuario"
+                autocomplete="off"
+                required
+              />
+            </div>
+
             <div class="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -31,6 +45,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                 name="email"
                 type="email"
                 placeholder="tu@email.com"
+                autocomplete="off"
                 required
               />
             </div>
@@ -42,7 +57,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                 name="password"
                 type="password"
                 placeholder="••••••••"
-                autocomplete="new-password"
+                autocomplete="off"
                 required
               />
             </div>
@@ -54,7 +69,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
                 name="confirmPassword"
                 type="password"
                 placeholder="••••••••"
-                autocomplete="new-password"
+                autocomplete="off"
                 required
               />
             </div>
@@ -91,7 +106,7 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
 
         <div class="mt-4 text-center text-sm">
           <span class="text-muted-foreground">¿Ya tienes cuenta? </span>
-          <a href="/login" class="text-primary hover:underline font-medium">
+          <a href="/login-nocache" class="text-primary hover:underline font-medium">
             Inicia Sesión
           </a>
         </div>
@@ -101,12 +116,26 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
 
   <script>
     document.addEventListener('htmx:afterRequest', (e) => {
-      if (e.detail.successful) {
-        const response = e.detail.xhr;
-        if (response.status === 201) {
-          window.location.href = '/dashboard';
-        }
+      const response = e.detail.xhr;
+      if (response.status === 302) {
+        window.location.replace('/dashboard');
       }
+    });
+
+    (function() {
+      if (window.location.search) {
+        window.history.replaceState(null, '', '/register');
+      }
+      var form = document.getElementById('register-form');
+      if (form) form.reset();
+    })();
+
+    window.addEventListener('pageshow', function() {
+      if (window.location.search) {
+        window.history.replaceState(null, '', '/register');
+      }
+      var form = document.getElementById('register-form');
+      if (form) form.reset();
     });
 
     document.addEventListener('htmx:responseError', (e: any) => {

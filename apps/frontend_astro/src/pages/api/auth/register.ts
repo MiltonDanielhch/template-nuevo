@@ -75,8 +75,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     return new Response(null, {
-      status: 201,
-      headers: { "HX-Redirect": "/dashboard" },
+      status: 302,
+      headers: { Location: "/dashboard" },
     });
   } catch (error) {
     console.error("Auth Error:", error);

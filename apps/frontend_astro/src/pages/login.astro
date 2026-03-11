@@ -4,11 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MainLayout from "@/presentation/layouts/MainLayout.astro";
-
-const { searchParams } = Astro.url;
-if (searchParams.has("email") || searchParams.has("password") || searchParams.has("nocache")) {
-  return Astro.redirect("/login");
-}
 ---
 
 <MainLayout title="Iniciar Sesión">
@@ -87,7 +82,7 @@ if (searchParams.has("email") || searchParams.has("password") || searchParams.ha
 
         <div class="mt-4 text-center text-sm">
           <span class="text-muted-foreground">¿No tienes cuenta? </span>
-          <a href="/register" class="text-primary hover:underline font-medium">
+          <a href="/register-nocache" class="text-primary hover:underline font-medium">
             Regístrate
           </a>
         </div>
@@ -121,11 +116,9 @@ if (searchParams.has("email") || searchParams.has("password") || searchParams.ha
     });
 
     document.addEventListener('htmx:afterRequest', (e: any) => {
-      if (e.detail.successful) {
-        const response = e.detail.xhr;
-        if (response.status === 200) {
-          window.location.href = '/dashboard';
-        }
+      const response = e.detail.xhr;
+      if (response.status === 200) {
+        window.location.replace('/dashboard');
       }
     });
 
