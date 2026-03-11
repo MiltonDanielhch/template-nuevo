@@ -63,3 +63,42 @@ BLOQUE III:░░░░░░░░░░░░░░░░ 50% (2/4 completados
 1. **Single Source of Truth:** La lógica de negocio SIEMPRE vive en Rust (Axum, 8080).
 2. **Reutilización:** Usa HTMX siempre que sea posible. Minimiza escribir JS específico para móvil.
 3. **Graceful Degradation:** Protege el código nativo con un `if (Capacitor.isNativePlatform())` para que no rompa la web ni Tauri.
+
+---
+
+## 📱 Cómo Probar la App Móvil
+
+### Opción 1: Dispositivo Físico (Recomendado)
+```bash
+cd apps/frontend_astro
+# 1. Iniciar servidor de desarrollo
+bun run dev --host
+
+# 2. En otra terminal, ejecutar en Android
+npx cap run android
+```
+
+### Opción 2: Android Studio
+```bash
+cd apps/frontend_astro
+bun run build
+npx cap sync android
+npx cap open android
+```
+Luego en Android Studio: `Build > Run > Run 'app'`
+
+### Configuración para Live Reload
+Edita `capacitor.config.ts` con tu IP local:
+```typescript
+server: {
+  url: 'http://192.168.1.X:4321',
+  cleartext: true
+}
+```
+
+---
+
+## 📋 Documentación Relacionada
+- `docs/promps-capacitor.md` - Prompt de referencia
+- `docs-fases/docs-capacitor.md` - Detalles de implementación
+- `docs/testing-capacitor.md` - Manual de pruebas

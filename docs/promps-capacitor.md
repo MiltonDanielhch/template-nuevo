@@ -7,23 +7,41 @@ Actúa como Ingeniero App Mobile Senior especializado en WebView Architectures y
 - ✅ **Backend Fuerte**: Rest API en Rust / Axum port 8080.
 - ✅ **Frontend Web**: Astro + HTMX + Tailwind V4. Ya es responsivo y modular.
 - ✅ **Comandos Tauri Configurados**: La app desktop opera por su lado independiente.
+- ✅ **Capacitor Instalado**: Proyecto Android generado y configurado.
 
-🧭 2. NUEVO OBJETIVO: INTEGRACIÓN MOBILE MÍNIMA
+🧭 2. ESTADO ACTUAL - LO YA IMPLEMENTADO
 
-Vamos a dotar al proyecto de soporte celular sin comprometer la base de desarrollo web.
+**BLOQUE I - PWA ✅ COMPLETO:**
+1. ✅ Meta Viewport sin zoom (`user-scalable=no`)
+2. ✅ Touch targets de 44px para móvil
+3. ✅ Manifest.json PWA en `/public`
+4. ✅ Iconos PWA (192x192, 512x512)
 
-1. **Instalar Dependencias**: Solicítame instalar `@capacitor/core`, `@capacitor/cli` y `@capacitor/android`.
-2. **Configurar Chasis PWA**: Pídeme generar la carpeta `android` con `npx cap add android` y ajustar el archivo `capacitor.config.ts`.
-3. **Persistencia de Sesión Mobile**: Como reemplazo del Storage de Tauri, indica cómo crear un store usando `@capacitor/preferences` para guardar el Auth Token en el celular y que HTMX lo pueda leer al arrancar Astro.
-4. **Protección IsNative**: Configurar nuestra UI en Astro para que los menús o estilos cambien ligeramente si `Capacitor.isNativePlatform()` es `TRUE` (por ejemplo, ocultar la barra de cerrar ventana típica de escritorio).
+**BLOQUE II - Capacitor Core ✅ COMPLETO:**
+1. ✅ `@capacitor/core`, `@capacitor/cli`, `@capacitor/android` instalados
+2. ✅ `capacitor.config.ts` configurado apuntando a `dist`
+3. ✅ Proyecto Android generado en `apps/frontend_astro/android/`
+4. ✅ Build y sync funcionando
+
+**BLOQUE III - Hardware 50%:**
+1. ✅ Auth Storage con `@capacitor/preferences`
+2. ✅ Script de inicialización en MainLayout
+
+🧭 3. PRÓXIMOS PASOS PENDIENTES
+
+1. **Service Worker (Opcional)**: Implementar caché offline con Workbox
+2. **Cámara/QR**: Agregar `@capacitor/camera` para fotos de expedientes
+3. **Archivos**: Agregar `@capacitor/filesystem` para PDFs
+4. **iOS**: Agregar plataforma iOS con `npx cap add ios`
 
 ---
 
-🛠️ 3. STACK Y REGLAS DE LA FASE MOBILE
+🛠️ 4. STACK Y REGLAS DE LA FASE MOBILE
 - Regla de Oro: **Jamás tocar Rust para la UI**. Todo el front móvil ocurre en Astro.
 - Herramienta de compilación híbrida: CapacitorJS versión 6+.
 - No generar lógica compleja en JS (HTMX debe seguir haciendo el 95% del trabajo asíncrono hacia Rust).
+- Proteger código nativo con `if (Capacitor.isNativePlatform())`
 
 ---
 
-🚀 ACCIÓN: Genera el primer checklist con los comandos exactos de Bun/NPM para inicializar el directorio android y modificar el `capacitor.config.ts`. Sé breve y directo.
+🚀 ACCIÓN: Continuar con las tareas pendientes del BLOQUE III y preparar para pruebas.

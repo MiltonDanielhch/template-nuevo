@@ -27,6 +27,14 @@ dist/
 **/ .astro/
 bun.lockb
 
+# --- Capacitor (Android/iOS) ---
+apps/frontend_astro/android/
+apps/frontend_astro/ios/
+capacitor/
+
+# --- npm ---
+package-lock.json
+
 # --- IDE / OS ---
 .vscode/
 .idea/
