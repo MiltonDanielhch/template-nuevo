@@ -46,8 +46,7 @@ Vamos a crear una landing que sea:
    - Crear componente `presentation/components/landing/LeadForm.astro`.
    - Validación ligera con Alpine/HTMX (email required, honeypot).
    - Endpoint backend `POST /api/v1/landing/leads` que persista en tabla `leads`.
-   - Use case + repositorio + migración `leads` en `infra_db`.
-   - Feedback en UI (success toast + error) usando HTMX swaps.
+   - Use case + repositorio + migración `leads` en `infra_db`.   - Protección anti-spam (honeypot + posible rate-limit / token simple).   - Feedback en UI (success toast + error) usando HTMX swaps.
 
 5. **SEO y Performance**
    - Generar `sitemap.xml` en `src/routes/sitemap.xml.ts` o estático.

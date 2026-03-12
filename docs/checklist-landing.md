@@ -44,15 +44,16 @@ Este checklist está diseñado para guiarte **paso a paso** desde el primer arch
    - Definir esquema `Lead` en dominio.
    - Crear migración `leads` en `infra_db/migrations`.
    - Implementar repositorio y caso de uso (core_logic) + handler en `api_server`.
-   - ✅ Endpoint + persistencia ya están implementados y funcionan (`/api/v1/landing/leads`).
-4. Implementa feedback en UI (success/fail toast o swap de fragmento HTMX).
+   - ✅ Endpoint + persistencia ya están implementados y funcionan (`/api/v1/landing/leads`).   - ✅ Honeypot anti-spam implementado en el handler.4. Implementa feedback en UI (success/fail toast o swap de fragmento HTMX).
    - ✅ Ya hay feedback tipo toast mediante HTMX y respuesta JSON.
 
 ---
 
 ## 4) SEO + Performance
 1. Configura `sitemap.xml` (ej: `src/routes/sitemap.xml.ts`).
+   - ✅ Ya existe en `src/pages/sitemap.xml.ts`.
 2. Añade `robots.txt` en `public/` si no existe.
+   - ✅ Ya existe en `public/robots.txt`.
 3. Asegura meta tags relevantes en `LandingLayout` (canonical, noindex si aplica).
 4. Configura headers de cache apropiados (SSR: `Cache-Control`, assets versionados).
 5. Añade tracking ligero (Matomo/GTAG) con consentimiento opcional.

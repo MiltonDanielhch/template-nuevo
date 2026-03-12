@@ -46,7 +46,7 @@ Construir una landing page moderna, accesible y de alto rendimiento que refleje 
 | 2 | Validación client-side | Alpine + HTMX para validar email y campos obligatorios. | ⏳ |
 | 3 | Endpoint de backend | `api_server/entry_points/api/v1/landing.rs` (POST /leads). | ✅ |
 | 4 | Persistencia de leads | Nueva tabla `leads` (SQLite) + repositorio + use case. | ✅ |
-| 5 | Protección anti-spam | Honeypot + rate-limit y reCAPTCHA-like (simple token). | ⏳ |
+| 5 | Protección anti-spam | Honeypot + rate-limit y reCAPTCHA-like (simple token). | ✅ |
 | 6 | Confirmación & UI | Modal/alerta con feedback de éxito/error usando HTMX swap. | ✅ |
 
 ---
@@ -58,7 +58,7 @@ Construir una landing page moderna, accesible y de alto rendimiento que refleje 
 |---|-------|------------------------|:------:|
 | 1 | Meta tags SEO | `LandingLayout.astro` + `src/routes/rss.xml` (si aplica). | ✅ |
 | 2 | OG + Twitter Cards | Open Graph + Twitter meta tags para sharing. | ✅ |
-| 3 | Sitemap | `src/routes/sitemap.xml.ts` (o estático). | ⏳ |
+| 3 | Sitemap | `src/routes/sitemap.xml.ts` (o estático). | ✅ |
 | 4 | Performance antes/después | Lighthouse / Pagespeed en CI. | ⏳ |
 | 5 | Analytics ligera | Event tracking (Matomo/Pinia/GTAG) + consent banner opcional. | ⏳ |
 | 6 | Caching & CDN | `public/` con assets versionados y `Cache-Control` SSR. | ⏳ |
