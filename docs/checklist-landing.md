@@ -39,12 +39,15 @@ Este checklist está diseñado para guiarte **paso a paso** desde el primer arch
    - Usar HTMX para submit (`hx-post`, `hx-swap`, `hx-include`).
    - ✅ Ya existe y se integra con `LandingLayout`.
 2. Agrega validación ligera (Alpine/JS) para email y campos obligatorios.
-   - ⏳ Básica: el form exige email, pero puede reforzarse con validación adicional.
+   - ✅ Se valida email y longitud mínima de nombre antes de enviar.
 3. Crea endpoint backend `POST /api/v1/landing/leads`:
    - Definir esquema `Lead` en dominio.
    - Crear migración `leads` en `infra_db/migrations`.
    - Implementar repositorio y caso de uso (core_logic) + handler en `api_server`.
-   - ✅ Endpoint + persistencia ya están implementados y funcionan (`/api/v1/landing/leads`).   - ✅ Honeypot anti-spam implementado en el handler.4. Implementa feedback en UI (success/fail toast o swap de fragmento HTMX).
+   - ✅ Endpoint + persistencia ya están implementados y funcionan (`/api/v1/landing/leads`).
+   - ✅ Honeypot anti-spam implementado en el handler.
+   - ✅ Rate-limit implementado (máx 5 envíos/hora por email).
+4. Implementa feedback en UI (success/fail toast o swap de fragmento HTMX).
    - ✅ Ya hay feedback tipo toast mediante HTMX y respuesta JSON.
 
 ---

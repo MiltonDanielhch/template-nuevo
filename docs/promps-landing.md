@@ -44,9 +44,11 @@ Vamos a crear una landing que sea:
 
 4. **Captura de leads (Lead magnet)**
    - Crear componente `presentation/components/landing/LeadForm.astro`.
-   - Validación ligera con Alpine/HTMX (email required, honeypot).
+   - Validación ligera con Alpine/HTMX (email requerido, nombre mínimo y honeypot).
    - Endpoint backend `POST /api/v1/landing/leads` que persista en tabla `leads`.
-   - Use case + repositorio + migración `leads` en `infra_db`.   - Protección anti-spam (honeypot + posible rate-limit / token simple).   - Feedback en UI (success toast + error) usando HTMX swaps.
+   - Use case + repositorio + migración `leads` en `infra_db`.
+   - Protección anti-spam (honeypot + rate-limit por email).
+   - Feedback en UI (success toast + error) usando HTMX swaps.
 
 5. **SEO y Performance**
    - Generar `sitemap.xml` en `src/routes/sitemap.xml.ts` o estático.
@@ -61,11 +63,10 @@ Vamos a crear una landing que sea:
 ---
 
 🧭 4. ACCIÓN: ¿QUÉ HAGO AHORA?
-1. Pulir la UI del hero y los bloques de características (fondo, cards traslúcidos, microinteracciones).
-2. Añadir una sección de confianza (logos / testimonios / métricas) para mejorar conversiones.
-3. Reforzar validación y anti-spam (honeypot + rate-limit / token simple) en el backend y en el form.
-4. Asegurar que el dev server corre desde `apps/frontend_astro` (`bun run dev`), y que el fondo ya no se “tapará”.
-5. Agregar analytics ligero (Matomo/GTAG) con consentimiento y/o banner.
+1. E2E (Playwright/Cypress) para validar que la landing carga, el formulario envía y el rate-limit se aplica.
+2. Añadir pruebas de integración en `api_server/tests` para el endpoint de leads (incluyendo rate-limit y honeypot).
+3. Refinar sección de confianza (logos / testimonios / métricas) para mejorar la conversión.
+4. Revisar el despliegue en Caddy/Docker para asegurar que `robots.txt` y `sitemap.xml` son servidos correctamente.
 
 ---
 
