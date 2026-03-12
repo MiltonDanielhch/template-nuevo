@@ -17,12 +17,27 @@ pub struct CreateLeadRequest {
     pub email: String,
     pub name: Option<String>,
     pub source: Option<String>,
+    pub honeypot: Option<String>,
 }
 
 pub async fn create_lead_handler(
     State(state): State<AppState>,
     Form(payload): Form<CreateLeadRequest>,
 ) -> Result<(StatusCode, Html<String>), ApiError> {
+    // Anti-spam honeypot: if populated, treat as bot submission and ignore.
+    if payload
+        .honeypot
+        .as_deref()
+        .filter(|s| !s.trim().is_empty())
+        .is_some()
+    {
+        let html = r#"<div class='rounded-2xl border border-green-200 bg-green-50 p-6 text-center'>
+    <h3 class='text-lg font-semibold text-green-800'>¡Gracias!</h3>
+    <p class='mt-2 text-sm text-green-700'>Te avisaremos por correo cuando lancemos.</p>
+</div>"#;
+        return Ok((StatusCode::CREATED, Html(html.to_string())));
+    }
+
     let command = CreateLeadCommand {
         email: payload.email,
         name: payload.name,

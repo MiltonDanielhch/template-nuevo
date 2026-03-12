@@ -1,0 +1,7 @@
+# robots.txt for Laboratorio 3026
+# https://www.robotstxt.org/
+
+User-agent: *
+Disallow:
+
+Sitemap: /sitemap.xml
