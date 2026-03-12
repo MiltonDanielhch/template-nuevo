@@ -6,16 +6,17 @@
 
 use core_logic::{
     application::use_cases::{
+        lead::CreateLead,
         role::{AssignRoleToUser, CreateRole, DeleteRole, ListPermissions, ListRoles, UpdateRole},
         user::{
             CreateSession, DeleteUser, GetUserById, ListUsers, LoginUser, RegisterUser, UpdateUser,
         },
     },
-    domain::interfaces::{IAuditRepository, IRoleRepository, ISessionRepository},
+    domain::interfaces::{IAuditRepository, ILeadRepository, IRoleRepository, ISessionRepository},
 };
 use infra_db::{
-    Argon2idHasher, SqliteAuditRepository, SqliteRoleRepository, SqliteSessionRepository,
-    SqliteUserRepository,
+    Argon2idHasher, SqliteAuditRepository, SqliteLeadRepository, SqliteRoleRepository,
+    SqliteSessionRepository, SqliteUserRepository,
 };
 use std::sync::Arc;
 
@@ -40,6 +41,9 @@ pub struct AppState {
     pub delete_role: Arc<DeleteRole>,
     pub list_permissions: Arc<ListPermissions>,
     pub role_repo: Arc<dyn IRoleRepository>,
+    // Leads
+    pub create_lead: Arc<CreateLead>,
+    pub lead_repo: Arc<dyn ILeadRepository>,
     // Audit
     pub audit_repo: Arc<dyn IAuditRepository>,
 }
@@ -48,6 +52,7 @@ pub fn create_app_state(pool: sqlx::SqlitePool) -> AppState {
     let user_repo = Arc::new(SqliteUserRepository::new(pool.clone()));
     let session_repo = Arc::new(SqliteSessionRepository::new(pool.clone()));
     let role_repo: Arc<dyn IRoleRepository> = Arc::new(SqliteRoleRepository::new(pool.clone()));
+    let lead_repo: Arc<dyn ILeadRepository> = Arc::new(SqliteLeadRepository::new(pool.clone()));
     let hasher = Arc::new(Argon2idHasher {});
 
     // User use cases
@@ -62,6 +67,7 @@ pub fn create_app_state(pool: sqlx::SqlitePool) -> AppState {
     let delete_user = Arc::new(DeleteUser::new(user_repo.clone()));
     let create_session = Arc::new(CreateSession::new(session_repo.clone()));
     let get_user_by_id = Arc::new(GetUserById::new(user_repo.clone()));
+    let create_lead = Arc::new(CreateLead::new(lead_repo.clone()));
 
     // Role use cases
     let create_role = Arc::new(CreateRole::new(role_repo.clone()));
@@ -83,6 +89,8 @@ pub fn create_app_state(pool: sqlx::SqlitePool) -> AppState {
         create_session,
         session_repo,
         get_user_by_id,
+        create_lead,
+        lead_repo,
         create_role,
         assign_role,
         list_roles,

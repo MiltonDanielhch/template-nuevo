@@ -81,6 +81,17 @@ pub struct DbPermission {
     pub description: Option<String>,
 }
 
+/// DbLead mapea la tabla `leads`.
+#[derive(Debug, Clone, FromRow)]
+pub struct DbLead {
+    pub id: String,
+    pub email: String,
+    pub name: Option<String>,
+    pub source: Option<String>,
+    pub created_at: NaiveDateTime,
+    pub updated_at: NaiveDateTime,
+}
+
 /// Para joins de role_permissions: extrae el permiso asociado a un rol.
 #[derive(Debug, Clone, FromRow)]
 pub struct DbRolePermission {

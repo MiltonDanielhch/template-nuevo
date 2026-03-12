@@ -7,5 +7,6 @@
 //! Esta organización ayuda a mantener la cohesión y a encontrar rápidamente
 //! la lógica de aplicación relacionada.
 
+pub mod lead;
 pub mod role;
 pub mod user;

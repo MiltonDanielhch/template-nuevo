@@ -11,11 +11,13 @@
 //! - `sqlite_user_repo`: La implementación para `IUserRepository`.
 
 pub mod sqlite_audit_repo;
+pub mod sqlite_lead_repo;
 pub mod sqlite_role_repo;
 pub mod sqlite_session_repo;
 pub mod sqlite_user_repo;
 
 pub use sqlite_audit_repo::SqliteAuditRepository;
+pub use sqlite_lead_repo::SqliteLeadRepository;
 pub use sqlite_role_repo::SqliteRoleRepository;
 pub use sqlite_session_repo::SqliteSessionRepository;
 pub use sqlite_user_repo::SqliteUserRepository;

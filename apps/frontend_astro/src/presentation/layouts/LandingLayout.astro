@@ -1,0 +1,70 @@
+---
+import "../../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: string;
+  noIndex?: boolean;
+}
+
+const {
+  title,
+  description = "Laboratorio 3026 - Sistema de gestión con UI moderna y flujo seguro.",
+  canonical,
+  ogImage = "/og-image.png",
+  ogType = "website",
+  noIndex = false,
+} = Astro.props;
+
+const baseTitle = `${title} | Laboratorio 3026`;
+const siteUrl = Astro.site || "";
+const pageUrl = canonical ? canonical : `${siteUrl}${Astro.url.pathname}`;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0ea5e9" />
+    {noIndex ? <meta name="robots" content="noindex" /> : null}
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={pageUrl} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={baseTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={ogImage} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={baseTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <title>{baseTitle}</title>
+
+    <!-- HTMX (usar en landing para intercambio de fragmentos sin JS adicional) -->
+    <script is:inline src="https://unpkg.com/htmx.org@2.0.8/dist/htmx.min.js" crossorigin="anonymous"></script>
+
+    <!-- Fallback para métricas / cookie consent -->
+    <script is:inline>
+      window.addEventListener('htmx:sendError', (e) => {
+        console.error('HTMX send error', e.detail);
+      });
+    </script>
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-white antialiased">
+    <div class="fixed inset-0 -z-20 bg-gradient-to-br from-sky-200 via-white to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"></div>
+    <div class="min-h-screen relative overflow-hidden">
+      <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.45),_transparent_50%)] dark:bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.30),_transparent_50%)]"></div>
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-72 bg-[radial-gradient(circle_at_bottom,_rgba(139,92,246,0.35),_transparent_55%)] dark:bg-[radial-gradient(circle_at_bottom,_rgba(99,102,241,0.25),_transparent_55%)]"></div>
+      <slot />
+    </div>
+  </body>
+</html>

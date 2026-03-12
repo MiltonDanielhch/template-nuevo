@@ -10,5 +10,6 @@
 //!   se crea una `v2`, se crearía una carpeta paralela `v2/`.
 
 pub mod errors;
+pub mod landing_handlers;
 pub mod role_handlers;
 pub mod user_handlers;

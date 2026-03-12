@@ -37,61 +37,7 @@ try {
 ---
 
 <MainLayout title="Gestión de Roles">
-  <div
-    class="flex h-screen flex-col"
-    x-data="{
-      openModal: false,
-      isEdit: false,
-      editId: '',
-      form: { name: '', description: '', permissions: [] },
-      availablePermissions: window.__rolesPermissions || [],
-
-      init() {
-      },
-
-      editRole(roleData) {
-        const role = typeof roleData === 'string' ? JSON.parse(roleData) : roleData;
-        this.isEdit = true;
-        this.editId = role.id;
-        this.form = {
-          name: role.name,
-          description: role.description || '',
-          permissions: role.permissions.map(p => p.id)
-        };
-        this.openModal = true;
-      },
-
-      resetForm() {
-        this.isEdit = false;
-        this.editId = '';
-        this.form = { name: '', description: '', permissions: [] };
-      },
-
-      closeModal() {
-        this.openModal = false;
-        this.resetForm();
-      },
-
-      async submitForm() {
-        const url = this.isEdit ? '/api/roles/' + this.editId : '/api/roles';
-        try {
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.form)
-          });
-          if (response.ok) {
-            window.location.reload();
-          } else {
-            const data = await response.json();
-            alert(data.message || 'Error al procesar');
-          }
-        } catch (e) {
-          alert('Error de conexión');
-        }
-      }
-    }"
-  >
+  <div class="flex h-screen flex-col">
     <Navbar />
     <div class="flex flex-1 overflow-hidden">
       <Sidebar />
@@ -104,7 +50,7 @@ try {
             </div>
             <button
               class="inline-flex h-8 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-3 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer"
-              @click="resetForm(); openModal = true"
+              onclick="openRoleModal()"
             >
               Nuevo Rol
             </button>
@@ -134,17 +80,14 @@ try {
                   </div>
                   <div class="flex justify-end gap-2 mt-auto pt-4 border-t border-border">
                     <button
-                       @click={`editRole($el.dataset.role)`}
-                       data-role={JSON.stringify(role)}
+                       onclick={`editRole('${encodeURIComponent(JSON.stringify(role))}')`}
                        class="text-sm font-medium text-primary hover:underline cursor-pointer"
                     >
                       Editar
                     </button>
                     {!['Admin', 'User'].includes(role.name) && (
                       <button
-                        hx-delete={`/api/roles/${role.id}`}
-                        hx-confirm={`¿Eliminar el rol ${role.name}?`}
-                        hx-on="htmx:afterRequest: window.location.reload()"
+                        onclick={`deleteRole('${role.id}', '${role.name}')`}
                         class="text-sm font-medium text-destructive hover:underline cursor-pointer"
                       >
                         Eliminar
@@ -161,43 +104,31 @@ try {
 
     <!-- Modal de Rol -->
     <div
-      x-show="openModal"
-      x-transition:enter="transition ease-out duration-200"
-      x-transition:enter-start="opacity-0"
-      x-transition:enter-end="opacity-100"
-      x-transition:leave="transition ease-in duration-150"
-      x-transition:leave-start="opacity-100"
-      x-transition:leave-end="opacity-0"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
-      @click="openModal = false"
-      style="display: none;"
+      id="role-modal"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+      onclick="closeRoleModal(event)"
     >
       <div
-        @click.stop
+        onclick="event.stopPropagation()"
         class="w-full max-w-lg rounded-xl border border-border bg-card p-6 shadow-2xl"
       >
-        <h2 class="text-xl font-bold mb-4" x-text="isEdit ? 'Editar Rol' : 'Crear Nuevo Rol'"></h2>
+        <h2 id="role-modal-title" class="text-xl font-bold mb-4">Crear Nuevo Rol</h2>
 
-        <form @submit.prevent="submitForm()" class="space-y-4">
+        <form id="role-form" onsubmit="submitRoleForm(event)" class="space-y-4">
+          <input type="hidden" id="role-edit-id" value="" />
           <div class="space-y-2">
             <label class="text-sm font-medium text-foreground">Nombre</label>
-            <Input x-model="form.name" placeholder="Ej: Editor" required :disabled="['Admin', 'User'].includes(form.name) && isEdit" />
+            <Input id="role-name" placeholder="Ej: Editor" required />
           </div>
 
           <div class="space-y-2">
             <label class="text-sm font-medium text-foreground">Descripción</label>
-            <Input x-model="form.description" placeholder="Opcional..." />
+            <Input id="role-description" placeholder="Opcional..." />
           </div>
 
           <div class="space-y-2">
             <label class="text-sm font-medium text-foreground">Permisos</label>
-            <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 border border-border rounded-lg bg-muted/50">
-              <template x-for="perm in availablePermissions" :key="perm.id">
-                <label class="flex items-center gap-2 p-1 hover:bg-muted rounded cursor-pointer transition-colors">
-                  <input type="checkbox" :value="perm.id" x-model="form.permissions" class="rounded border-border text-primary focus:ring-primary h-4 w-4" />
-                  <span class="text-xs text-foreground" x-text="perm.name"></span>
-                </label>
-              </template>
+            <div id="role-permissions" class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 border border-border rounded-lg bg-muted/50">
               {availablePermissions.length === 0 && (
                   <span class="col-span-2 text-xs text-muted-foreground italic text-center py-2">No hay permisos disponibles en el sistema o no tienes acceso.</span>
               )}
@@ -205,8 +136,8 @@ try {
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-border">
-            <button type="button" class="px-4 py-2 border border-input bg-background rounded-md hover:bg-muted text-sm font-medium" @click="closeModal()">Cancelar</button>
-            <Button type="submit" x-text="isEdit ? 'Actualizar' : 'Crear'"></Button>
+            <button type="button" class="px-4 py-2 border border-input bg-background rounded-md hover:bg-muted text-sm font-medium" onclick="closeRoleModal()">Cancelar</button>
+            <Button type="submit" id="role-submit-btn">Crear</Button>
           </div>
         </form>
       </div>
@@ -214,6 +145,125 @@ try {
   </div>
 </MainLayout>
 
-<script is:inline define:vars={{ initialAvailablePermissions: availablePermissions }}>
-  window.__rolesPermissions = initialAvailablePermissions;
+<script is:inline define:vars={{ availablePermissions }}>
+  const permissions = availablePermissions || [];
+
+  function initPermissions() {
+    const container = document.getElementById('role-permissions');
+    if (!container || permissions.length === 0) return;
+
+    container.innerHTML = permissions.map(p =>
+      '<label class="flex items-center gap-2 p-1 hover:bg-muted rounded cursor-pointer transition-colors">' +
+        '<input type="checkbox" name="permissions" value="' + p.id + '" class="rounded border-border text-primary focus:ring-primary h-4 w-4" />' +
+        '<span class="text-xs text-foreground">' + p.name + '</span>' +
+      '</label>'
+    ).join('');
+  }
+
+  window.openRoleModal = function() {
+    document.getElementById('role-edit-id').value = '';
+    document.getElementById('role-name').value = '';
+    document.getElementById('role-description').value = '';
+    document.getElementById('role-modal-title').textContent = 'Crear Nuevo Rol';
+    document.getElementById('role-submit-btn').textContent = 'Crear';
+    document.getElementById('role-name').disabled = false;
+
+    const checkboxes = document.querySelectorAll('#role-permissions input[type="checkbox"]');
+    checkboxes.forEach(cb => cb.checked = false);
+
+    document.getElementById('role-modal').classList.remove('hidden');
+    document.getElementById('role-modal').classList.add('flex');
+  };
+
+  window.editRole = function(roleData) {
+    try {
+      const role = JSON.parse(decodeURIComponent(roleData));
+      document.getElementById('role-edit-id').value = role.id;
+      document.getElementById('role-name').value = role.name;
+      document.getElementById('role-description').value = role.description || '';
+      document.getElementById('role-modal-title').textContent = 'Editar Rol';
+      document.getElementById('role-submit-btn').textContent = 'Actualizar';
+      document.getElementById('role-name').disabled = ['Admin', 'User'].includes(role.name);
+
+      const checkboxes = document.querySelectorAll('#role-permissions input[type="checkbox"]');
+      checkboxes.forEach(cb => {
+        cb.checked = role.permissions.some(p => p.id === cb.value || p === cb.value);
+      });
+
+      document.getElementById('role-modal').classList.remove('hidden');
+      document.getElementById('role-modal').classList.add('flex');
+    } catch(e) {
+      console.error('Error parsing role:', e);
+    }
+  };
+
+  window.closeRoleModal = function(event) {
+    if (event && event.target !== event.currentTarget) return;
+    document.getElementById('role-modal').classList.add('hidden');
+    document.getElementById('role-modal').classList.remove('flex');
+  };
+
+  window.submitRoleForm = async function(e) {
+    e.preventDefault();
+
+    const editId = document.getElementById('role-edit-id').value;
+    const url = editId ? '/api/roles/' + editId : '/api/roles';
+
+    const name = document.getElementById('role-name').value;
+    const description = document.getElementById('role-description').value;
+    const permissions = Array.from(document.querySelectorAll('#role-permissions input[type="checkbox"]:checked')).map(cb => cb.value);
+
+    const token = document.querySelector('meta[name="auth-token"]')?.getAttribute('content') || '';
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ name, description, permissions })
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      } else if (response.status === 401 || response.status === 403) {
+        window.location.href = '/login';
+      } else {
+        const data = await response.json();
+        alert(data.message || 'Error al procesar');
+      }
+    } catch (err) {
+      alert('Error de conexión');
+    }
+  };
+
+  window.deleteRole = async function(roleId, roleName) {
+    if (!confirm('¿Eliminar el rol ' + roleName + '?')) return;
+
+    const token = document.querySelector('meta[name="auth-token"]')?.getAttribute('content') || '';
+
+    try {
+      const response = await fetch('/api/roles/' + roleId, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      } else if (response.status === 401 || response.status === 403) {
+        window.location.href = '/login';
+      } else {
+        const data = await response.json();
+        alert(data.message || 'Error al eliminar');
+      }
+    } catch (err) {
+      alert('Error de conexión');
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', initPermissions);
+  document.addEventListener('astro:page-load', initPermissions);
 </script>

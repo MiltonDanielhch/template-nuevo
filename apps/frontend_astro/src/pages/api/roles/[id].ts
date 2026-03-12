@@ -32,7 +32,7 @@ export const POST: APIRoute = async ({ params, request, cookies }) => {
       JSON.stringify({ success: false, message: errorData.message || "Error al actualizar rol" }),
       { status: response.status },
     );
-  } catch (error) {
+  } catch (_error) {
     return new Response(
       JSON.stringify({ success: false, message: "Error de conexión con el servidor" }),
       { status: 500 },
@@ -43,6 +43,8 @@ export const POST: APIRoute = async ({ params, request, cookies }) => {
 export const DELETE: APIRoute = async ({ params, cookies }) => {
   const { id } = params;
   const token = cookies.get("auth_token")?.value;
+
+  console.log("DELETE role:", id, "token:", token ? "present" : "missing");
 
   try {
     const response = await fetch(`http://localhost:8081/roles/${id}`, {
@@ -59,7 +61,7 @@ export const DELETE: APIRoute = async ({ params, cookies }) => {
     return new Response(JSON.stringify({ message: "Error al eliminar rol" }), {
       status: response.status,
     });
-  } catch (error) {
+  } catch (_error) {
     return new Response(JSON.stringify({ message: "Internal error" }), { status: 500 });
   }
 };

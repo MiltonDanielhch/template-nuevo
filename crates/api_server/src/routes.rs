@@ -8,6 +8,7 @@ use crate::entry_points::middleware::rate_limit::RateLimiter;
 use crate::{
     config::di::AppState,
     entry_points::api::v1::{
+        landing_handlers::create_lead_handler,
         role_handlers::{
             assign_role_to_user_handler, create_role_handler, delete_role_handler,
             get_my_permissions_handler, list_permissions_handler, list_roles_handler,
@@ -34,6 +35,7 @@ pub fn create_router(app_state: AppState) -> Router {
         // Auth & User routes
         .route("/register", post(register_user_handler))
         .route("/login", post(login_user_handler))
+        .route("/landing/leads", post(create_lead_handler))
         .route("/me", get(me_handler))
         .route("/me", put(update_me_handler))
         .route("/logout", post(logout_handler))

@@ -14,6 +14,7 @@
 
 pub mod audit_repo;
 pub mod hasher;
+pub mod lead_repo;
 pub mod role_repository;
 pub mod session_repo;
 pub mod user_repo;
@@ -21,6 +22,7 @@ pub mod user_repo;
 // Exponemos los traits (puertos) que el dominio define.
 pub use self::audit_repo::IAuditRepository;
 pub use self::hasher::IHasher;
+pub use self::lead_repo::ILeadRepository;
 pub use self::role_repository::IRoleRepository;
 pub use self::session_repo::ISessionRepository;
 pub use self::user_repo::IUserRepository;

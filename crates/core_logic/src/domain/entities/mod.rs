@@ -13,11 +13,13 @@
 //! - `chrono`: Para el manejo de fechas.
 
 pub mod audit;
+pub mod lead;
 pub mod role;
 pub mod session;
 pub mod user;
 
 pub use audit::{AuditLog, CreateAuditLogCommand};
+pub use lead::Lead;
 pub use role::{Permission, PermissionId, Role, RoleId};
 pub use session::Session;
 pub use user::User;

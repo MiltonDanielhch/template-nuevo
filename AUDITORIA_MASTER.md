@@ -2,8 +2,8 @@
 
 | Métrica | Valor |
 | :--- | :--- |
-| **Líneas de Código (Netas)** | 7206 LoC |
-| **Peso Total del Proyecto** | 2.12MB |
+| **Líneas de Código (Netas)** | 8097 LoC |
+| **Peso Total del Proyecto** | 3.63MB |
 | **Estado de Sintonía** | Activa |
 
 ### Mapa de Arquitectura y Pesos
@@ -17,25 +17,206 @@
 │   ├── query-d210c01bfa9798e7ce178f0ae12077cac8203e6607883a8dffed40f3e70977c5.json (0 LoC | 1.19KB)
 │   ├── query-d82cf1da92d2cb100f72bac4f77238c964d4aabeb70b26ea55c5b89f620787d1.json (0 LoC | 1.19KB)
 │   └── query-e20e8388eb12c09c1121cf86d730e498226a5de22f49e9b3e0f921e3442b728c.json (0 LoC | 815.00B)
-├── Cargo.lock (0 LoC | 61.65KB)
-├── Cargo.toml (26 LoC | 1005.00B)
+├── Cargo.lock (0 LoC | 155.68KB)
+├── Cargo.toml (27 LoC | 1023.00B)
 ├── Justfile (0 LoC | 1.69KB)
-├── apps/ [336.18KB]
-│   └── frontend_astro/ [336.18KB]
+├── apps/ [1.72MB]
+│   └── frontend_astro/ [1.72MB]
 │       ├── README.md (0 LoC | 1.60KB)
+│       ├── android/ [1.14MB]
+│       │   ├── app/ [1.08MB]
+│       │   │   ├── build/ [0.00B]
+│       │   │   │   └── .npmkeep (0 LoC | 0.00B)
+│       │   │   ├── build.gradle (0 LoC | 2.08KB)
+│       │   │   ├── capacitor.build.gradle (0 LoC | 422.00B)
+│       │   │   ├── proguard-rules.pro (0 LoC | 751.00B)
+│       │   │   └── src/ [1.08MB]
+│       │   │       ├── androidTest/ [774.00B]
+│       │   │       │   └── java/ [774.00B]
+│       │   │       │       └── com/ [774.00B]
+│       │   │       │           └── getcapacitor/ [774.00B]
+│       │   │       │               └── myapp/ [774.00B]
+│       │   │       │                   └── ExampleInstrumentedTest.java (0 LoC | 774.00B)
+│       │   │       ├── main/ [1.08MB]
+│       │   │       │   ├── AndroidManifest.xml (0 LoC | 1.50KB)
+│       │   │       │   ├── assets/ [884.44KB]
+│       │   │       │   │   ├── capacitor.config.json (0 LoC | 324.00B)
+│       │   │       │   │   ├── capacitor.plugins.json (0 LoC | 116.00B)
+│       │   │       │   │   └── public/ [884.01KB]
+│       │   │       │   │       ├── client/ [385.03KB]
+│       │   │       │   │       │   ├── _astro/ [349.74KB]
+│       │   │       │   │       │   │   ├── LocalFsCard.astro_astro_type_script_index_0_lang.Ct80Deii.js (2 LoC | 2.68KB)
+│       │   │       │   │       │   │   ├── MainLayout.astro_astro_type_script_index_0_lang.DPOytrZ2.js (1 LoC | 2.61KB)
+│       │   │       │   │       │   │   ├── TauriGreeter.astro_astro_type_script_index_0_lang.DDq0_nc4.js (1 LoC | 328.00B)
+│       │   │       │   │       │   │   ├── client.T9fhd2RU.js (41 LoC | 190.07KB)
+│       │   │       │   │       │   │   ├── core.8Cl2bxx0.js (1 LoC | 803.00B)
+│       │   │       │   │       │   │   ├── dashboard.BR5CI-XS.css (1 LoC | 48.13KB)
+│       │   │       │   │       │   │   ├── geist-cyrillic-wght-normal.CHSlOQsW.woff2 (0 LoC | 14.35KB)
+│       │   │       │   │       │   │   ├── geist-latin-ext-wght-normal.DMtmJ5ZE.woff2 (0 LoC | 14.95KB)
+│       │   │       │   │       │   │   ├── geist-latin-wght-normal.Dm3htQBi.woff2 (0 LoC | 27.73KB)
+│       │   │       │   │       │   │   └── page.eBp8iYjC.js (3 LoC | 48.11KB)
+│       │   │       │   │       │   ├── favicon.ico (0 LoC | 655.00B)
+│       │   │       │   │       │   ├── favicon.svg (0 LoC | 749.00B)
+│       │   │       │   │       │   ├── icon-192.png (0 LoC | 10.80KB)
+│       │   │       │   │       │   ├── icon-512.png (0 LoC | 22.59KB)
+│       │   │       │   │       │   └── manifest.json (0 LoC | 530.00B)
+│       │   │       │   │       ├── cordova.js (0 LoC | 0.00B)
+│       │   │       │   │       ├── cordova_plugins.js (0 LoC | 0.00B)
+│       │   │       │   │       ├── index.html (36 LoC | 936.00B)
+│       │   │       │   │       └── server/ [498.07KB]
+│       │   │       │   │           ├── _@astrojs-ssr-adapter.mjs (0 LoC | 94.00B)
+│       │   │       │   │           ├── _astro-internal_middleware.mjs (0 LoC | 443.00B)
+│       │   │       │   │           ├── chunks/ [380.67KB]
+│       │   │       │   │           │   ├── MainLayout_DaDulU1s.mjs (0 LoC | 17.15KB)
+│       │   │       │   │           │   ├── Sidebar_D1Y-NQSw.mjs (0 LoC | 17.55KB)
+│       │   │       │   │           │   ├── _@astrojs-ssr-adapter_DSyeKdD3.mjs (0 LoC | 61.38KB)
+│       │   │       │   │           │   ├── astro/ [108.08KB]
+│       │   │       │   │           │   │   └── server_Xn0vGSOg.mjs (0 LoC | 108.08KB)
+│       │   │       │   │           │   ├── astro-designed-error-pages_D70pN2ZN.mjs (0 LoC | 11.83KB)
+│       │   │       │   │           │   ├── fs-lite_COtHaKzy.mjs (0 LoC | 4.08KB)
+│       │   │       │   │           │   ├── index_B69C6PXY.mjs (0 LoC | 88.43KB)
+│       │   │       │   │           │   ├── input_BfK8uy_1.mjs (0 LoC | 3.92KB)
+│       │   │       │   │           │   ├── label_BMn6tAxN.mjs (0 LoC | 537.00B)
+│       │   │       │   │           │   ├── node_BnF3sgX8.mjs (0 LoC | 58.41KB)
+│       │   │       │   │           │   ├── noop-middleware_CPmWs0jQ.mjs (0 LoC | 276.00B)
+│       │   │       │   │           │   ├── path_CLTPhSP2.mjs (0 LoC | 3.87KB)
+│       │   │       │   │           │   ├── remote_DrauV6zU.mjs (0 LoC | 2.15KB)
+│       │   │       │   │           │   └── sharp_DDeEBu4p.mjs (0 LoC | 3.03KB)
+│       │   │       │   │           ├── entry.mjs (0 LoC | 3.47KB)
+│       │   │       │   │           ├── manifest_BbBZq9f-.mjs (0 LoC | 22.96KB)
+│       │   │       │   │           ├── noop-entrypoint.mjs (0 LoC | 39.00B)
+│       │   │       │   │           ├── pages/ [84.31KB]
+│       │   │       │   │           │   ├── _image.astro.mjs (0 LoC | 103.00B)
+│       │   │       │   │           │   ├── api/ [25.04KB]
+│       │   │       │   │           │   │   ├── auth/ [5.88KB]
+│       │   │       │   │           │   │   │   ├── login.astro.mjs (0 LoC | 1.38KB)
+│       │   │       │   │           │   │   │   ├── logout.astro.mjs (0 LoC | 574.00B)
+│       │   │       │   │           │   │   │   ├── me.astro.mjs (0 LoC | 1.59KB)
+│       │   │       │   │           │   │   │   └── register.astro.mjs (0 LoC | 2.35KB)
+│       │   │       │   │           │   │   ├── health.astro.mjs (0 LoC | 505.00B)
+│       │   │       │   │           │   │   ├── roles/ [2.79KB]
+│       │   │       │   │           │   │   │   ├── _id_.astro.mjs (0 LoC | 1.94KB)
+│       │   │       │   │           │   │   │   └── permissions.astro.mjs (0 LoC | 865.00B)
+│       │   │       │   │           │   │   ├── roles.astro.mjs (0 LoC | 2.15KB)
+│       │   │       │   │           │   │   └── users/ [13.74KB]
+│       │   │       │   │           │   │       ├── create.astro.mjs (0 LoC | 3.02KB)
+│       │   │       │   │           │   │       ├── delete.astro.mjs (0 LoC | 996.00B)
+│       │   │       │   │           │   │       ├── edit.astro.mjs (0 LoC | 3.14KB)
+│       │   │       │   │           │   │       ├── list.astro.mjs (0 LoC | 5.00KB)
+│       │   │       │   │           │   │       └── me.astro.mjs (0 LoC | 1.60KB)
+│       │   │       │   │           │   ├── dashboard.astro.mjs (0 LoC | 14.24KB)
+│       │   │       │   │           │   ├── index.astro.mjs (0 LoC | 4.90KB)
+│       │   │       │   │           │   ├── login.astro.mjs (0 LoC | 4.21KB)
+│       │   │       │   │           │   ├── logout.astro.mjs (0 LoC | 902.00B)
+│       │   │       │   │           │   ├── register.astro.mjs (0 LoC | 4.49KB)
+│       │   │       │   │           │   ├── roles.astro.mjs (0 LoC | 10.54KB)
+│       │   │       │   │           │   ├── settings.astro.mjs (0 LoC | 7.93KB)
+│       │   │       │   │           │   └── users.astro.mjs (0 LoC | 11.97KB)
+│       │   │       │   │           └── renderers.mjs (0 LoC | 6.10KB)
+│       │   │       │   ├── java/ [119.00B]
+│       │   │       │   │   └── com/ [119.00B]
+│       │   │       │   │       └── lab3026/ [119.00B]
+│       │   │       │   │           └── app/ [119.00B]
+│       │   │       │   │               └── MainActivity.java (0 LoC | 119.00B)
+│       │   │       │   └── res/ [215.36KB]
+│       │   │       │       ├── drawable/ [9.42KB]
+│       │   │       │       │   ├── ic_launcher_background.xml (0 LoC | 5.47KB)
+│       │   │       │       │   └── splash.png (0 LoC | 3.95KB)
+│       │   │       │       ├── drawable-land-hdpi/ [7.52KB]
+│       │   │       │       │   └── splash.png (0 LoC | 7.52KB)
+│       │   │       │       ├── drawable-land-mdpi/ [3.95KB]
+│       │   │       │       │   └── splash.png (0 LoC | 3.95KB)
+│       │   │       │       ├── drawable-land-xhdpi/ [9.03KB]
+│       │   │       │       │   └── splash.png (0 LoC | 9.03KB)
+│       │   │       │       ├── drawable-land-xxhdpi/ [13.66KB]
+│       │   │       │       │   └── splash.png (0 LoC | 13.66KB)
+│       │   │       │       ├── drawable-land-xxxhdpi/ [17.27KB]
+│       │   │       │       │   └── splash.png (0 LoC | 17.27KB)
+│       │   │       │       ├── drawable-port-hdpi/ [7.75KB]
+│       │   │       │       │   └── splash.png (0 LoC | 7.75KB)
+│       │   │       │       ├── drawable-port-mdpi/ [4.00KB]
+│       │   │       │       │   └── splash.png (0 LoC | 4.00KB)
+│       │   │       │       ├── drawable-port-xhdpi/ [9.64KB]
+│       │   │       │       │   └── splash.png (0 LoC | 9.64KB)
+│       │   │       │       ├── drawable-port-xxhdpi/ [13.03KB]
+│       │   │       │       │   └── splash.png (0 LoC | 13.03KB)
+│       │   │       │       ├── drawable-port-xxxhdpi/ [17.08KB]
+│       │   │       │       │   └── splash.png (0 LoC | 17.08KB)
+│       │   │       │       ├── drawable-v24/ [1.84KB]
+│       │   │       │       │   └── ic_launcher_foreground.xml (0 LoC | 1.84KB)
+│       │   │       │       ├── layout/ [535.00B]
+│       │   │       │       │   └── activity_main.xml (0 LoC | 535.00B)
+│       │   │       │       ├── mipmap-anydpi-v26/ [530.00B]
+│       │   │       │       │   ├── ic_launcher.xml (0 LoC | 265.00B)
+│       │   │       │       │   └── ic_launcher_round.xml (0 LoC | 265.00B)
+│       │   │       │       ├── mipmap-hdpi/ [10.33KB]
+│       │   │       │       │   ├── ic_launcher.png (0 LoC | 2.72KB)
+│       │   │       │       │   ├── ic_launcher_foreground.png (0 LoC | 3.37KB)
+│       │   │       │       │   └── ic_launcher_round.png (0 LoC | 4.24KB)
+│       │   │       │       ├── mipmap-mdpi/ [6.55KB]
+│       │   │       │       │   ├── ic_launcher.png (0 LoC | 1.83KB)
+│       │   │       │       │   ├── ic_launcher_foreground.png (0 LoC | 2.06KB)
+│       │   │       │       │   └── ic_launcher_round.png (0 LoC | 2.66KB)
+│       │   │       │       ├── mipmap-xhdpi/ [15.24KB]
+│       │   │       │       │   ├── ic_launcher.png (0 LoC | 3.89KB)
+│       │   │       │       │   ├── ic_launcher_foreground.png (0 LoC | 4.92KB)
+│       │   │       │       │   └── ic_launcher_round.png (0 LoC | 6.44KB)
+│       │   │       │       ├── mipmap-xxhdpi/ [26.26KB]
+│       │   │       │       │   ├── ic_launcher.png (0 LoC | 6.49KB)
+│       │   │       │       │   ├── ic_launcher_foreground.png (0 LoC | 9.56KB)
+│       │   │       │       │   └── ic_launcher_round.png (0 LoC | 10.21KB)
+│       │   │       │       ├── mipmap-xxxhdpi/ [39.93KB]
+│       │   │       │       │   ├── ic_launcher.png (0 LoC | 9.22KB)
+│       │   │       │       │   ├── ic_launcher_foreground.png (0 LoC | 15.17KB)
+│       │   │       │       │   └── ic_launcher_round.png (0 LoC | 15.54KB)
+│       │   │       │       ├── values/ [1.22KB]
+│       │   │       │       │   ├── ic_launcher_background.xml (0 LoC | 120.00B)
+│       │   │       │       │   ├── strings.xml (0 LoC | 302.00B)
+│       │   │       │       │   └── styles.xml (0 LoC | 823.00B)
+│       │   │       │       └── xml/ [620.00B]
+│       │   │       │           ├── config.xml (0 LoC | 407.00B)
+│       │   │       │           └── file_paths.xml (0 LoC | 213.00B)
+│       │   │       └── test/ [402.00B]
+│       │   │           └── java/ [402.00B]
+│       │   │               └── com/ [402.00B]
+│       │   │                   └── getcapacitor/ [402.00B]
+│       │   │                       └── myapp/ [402.00B]
+│       │   │                           └── ExampleUnitTest.java (0 LoC | 402.00B)
+│       │   ├── build.gradle (0 LoC | 637.00B)
+│       │   ├── capacitor-cordova-android-plugins/ [2.17KB]
+│       │   │   ├── build.gradle (0 LoC | 1.63KB)
+│       │   │   ├── cordova.variables.gradle (0 LoC | 312.00B)
+│       │   │   └── src/ [246.00B]
+│       │   │       └── main/ [246.00B]
+│       │   │           ├── AndroidManifest.xml (0 LoC | 245.00B)
+│       │   │           ├── java/ [0.00B]
+│       │   │           │   └── .gitkeep (0 LoC | 0.00B)
+│       │   │           └── res/ [1.00B]
+│       │   │               └── .gitkeep (0 LoC | 1.00B)
+│       │   ├── capacitor.settings.gradle (0 LoC | 347.00B)
+│       │   ├── gradle/ [42.99KB]
+│       │   │   └── wrapper/ [42.99KB]
+│       │   │       ├── gradle-wrapper.jar (0 LoC | 42.74KB)
+│       │   │       └── gradle-wrapper.properties (0 LoC | 253.00B)
+│       │   ├── gradle.properties (0 LoC | 987.00B)
+│       │   ├── gradlew (0 LoC | 8.53KB)
+│       │   ├── gradlew.bat (0 LoC | 2.87KB)
+│       │   ├── settings.gradle (0 LoC | 208.00B)
+│       │   └── variables.gradle (0 LoC | 498.00B)
 │       ├── astro.config.mjs (0 LoC | 478.00B)
 │       ├── bun.lock (0 LoC | 188.62KB)
+│       ├── capacitor.config.ts (19 LoC | 448.00B)
 │       ├── components.json (0 LoC | 523.00B)
-│       ├── package.json (0 LoC | 1.13KB)
+│       ├── package-lock.json (0 LoC | 219.88KB)
+│       ├── package.json (0 LoC | 1.27KB)
 │       ├── postcss.config.cjs (0 LoC | 72.00B)
-│       ├── public/ [1.37KB]
+│       ├── public/ [35.28KB]
 │       │   ├── favicon.ico (0 LoC | 655.00B)
-│       │   └── favicon.svg (0 LoC | 749.00B)
-│       ├── src/ [142.16KB]
-│       │   ├── application/ [0.00B]
-│       │   │   ├── stores/ [0.00B]
-│       │   │   │   └── auth.ts (0 LoC | 0.00B)
-│       │   │   └── use-cases/ [0.00B]
+│       │   ├── favicon.svg (0 LoC | 749.00B)
+│       │   ├── icon-192.png (0 LoC | 10.80KB)
+│       │   ├── icon-512.png (0 LoC | 22.59KB)
+│       │   └── manifest.json (0 LoC | 530.00B)
+│       ├── src/ [148.45KB]
 │       │   ├── assets/ [4.27KB]
 │       │   │   ├── astro.svg (0 LoC | 2.85KB)
 │       │   │   └── background.svg (0 LoC | 1.42KB)
@@ -45,19 +226,18 @@
 │       │   │       ├── card.tsx (83 LoC | 2.55KB)
 │       │   │       ├── input.tsx (17 LoC | 1.03KB)
 │       │   │       └── label.tsx (16 LoC | 529.00B)
-│       │   ├── domain/ [669.00B]
-│       │   │   ├── entities/ [280.00B]
+│       │   ├── domain/ [786.00B]
+│       │   │   ├── entities/ [374.00B]
 │       │   │   │   ├── .gitkeep (0 LoC | 0.00B)
-│       │   │   │   └── auth.ts (17 LoC | 280.00B)
+│       │   │   │   └── auth.ts (21 LoC | 374.00B)
 │       │   │   ├── interfaces/ [0.00B]
 │       │   │   │   └── .gitkeep (0 LoC | 0.00B)
-│       │   │   └── schemas/ [389.00B]
+│       │   │   └── schemas/ [412.00B]
 │       │   │       ├── .gitkeep (0 LoC | 0.00B)
-│       │   │       └── auth.ts (12 LoC | 389.00B)
-│       │   ├── infrastructure/ [3.48KB]
-│       │   │   ├── api/ [3.48KB]
-│       │   │   │   ├── auth-client.ts (71 LoC | 2.14KB)
-│       │   │   │   ├── htmx-bridge.ts (0 LoC | 0.00B)
+│       │   │       └── auth.ts (13 LoC | 412.00B)
+│       │   ├── infrastructure/ [3.97KB]
+│       │   │   ├── api/ [3.97KB]
+│       │   │   │   ├── auth-client.ts (86 LoC | 2.63KB)
 │       │   │   │   └── hx-bridge.ts (34 LoC | 1.34KB)
 │       │   │   └── storage/ [0.00B]
 │       │   ├── lib/ [5.60KB]
@@ -65,92 +245,99 @@
 │       │   │   ├── db.ts (42 LoC | 1.29KB)
 │       │   │   └── utils.ts (5 LoC | 169.00B)
 │       │   ├── middleware.ts (5 LoC | 180.00B)
-│       │   ├── pages/ [76.53KB]
-│       │   │   ├── api/ [29.28KB]
-│       │   │   │   ├── auth/ [5.73KB]
-│       │   │   │   │   ├── login.ts (39 LoC | 1.31KB)
-│       │   │   │   │   ├── logout.ts (14 LoC | 396.00B)
+│       │   ├── pages/ [81.54KB]
+│       │   │   ├── api/ [25.35KB]
+│       │   │   │   ├── auth/ [6.30KB]
+│       │   │   │   │   ├── login.ts (51 LoC | 1.67KB)
+│       │   │   │   │   ├── logout.ts (14 LoC | 391.00B)
 │       │   │   │   │   ├── me.ts (45 LoC | 1.42KB)
-│       │   │   │   │   └── register.ts (67 LoC | 2.61KB)
+│       │   │   │   │   └── register.ts (76 LoC | 2.83KB)
 │       │   │   │   ├── health.ts (16 LoC | 321.00B)
-│       │   │   │   ├── roles/ [4.43KB]
-│       │   │   │   │   ├── [id].ts (57 LoC | 1.78KB)
+│       │   │   │   ├── roles/ [4.51KB]
+│       │   │   │   │   ├── [id].ts (58 LoC | 1.85KB)
 │       │   │   │   │   ├── index.ts (62 LoC | 1.99KB)
 │       │   │   │   │   └── permissions.ts (20 LoC | 680.00B)
-│       │   │   │   └── users/ [18.80KB]
+│       │   │   │   └── users/ [14.22KB]
 │       │   │   │       ├── create.ts (66 LoC | 2.89KB)
 │       │   │   │       ├── delete.ts (23 LoC | 808.00B)
 │       │   │   │       ├── edit.ts (71 LoC | 3.03KB)
-│       │   │   │       ├── index.ts (139 LoC | 5.88KB)
-│       │   │   │       ├── list.ts (101 LoC | 4.77KB)
+│       │   │   │       ├── list.ts (144 LoC | 6.08KB)
 │       │   │   │       └── me.ts (48 LoC | 1.43KB)
-│       │   │   ├── dashboard.astro (246 LoC | 13.50KB)
+│       │   │   ├── dashboard.astro (249 LoC | 13.57KB)
 │       │   │   ├── index.astro (18 LoC | 699.00B)
-│       │   │   ├── login.astro (95 LoC | 3.52KB)
-│       │   │   ├── logout.astro (13 LoC | 233.00B)
-│       │   │   ├── register.astro (102 LoC | 3.71KB)
-│       │   │   ├── roles.astro (191 LoC | 8.22KB)
-│       │   │   ├── settings.astro (136 LoC | 5.80KB)
-│       │   │   └── users.astro (257 LoC | 11.59KB)
-│       │   ├── presentation/ [37.77KB]
-│       │   │   ├── components/ [32.05KB]
+│       │   │   ├── login-nocache.astro (14 LoC | 294.00B)
+│       │   │   ├── login.astro (129 LoC | 4.78KB)
+│       │   │   ├── logout.astro (14 LoC | 295.00B)
+│       │   │   ├── register-nocache.astro (13 LoC | 246.00B)
+│       │   │   ├── register.astro (134 LoC | 4.90KB)
+│       │   │   ├── roles.astro (236 LoC | 10.75KB)
+│       │   │   ├── settings.astro (146 LoC | 6.32KB)
+│       │   │   └── users.astro (300 LoC | 14.38KB)
+│       │   ├── presentation/ [38.22KB]
+│       │   │   ├── components/ [27.83KB]
 │       │   │   │   ├── auth/ [449.00B]
 │       │   │   │   │   └── Guard.astro (12 LoC | 449.00B)
-│       │   │   │   ├── command/ [4.81KB]
-│       │   │   │   │   └── CommandPalette.astro (93 LoC | 4.81KB)
-│       │   │   │   ├── shared/ [24.11KB]
+│       │   │   │   ├── command/ [4.79KB]
+│       │   │   │   │   └── CommandPalette.astro (92 LoC | 4.79KB)
+│       │   │   │   ├── shared/ [19.91KB]
 │       │   │   │   │   ├── LocalFsCard.astro (90 LoC | 3.97KB)
-│       │   │   │   │   ├── Navbar.astro (226 LoC | 14.64KB)
-│       │   │   │   │   ├── Sidebar.astro (79 LoC | 3.79KB)
+│       │   │   │   │   ├── Navbar.astro (81 LoC | 5.63KB)
+│       │   │   │   │   ├── Sidebar.astro (177 LoC | 8.60KB)
 │       │   │   │   │   └── TauriGreeter.astro (31 LoC | 1.71KB)
 │       │   │   │   └── ui/ [2.69KB]
 │       │   │   │       ├── Button.astro (56 LoC | 1.51KB)
 │       │   │   │       ├── Card.astro (14 LoC | 220.00B)
 │       │   │   │       └── Input.astro (41 LoC | 992.00B)
-│       │   │   ├── layouts/ [5.72KB]
-│       │   │   │   └── MainLayout.astro (147 LoC | 5.72KB)
+│       │   │   ├── layouts/ [10.39KB]
+│       │   │   │   └── MainLayout.astro (264 LoC | 10.39KB)
 │       │   │   └── pages/ [0.00B]
 │       │   │       └── index.astro (0 LoC | 0.00B)
-│       │   ├── styles/ [5.95KB]
-│       │   │   └── global.css (182 LoC | 5.95KB)
+│       │   ├── styles/ [6.17KB]
+│       │   │   └── global.css (199 LoC | 6.17KB)
 │       │   └── types/ [567.00B]
 │       │       └── htmx.d.ts (24 LoC | 567.00B)
 │       └── tsconfig.json (0 LoC | 259.00B)
-├── biome.json (0 LoC | 748.00B)
+├── biome.json (0 LoC | 859.00B)
 ├── bun.lock (0 LoC | 4.20KB)
-├── crates/ [131.33KB]
-│   ├── api_server/ [49.49KB]
+├── crates/ [149.79KB]
+│   ├── api_server/ [55.87KB]
 │   │   ├── Cargo.toml (39 LoC | 1.53KB)
-│   │   ├── src/ [37.34KB]
-│   │   │   ├── config/ [4.11KB]
-│   │   │   │   ├── di.rs (82 LoC | 3.24KB)
+│   │   ├── src/ [43.72KB]
+│   │   │   ├── config/ [4.34KB]
+│   │   │   │   ├── di.rs (88 LoC | 3.47KB)
 │   │   │   │   ├── env.rs (21 LoC | 792.00B)
 │   │   │   │   └── mod.rs (4 LoC | 100.00B)
-│   │   │   ├── entry_points/ [24.40KB]
-│   │   │   │   ├── api/ [19.24KB]
+│   │   │   ├── entry_points/ [29.90KB]
+│   │   │   │   ├── api/ [19.40KB]
 │   │   │   │   │   ├── mod.rs (3 LoC | 104.00B)
-│   │   │   │   │   └── v1/ [19.14KB]
+│   │   │   │   │   └── v1/ [19.30KB]
 │   │   │   │   │       ├── errors.rs (58 LoC | 2.56KB)
 │   │   │   │   │       ├── mod.rs (13 LoC | 583.00B)
 │   │   │   │   │       ├── role_handlers.rs (180 LoC | 5.82KB)
-│   │   │   │   │       └── user_handlers.rs (315 LoC | 10.18KB)
+│   │   │   │   │       └── user_handlers.rs (325 LoC | 10.34KB)
 │   │   │   │   ├── auth.rs (80 LoC | 2.93KB)
-│   │   │   │   ├── middleware/ [2.11KB]
-│   │   │   │   │   ├── mod.rs (2 LoC | 70.00B)
+│   │   │   │   ├── middleware/ [7.45KB]
+│   │   │   │   │   ├── audit.rs (93 LoC | 2.85KB)
+│   │   │   │   │   ├── mod.rs (4 LoC | 105.00B)
+│   │   │   │   │   ├── rate_limit.rs (82 LoC | 2.45KB)
 │   │   │   │   │   └── rbac.rs (61 LoC | 2.05KB)
 │   │   │   │   └── mod.rs (5 LoC | 127.00B)
 │   │   │   ├── errors.rs (41 LoC | 2.00KB)
 │   │   │   ├── lib.rs (20 LoC | 886.00B)
-│   │   │   ├── main.rs (97 LoC | 4.03KB)
-│   │   │   └── routes.rs (44 LoC | 1.93KB)
+│   │   │   ├── main.rs (100 LoC | 4.20KB)
+│   │   │   └── routes.rs (59 LoC | 2.42KB)
 │   │   └── tests/ [10.62KB]
 │   │       └── integration_tests.rs (281 LoC | 10.62KB)
-│   ├── core_logic/ [44.94KB]
-│   │   ├── Cargo.toml (29 LoC | 1.06KB)
-│   │   └── src/ [43.88KB]
-│   │       ├── application/ [19.34KB]
+│   ├── core_logic/ [52.43KB]
+│   │   ├── Cargo.toml (32 LoC | 1.11KB)
+│   │   └── src/ [51.32KB]
+│   │       ├── adapters/ [3.11KB]
+│   │       │   ├── mod.rs (1 LoC | 15.00B)
+│   │       │   └── proto/ [3.09KB]
+│   │       │       └── mod.rs (73 LoC | 3.09KB)
+│   │       ├── application/ [19.45KB]
 │   │       │   ├── mod.rs (14 LoC | 577.00B)
-│   │       │   └── use_cases/ [18.78KB]
+│   │       │   └── use_cases/ [18.89KB]
 │   │       │       ├── mod.rs (10 LoC | 385.00B)
 │   │       │       ├── role/ [6.71KB]
 │   │       │       │   ├── assign.rs (28 LoC | 1.02KB)
@@ -160,25 +347,27 @@
 │   │       │       │   ├── list_permissions.rs (15 LoC | 500.00B)
 │   │       │       │   ├── mod.rs (14 LoC | 409.00B)
 │   │       │       │   └── update.rs (50 LoC | 1.66KB)
-│   │       │       └── user/ [11.69KB]
+│   │       │       └── user/ [11.80KB]
 │   │       │           ├── create_session.rs (47 LoC | 1.62KB)
 │   │       │           ├── delete.rs (18 LoC | 557.00B)
 │   │       │           ├── get_user_by_id.rs (27 LoC | 963.00B)
 │   │       │           ├── list.rs (18 LoC | 542.00B)
 │   │       │           ├── login.rs (58 LoC | 2.07KB)
 │   │       │           ├── mod.rs (19 LoC | 588.00B)
-│   │       │           ├── register.rs (84 LoC | 3.42KB)
+│   │       │           ├── register.rs (95 LoC | 3.54KB)
 │   │       │           └── update.rs (59 LoC | 1.99KB)
-│   │       ├── domain/ [24.12KB]
-│   │       │   ├── entities/ [8.88KB]
-│   │       │   │   ├── mod.rs (19 LoC | 682.00B)
+│   │       ├── domain/ [25.86KB]
+│   │       │   ├── entities/ [10.10KB]
+│   │       │   │   ├── audit.rs (40 LoC | 1.15KB)
+│   │       │   │   ├── mod.rs (21 LoC | 754.00B)
 │   │       │   │   ├── role.rs (147 LoC | 3.99KB)
 │   │       │   │   ├── session.rs (17 LoC | 488.00B)
 │   │       │   │   └── user.rs (116 LoC | 3.75KB)
 │   │       │   ├── errors.rs (29 LoC | 1.06KB)
-│   │       │   ├── interfaces/ [6.91KB]
+│   │       │   ├── interfaces/ [7.43KB]
+│   │       │   │   ├── audit_repo.rs (12 LoC | 461.00B)
 │   │       │   │   ├── hasher.rs (24 LoC | 1.14KB)
-│   │       │   │   ├── mod.rs (22 LoC | 889.00B)
+│   │       │   │   ├── mod.rs (24 LoC | 953.00B)
 │   │       │   │   ├── role_repository.rs (52 LoC | 2.58KB)
 │   │       │   │   ├── session_repo.rs (16 LoC | 694.00B)
 │   │       │   │   └── user_repo.rs (36 LoC | 1.65KB)
@@ -189,8 +378,16 @@
 │   │       │       ├── password_hash.rs (36 LoC | 1.29KB)
 │   │       │       ├── session_token.rs (31 LoC | 1.05KB)
 │   │       │       └── user_id.rs (45 LoC | 1.59KB)
-│   │       └── lib.rs (11 LoC | 430.00B)
-│   └── infra_db/ [36.91KB]
+│   │       ├── lib.rs (13 LoC | 475.00B)
+│   │       └── proto_generated/ [2.44KB]
+│   │           ├── auth/ [1.80KB]
+│   │           │   └── v1/ [1.80KB]
+│   │           │       └── auth.rs (50 LoC | 1.80KB)
+│   │           ├── common/ [489.00B]
+│   │           │   └── v1/ [489.00B]
+│   │           │       └── common.rs (15 LoC | 489.00B)
+│   │           └── mod.rs (10 LoC | 161.00B)
+│   └── infra_db/ [41.48KB]
 │       ├── Cargo.toml (29 LoC | 1.24KB)
 │       ├── examples/ [347.00B]
 │       │   └── generate_hash.rs (11 LoC | 347.00B)
@@ -202,18 +399,19 @@
 │       │   ├── 20260305135152_seed_system_data.sql (24 LoC | 1.36KB)
 │       │   ├── 20260305135153_create_sessions.sql (21 LoC | 852.00B)
 │       │   └── 20260305135154_create_user_roles.sql (9 LoC | 360.00B)
-│       └── src/ [29.08KB]
+│       └── src/ [33.65KB]
 │           ├── external_services/ [2.92KB]
 │           │   ├── hashing.rs (56 LoC | 2.43KB)
 │           │   └── mod.rs (12 LoC | 502.00B)
-│           ├── lib.rs (21 LoC | 1.15KB)
-│           └── persistence/ [25.01KB]
+│           ├── lib.rs (21 LoC | 1.17KB)
+│           └── persistence/ [29.57KB]
 │               ├── mod.rs (13 LoC | 537.00B)
-│               └── sqlite/ [24.49KB]
+│               └── sqlite/ [29.04KB]
 │                   ├── mod.rs (16 LoC | 736.00B)
 │                   ├── models.rs (83 LoC | 3.09KB)
-│                   └── repositories/ [20.68KB]
-│                       ├── mod.rs (17 LoC | 713.00B)
+│                   └── repositories/ [25.24KB]
+│                       ├── mod.rs (19 LoC | 798.00B)
+│                       ├── sqlite_audit_repo.rs (124 LoC | 4.47KB)
 │                       ├── sqlite_role_repo.rs (327 LoC | 10.70KB)
 │                       ├── sqlite_session_repo.rs (112 LoC | 4.09KB)
 │                       └── sqlite_user_repo.rs (135 LoC | 5.20KB)
@@ -221,26 +419,28 @@
 │   ├── Caddyfile (0 LoC | 785.00B)
 │   ├── Dockerfile (0 LoC | 1.84KB)
 │   └── podman-compose.yml (53 LoC | 1.61KB)
-├── docs/ [161.00KB]
+├── docs/ [167.29KB]
 │   ├── DECISIONS.md (0 LoC | 17.20KB)
 │   ├── RUST_STANDARDS.md (0 LoC | 3.56KB)
 │   ├── TESTING.md (0 LoC | 4.67KB)
 │   ├── TROUBLESHOOTING.md (0 LoC | 16.80KB)
 │   ├── core-iu.md (0 LoC | 5.28KB)
-│   ├── docs-fases/ [88.02KB]
-│   │   ├── docs-backend.md (0 LoC | 13.24KB)
+│   ├── docs-fases/ [93.58KB]
+│   │   ├── docs-backend.md (0 LoC | 17.22KB)
 │   │   ├── docs-backend1.md (0 LoC | 33.01KB)
 │   │   ├── docs-capacitor.md (0 LoC | 4.74KB)
-│   │   ├── docs-frontend.md (0 LoC | 19.48KB)
+│   │   ├── docs-frontend.md (0 LoC | 21.06KB)
 │   │   ├── docs-genesis.md (0 LoC | 14.82KB)
 │   │   └── docs-tauri.md (0 LoC | 2.72KB)
-│   ├── promps-back.md (0 LoC | 2.44KB)
-│   ├── promps-capacitor.md (0 LoC | 1.84KB)
-│   ├── promps-front.md (0 LoC | 2.15KB)
+│   ├── promps-back.md (0 LoC | 2.52KB)
+│   ├── promps-capacitor.md (0 LoC | 2.00KB)
+│   ├── promps-front.md (0 LoC | 2.64KB)
 │   ├── promps-tauri.md (0 LoC | 1.64KB)
 │   ├── testing-capacitor.md (0 LoC | 5.22KB)
 │   ├── testing-front.md (0 LoC | 7.12KB)
 │   └── testing-tauri.md (0 LoC | 5.06KB)
+├── docs-fases/ [3.84KB]
+│   └── docs-capacitor.md (0 LoC | 3.84KB)
 ├── logs/ [0.00B]
 │   └── backend.log.2026-03-09 (0 LoC | 0.00B)
 ├── package.json (0 LoC | 200.00B)
@@ -253,10 +453,10 @@
 │   └── common/ [373.00B]
 │       └── v1/ [373.00B]
 │           └── common.proto (0 LoC | 373.00B)
-├── roadmaps/ [23.44KB]
+├── roadmaps/ [24.35KB]
 │   ├── backend.md (0 LoC | 10.16KB)
-│   ├── capacitor.md (0 LoC | 2.96KB)
-│   ├── frontend.md (0 LoC | 4.29KB)
+│   ├── capacitor.md (0 LoC | 3.78KB)
+│   ├── frontend.md (0 LoC | 4.40KB)
 │   ├── genesis.md (0 LoC | 3.39KB)
 │   ├── master.md (0 LoC | 605.00B)
 │   └── tauri.md (0 LoC | 2.04KB)

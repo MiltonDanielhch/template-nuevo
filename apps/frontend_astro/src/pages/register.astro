@@ -18,11 +18,8 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
       <CardContent>
         <form
           id="register-form"
-          hx-post="/api/auth/register"
-          hx-target="#register-form"
-          hx-swap="outerHTML"
-          hx-indicator=".htmx-indicator"
-          hx-redirect="/dashboard"
+          action="/api/auth/register"
+          method="POST"
           autocomplete="off"
         >
           <div class="space-y-4">
@@ -115,13 +112,6 @@ import MainLayout from "@/presentation/layouts/MainLayout.astro";
   </div>
 
   <script>
-    document.addEventListener('htmx:afterRequest', (e) => {
-      const response = e.detail.xhr;
-      if (response.status === 302) {
-        window.location.replace('/dashboard');
-      }
-    });
-
     (function() {
       if (window.location.search) {
         window.history.replaceState(null, '', '/register');

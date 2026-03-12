@@ -1,0 +1,55 @@
+---
+const { successMessage = "¡Listo! Te avisaremos cuando lancemos." } = Astro.props;
+---
+
+<form
+  class="max-w-md mx-auto p-6 bg-surface/80 backdrop-blur rounded-2xl border border-border shadow-sm"
+  hx-post="/api/v1/landing/leads"
+  hx-swap="outerHTML"
+  hx-trigger="submit"
+  hx-include="[name=honeypot]"
+  novalidate
+>
+  <input type="hidden" name="honeypot" value="" />
+
+  <div class="space-y-4">
+    <div>
+      <label for="lead-name" class="block text-sm font-semibold text-text">Nombre (opcional)</label>
+      <input
+        id="lead-name"
+        name="name"
+        type="text"
+        class="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-base outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+        placeholder="Tu nombre"
+      />
+    </div>
+
+    <div>
+      <label for="lead-email" class="block text-sm font-semibold text-text">Correo electrónico</label>
+      <input
+        id="lead-email"
+        name="email"
+        type="email"
+        required
+        class="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-base outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+        placeholder="tu@correo.com"
+        aria-describedby="lead-email-help"
+      />
+      <p id="lead-email-help" class="mt-1 text-xs text-text-muted">Te avisaremos cuando lancemos algo nuevo.</p>
+    </div>
+
+    <input type="hidden" name="source" value="landing" />
+
+    <div class="flex items-center justify-between gap-3">
+      <button
+        type="submit"
+        class="btn-primary w-full justify-center"
+      >
+        ¡Avísame!
+      </button>
+      <div class="hidden h-10 w-10 rounded-full bg-primary-500/10 text-primary-700 flex items-center justify-center htmx-indicator">
+        <span class="text-xs">...</span>
+      </div>
+    </div>
+  </div>
+</form>

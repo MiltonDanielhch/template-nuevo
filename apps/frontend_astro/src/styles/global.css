@@ -41,6 +41,13 @@
     --color-border: var(--color-border);
     --color-text: var(--color-text);
     --color-text-muted: var(--color-text-muted);
+
+    /* Compatibilidad con clases de Tailwind/Theme que esperan variables genéricas */
+    --text: var(--color-text);
+    --text-muted: var(--color-text-muted);
+    --background: var(--color-background);
+    --surface: var(--color-surface);
+    --border: var(--color-border);
   }
 
   .dark {
@@ -49,6 +56,15 @@
     --color-border: var(--color-border-dark);
     --color-text: var(--color-text-dark);
     --color-text-muted: var(--color-text-muted-dark);
+
+    --text: var(--color-text-dark);
+    --text-muted: var(--color-text-muted-dark);
+    --background: var(--color-background-dark);
+    --surface: var(--color-surface-dark);
+    --border: var(--color-border-dark);
+
+    /* Variables usadas por el body */
+    --foreground: var(--color-text-dark);
   }
 
   * {
@@ -56,8 +72,8 @@
   }
 
   body {
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: var(--background, #f8fafc);
+    color: var(--foreground, #0f172a);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
@@ -216,4 +232,15 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* FORZAR valores seguros en caso de que el motor CSS no soporte oklch */
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
 }

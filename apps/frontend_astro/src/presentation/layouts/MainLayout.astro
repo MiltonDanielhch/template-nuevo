@@ -181,7 +181,7 @@ const token = Astro.cookies.get("auth_token")?.value || "";
       });
     </script>
   </head>
-  <body class="min-h-screen bg-background text-text">
+  <body class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-white">
     <script is:inline>
       window.sidebarOpen = window.innerWidth >= 1024;
       function toggleSidebar() {
@@ -251,14 +251,20 @@ const token = Astro.cookies.get("auth_token")?.value || "";
 
           async submitForm() {
             const url = this.isEdit ? `/api/roles/${this.editId}` : '/api/roles';
+            const token = document.querySelector('meta[name="auth-token"]')?.getAttribute('content') || '';
             try {
               const response = await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + token
+                },
                 body: JSON.stringify(this.form)
               });
               if (response.ok) {
                 window.location.reload();
+              } else if (response.status === 401 || response.status === 403) {
+                window.location.href = '/login';
               } else {
                 const data = await response.json();
                 alert(data.message || 'Error al procesar');
