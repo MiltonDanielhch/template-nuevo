@@ -52,7 +52,7 @@ Vamos a crear una landing que sea:
    - Generar `sitemap.xml` en `src/routes/sitemap.xml.ts` o estático.
    - Crear `robots.txt` si no existe.
    - Configurar cache headers para assets + HTML.
-   - Añadir análisis ligero (ej: Matomo/GTAG) con banner de consentimiento.
+   - Añadir análisis ligero (ej: Matomo/GTAG) con banner de consentimiento (ya implementado en el layout).
 
 6. **Medición y despliegue**
    - Pruebas E2E con Playwright/Cypress validando que el formulario envía.

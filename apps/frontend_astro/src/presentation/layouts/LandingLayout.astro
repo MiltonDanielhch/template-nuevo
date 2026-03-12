@@ -57,6 +57,22 @@ const pageUrl = canonical ? canonical : `${siteUrl}${Astro.url.pathname}`;
       window.addEventListener('htmx:sendError', (e) => {
         console.error('HTMX send error', e.detail);
       });
+
+      // Analytics: carga condicionada a consentimiento del usuario.
+      // Ajusta `GA_TRACKING_ID` o cambia por Matomo/otro.
+      const GA_TRACKING_ID = "G-XXXXXXXXXX";
+      const consent = localStorage.getItem("landing_cookie_consent") === "1";
+      if (consent && GA_TRACKING_ID) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', GA_TRACKING_ID);
+
+        const gtagScript = document.createElement('script');
+        gtagScript.async = true;
+        gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
+        document.head.appendChild(gtagScript);
+      }
     </script>
   </head>
   <body class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-white antialiased">
@@ -65,6 +81,29 @@ const pageUrl = canonical ? canonical : `${siteUrl}${Astro.url.pathname}`;
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.45),_transparent_50%)] dark:bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.30),_transparent_50%)]"></div>
       <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-72 bg-[radial-gradient(circle_at_bottom,_rgba(139,92,246,0.35),_transparent_55%)] dark:bg-[radial-gradient(circle_at_bottom,_rgba(99,102,241,0.25),_transparent_55%)]"></div>
       <slot />
+    </div>
+
+    <!-- Cookie consent simple -->
+    <div
+      x-data="{ open: localStorage.getItem('landing_cookie_consent') !== '1' }
+        "
+      x-show="open"
+      x-cloak
+      class="fixed bottom-4 left-1/2 z-50 w-[min(95vw,42rem)] -translate-x-1/2 rounded-2xl border border-border bg-background/95 p-4 shadow-lg backdrop-blur"
+    >
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm font-semibold text-text">Usamos cookies para mejorar la experiencia y medir uso.</p>
+          <p class="text-xs text-text-muted">Acepta el uso de cookies para activar analíticas. No se usan para tracking publicitario.</p>
+        </div>
+        <button
+          type="button"
+          class="btn-primary w-full sm:w-auto"
+          x-on:click="localStorage.setItem('landing_cookie_consent', '1'); open=false; window.location.reload();"
+        >
+          Aceptar
+        </button>
+      </div>
     </div>
   </body>
 </html>

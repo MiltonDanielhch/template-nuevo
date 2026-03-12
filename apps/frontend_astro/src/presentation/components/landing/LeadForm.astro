@@ -6,9 +6,15 @@ const { successMessage = "¡Listo! Te avisaremos cuando lancemos." } = Astro.pro
   x-data="{ email: '', name: '', error: '' }"
   x-on:submit.prevent="
     error = '';
-    const valid = /^\S+@\S+\.\S+$/.test(email.trim());
-    if (!valid) {
+    const emailValue = email.trim();
+    const nameValue = name.trim();
+    const emailValid = /^\S+@\S+\.\S+$/.test(emailValue);
+    if (!emailValid) {
       error = 'Ingresa un correo válido para continuar.';
+      return;
+    }
+    if (nameValue && nameValue.length < 2) {
+      error = 'El nombre debe tener al menos 2 caracteres.';
       return;
     }
     $el.submit();

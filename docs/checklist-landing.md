@@ -57,6 +57,7 @@ Este checklist está diseñado para guiarte **paso a paso** desde el primer arch
 3. Asegura meta tags relevantes en `LandingLayout` (canonical, noindex si aplica).
 4. Configura headers de cache apropiados (SSR: `Cache-Control`, assets versionados).
 5. Añade tracking ligero (Matomo/GTAG) con consentimiento opcional.
+   - ✅ Ya hay un banner de consentimiento + carga condicional de GTAG en el layout.
 
 ---
 

@@ -47,6 +47,7 @@ Construir una landing page moderna, accesible y de alto rendimiento que refleje 
 | 3 | Endpoint de backend | `api_server/entry_points/api/v1/landing.rs` (POST /leads). | ✅ |
 | 4 | Persistencia de leads | Nueva tabla `leads` (SQLite) + repositorio + use case. | ✅ |
 | 5 | Protección anti-spam | Honeypot + rate-limit y reCAPTCHA-like (simple token). | ✅ |
+| 6 | Analytics / consent banner | Banner simple + carga condicional de GTAG. | ✅ |
 | 6 | Confirmación & UI | Modal/alerta con feedback de éxito/error usando HTMX swap. | ✅ |
 
 ---

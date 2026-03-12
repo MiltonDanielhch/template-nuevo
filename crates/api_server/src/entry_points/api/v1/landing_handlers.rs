@@ -10,7 +10,16 @@ use axum::{
     response::Html,
 };
 use core_logic::application::use_cases::lead::create::CreateLeadCommand;
+use once_cell::sync::Lazy;
 use serde::Deserialize;
+use std::{
+    collections::HashMap,
+    time::{Duration, Instant},
+};
+use tokio::sync::Mutex;
+
+static LEAD_RATE_LIMIT: Lazy<Mutex<HashMap<String, (Instant, u32)>>> =
+    Lazy::new(|| Mutex::new(HashMap::new()));
 
 #[derive(Deserialize)]
 pub struct CreateLeadRequest {
@@ -36,6 +45,25 @@ pub async fn create_lead_handler(
     <p class='mt-2 text-sm text-green-700'>Te avisaremos por correo cuando lancemos.</p>
 </div>"#;
         return Ok((StatusCode::CREATED, Html(html.to_string())));
+    }
+
+    // Rate limit by email: max 5 submissions per hour.
+    let email_key = payload.email.trim().to_lowercase();
+    {
+        let mut rate = LEAD_RATE_LIMIT.lock().await;
+        let now = Instant::now();
+        let entry = rate.entry(email_key.clone()).or_insert((now, 0));
+        if now.duration_since(entry.0) > Duration::from_secs(60 * 60) {
+            *entry = (now, 0);
+        }
+        if entry.1 >= 5 {
+            let html = r#"<div class='rounded-2xl border border-rose-200 bg-rose-50 p-6 text-center'>
+        <h3 class='text-lg font-semibold text-rose-800'>Demasiados intentos</h3>
+        <p class='mt-2 text-sm text-rose-700'>Intenta de nuevo en 1 hora o contáctanos para asistencia.</p>
+    </div>"#;
+            return Ok((StatusCode::TOO_MANY_REQUESTS, Html(html.to_string())));
+        }
+        entry.1 += 1;
     }
 
     let command = CreateLeadCommand {

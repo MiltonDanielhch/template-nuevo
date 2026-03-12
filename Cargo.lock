@@ -92,6 +92,7 @@ dependencies = [
  "dotenvy",
  "http-body-util",
  "infra_db",
+ "once_cell",
  "serde",
  "serde_json",
  "sqlx",
