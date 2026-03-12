@@ -22,6 +22,7 @@ const {
 const baseTitle = `${title} | Laboratorio 3026`;
 const siteUrl = Astro.site || "";
 const pageUrl = canonical ? canonical : `${siteUrl}${Astro.url.pathname}`;
+const GA_TRACKING_ID = import.meta.env.PUBLIC_GA_TRACKING_ID ?? "";
 ---
 
 <!DOCTYPE html>
@@ -60,7 +61,7 @@ const pageUrl = canonical ? canonical : `${siteUrl}${Astro.url.pathname}`;
 
       // Analytics: carga condicionada a consentimiento del usuario.
       // Ajusta `PUBLIC_GA_TRACKING_ID` en .env o en el entorno de deployment.
-      const GA_TRACKING_ID = "${Astro.env.PUBLIC_GA_TRACKING_ID ?? ""}";
+      const GA_TRACKING_ID = "${GA_TRACKING_ID}";
       const consent = localStorage.getItem("landing_cookie_consent") === "1";
       if (consent && GA_TRACKING_ID) {
         window.dataLayer = window.dataLayer || [];
