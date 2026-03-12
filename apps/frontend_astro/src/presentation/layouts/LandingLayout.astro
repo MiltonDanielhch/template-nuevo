@@ -59,8 +59,8 @@ const pageUrl = canonical ? canonical : `${siteUrl}${Astro.url.pathname}`;
       });
 
       // Analytics: carga condicionada a consentimiento del usuario.
-      // Ajusta `GA_TRACKING_ID` o cambia por Matomo/otro.
-      const GA_TRACKING_ID = import.meta.env.PUBLIC_GA_TRACKING_ID || "";
+      // Ajusta `PUBLIC_GA_TRACKING_ID` en .env o en el entorno de deployment.
+      const GA_TRACKING_ID = "${Astro.env.PUBLIC_GA_TRACKING_ID ?? ""}";
       const consent = localStorage.getItem("landing_cookie_consent") === "1";
       if (consent && GA_TRACKING_ID) {
         window.dataLayer = window.dataLayer || [];
