@@ -322,3 +322,45 @@ async fn login_user_wrong_password() {
     let json_body: Value = serde_json::from_slice(&body).unwrap();
     assert_eq!(json_body["error"], "Credenciales inválidas.");
 }
+
+#[tokio::test]
+async fn landing_leads_rate_limit_is_enforced() {
+    let app = setup_test_app().await;
+
+    let request_body = json!({
+        "email": "ratelimit@test.com",
+        "name": "Test User"
+    });
+
+    // 5 envíos permitidos
+    for _ in 0..5 {
+        let response = app
+            .clone()
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/landing/leads")
+                    .header("Content-Type", "application/json")
+                    .body(Body::from(request_body.to_string()))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::CREATED);
+    }
+
+    // El 6º envío debe ser bloqueado
+    let response = app
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/landing/leads")
+                .header("Content-Type", "application/json")
+                .body(Body::from(request_body.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::TOO_MANY_REQUESTS);
+}

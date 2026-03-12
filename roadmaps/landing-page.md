@@ -62,6 +62,7 @@ Construir una landing page moderna, accesible y de alto rendimiento que refleje 
 | 3 | Sitemap | `src/routes/sitemap.xml.ts` (o estático). | ✅ |
 | 4 | Performance antes/después | Lighthouse / Pagespeed en CI. | ⏳ |
 | 5 | Analytics ligera | Event tracking (Matomo/Pinia/GTAG) + consent banner opcional. | ✅ |
+| 6 | Opt-out | Endpoint para resetear consentimiento de cookies. | ✅ |
 | 6 | Caching & CDN | `public/` con assets versionados y `Cache-Control` SSR. | ⏳ |
 
 ---
