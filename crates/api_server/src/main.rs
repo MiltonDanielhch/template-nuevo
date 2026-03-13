@@ -26,9 +26,19 @@ use sqlx::sqlite::SqlitePoolOptions;
 use std::env;
 use std::{net::SocketAddr, path::Path};
 use tokio::net::TcpSocket;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
 async fn main() {
+    // Initialize tracing for logging
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "api_server=info,warn".into()),
+        )
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
     // Carga las variables de entorno desde el archivo .env
     dotenv().ok();
 

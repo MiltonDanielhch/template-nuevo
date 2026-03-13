@@ -14,9 +14,9 @@ Este checklist está diseñado para guiarte **paso a paso** desde el primer arch
    - No dependas de JS para mostrar contenido básico.
    - ✅ Ya creado y usa markup semántico.
 3. Crea o verifica existencia de los assets de marca:
-   - `public/images/hero.png` (hero), logos, screenshots.
-   - `public/fonts/` (tipografías custom si aplica).
-   - ⏳ Opcional: en este momento la landing usa textos y colores de token, sin imágenes.
+   - `public/images/hero-illustration.svg` (hero) y `public/og-image.svg` (og/preview).
+   - `public/fonts/` (tipografías custom si aplica) o usar `@fontsource`.
+   - ✅ Ya hay una ilustración y un OG image en `public/`.
 4. Añade variables de marca (colores, tokens) en `src/styles/brand.css` y agrégalas a la configuración de Tailwind si corresponde.
    - ✅ Se usan tokens en `src/styles/global.css` (colores, fondos, tipografías).
 
@@ -29,6 +29,7 @@ Este checklist está diseñado para guiarte **paso a paso** desde el primer arch
    - Solución (¿qué aporta?)
    - Feature cards (3–5 beneficios clave)
    - Testimonios / logotipos / métricas rápidas
+   - Soporte de copy dinámico (i18n / `Accept-Language` o `?lang=`).
 3. Añade footer con enlaces legales (privacidad, términos, contacto) y redes.
 
 ---
@@ -59,6 +60,8 @@ Este checklist está diseñado para guiarte **paso a paso** desde el primer arch
    - ✅ Ya existe en `public/robots.txt`.
 3. Asegura meta tags relevantes en `LandingLayout` (canonical, noindex si aplica).
 4. Configura headers de cache apropiados (SSR: `Cache-Control`, assets versionados).
+   - ✅ `sitemap.xml` ya responde con `Cache-Control`.
+   - ✅ Headers cache en SSR implementados en middleware.
 5. Añade tracking ligero (Matomo/GTAG) con consentimiento opcional.
    - ✅ Ya hay un banner de consentimiento + carga condicional de GTAG en el layout.   - ✅ Endpoint de opt-out disponible en `/api/consent/opt-out`.
 ---
@@ -75,11 +78,16 @@ Este checklist está diseñado para guiarte **paso a paso** desde el primer arch
 ---
 
 ## 6) QA / Pruebas / Despliegue
-1. Crea tests E2E (Playwright/Cypress) que:
-   - Validen que la landing carga.
-   - Envíen el formulario y esperen respuesta de éxito.
-2. Asegura que el despliegue actual (Caddy/Docker) sirva la landing correctamente.
-3. Monitorea logs de backend para errores 5xx o fail de leads.
+1. ✅ Tests E2E (Playwright) que:
+   - Validan que la landing carga.
+   - Envían el formulario y esperen respuesta de éxito.
+   - Validan email inválido, email duplicado, honeypot y rate-limit.
+2. ✅ Monitoreo implementado:
+   - Logging de leads con tracing (info level).
+   - Logging de errores 5xx con tracing (error level).
+   - Middleware de error_logging para capturar errores del servidor.
+   - Auditoría de errores en tabla audit_logs.
+3. ✅ Despliegue (pendiente): Asegura que el despliegue actual (Caddy/Docker) sirva la landing correctamente.
 
 ---
 

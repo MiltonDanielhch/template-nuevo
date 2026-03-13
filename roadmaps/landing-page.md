@@ -17,8 +17,8 @@ Construir una landing page moderna, accesible y de alto rendimiento que refleje 
 | 1 | Página base | `src/pages/index.astro` como entrypoint principal. | ✅ |
 | 2 | Layout dedicado | `presentation/layouts/LandingLayout.astro` con SEO, OG y favicon. | ✅ |
 | 3 | Diseño responsivo | Tailwind + utilidades para grid, tipografía y espaciado. | ✅ |
-| 4 | Variables de marca | `src/styles/brand.css` (colores, sombras, tipografías, tokens). | ⏳ |
-| 5 | Tipografías y assets | `public/fonts/` + `public/images/` (hero, logos, screenshots). | ⏳ |
+| 4 | Variables de marca | `src/styles/global.css` (colores, sombras, tipografías, tokens). | ✅ |
+| 5 | Tipografías y assets | `public/` (fuentes desde @fontsource + imágenes en `public/images/`). | ✅ |
 | 6 | Accesibilidad básica | Semántica HTML, contraste WCAG, `aria-*` y orden tab. | ✅ |
 
 ---
@@ -31,9 +31,9 @@ Construir una landing page moderna, accesible y de alto rendimiento que refleje 
 | 1 | Estructura de secciones | Hero, Problema, Solución, Características, Testimonios, CTA, Footer. | ✅ |
 | 2 | Hero & CTA principal | Titular + subtítulo + botón ("Comenzar", "Ver demo", "Regístrate"). | ✅ |
 | 3 | Feature cards | Listado de beneficios con iconografía (SVG) + microinteracciones. | ✅ |
-| 4 | Prueba social / confianza | Logos, quotes, métricas o casos de uso. | ⏳ |
+| 4 | Prueba social / confianza | Logos, quotes, métricas o casos de uso. | ✅ |
 | 5 | Footer con enlaces | Políticas, contacto, redes y datos legales. | ✅ |
-| 6 | Contenidos dinámicos | Soporte para i18n / traducción (prefijo `es/` / `en/` si aplica). | ⏳ |
+| 6 | Contenidos dinámicos | Soporte para i18n / traducción (basado en `Accept-Language` o query param `?lang=`). | ✅ |
 
 ---
 
@@ -63,7 +63,7 @@ Construir una landing page moderna, accesible y de alto rendimiento que refleje 
 | 4 | Performance antes/después | Lighthouse / Pagespeed en CI. | ⏳ |
 | 5 | Analytics ligera | Event tracking (Matomo/Pinia/GTAG) + consent banner opcional. | ✅ |
 | 6 | Opt-out | Endpoint para resetear consentimiento de cookies. | ✅ |
-| 6 | Caching & CDN | `public/` con assets versionados y `Cache-Control` SSR. | ⏳ |
+| 6 | Caching & CDN | `public/` con assets versionados y `Cache-Control` SSR. | ✅ |
 
 ---
 
@@ -73,21 +73,21 @@ Construir una landing page moderna, accesible y de alto rendimiento que refleje 
 | # | Tarea | Ubicación / Descripción | Estado |
 |---|-------|------------------------|:------:|
 | 1 | Storybook / Playground | Opcional: prototipar componentes de landing (si aplica). | ⏳ |
-| 2 | Tests de UI | Cypress / Playwright para validar flujo de conversión. | ⏳ |
-| 3 | Tests de integración | `api_server/tests` para endpoint de leads. | ⏳ |
+| 2 | Tests de UI | Cypress / Playwright para validar flujo de conversión. | ✅ |
+| 3 | Tests de integración | `api_server/tests` para endpoint de leads. | ✅ |
 | 4 | Despliegue | Ajustes en `deploy/` (caddy, docker) para servir la landing. | ⏳ |
-| 5 | Monitoreo | Logs + alertas (backend) para leads y errores 5xx. | ⏳ |
+| 5 | Monitoreo | Logs + alertas (backend) para leads y errores 5xx. | ✅ |
 
 ---
 
 ## ✅ Progreso General
 
 ```
-BLOQUE I: █████░░░░░ 67% (4/6 completados)
-BLOQUE II: ████░░░░░░ 67% (4/6 completados)
-BLOQUE III: ██████░░░░ 66% (4/6 completados)
-BLOQUE IV: ░░░░░░░░░░ 33% (2/6 completados)
-BLOQUE V: ░░░░░░░░░░ 0% (0/5 completados)
+BLOQUE I: ██████████ 100% (6/6 completados)
+BLOQUE II: ██████████ 100% (6/6 completados)
+BLOQUE III: ██████████ 100% (6/6 completados)
+BLOQUE IV: ██████████ 100% (6/6 completados)
+BLOQUE V: ████░░░░░░░ 60% (3/5 completados)
 ```
 
 ---

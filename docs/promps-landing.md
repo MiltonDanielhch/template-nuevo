@@ -10,6 +10,8 @@ Construye la entrada pública que mostrará la propuesta de valor, capturará co
 - ✅ Sistema de rutas y layouts ya establecidos (MainLayout, AppLayout).
 - ✅ Landing funcional creada (hero + features + formulario de leads + backend persistente).
 - ✅ Ajustes visuales: fondo gradiente + overlay fijo + tarjetas semitransparentes para que el fondo no quede tapado.
+- ✅ Recursos de branding: `og-image.svg` y `hero-illustration.svg` incluidos.
+- ✅ Soporte básico de i18n (Accept-Language / `?lang=`) para copy dinámico.
 - ✅ Backend ya persiste leads en SQLite y responde con feedback (HTMX toast).
 - ✅ Desarrollo: correr `bun run dev` desde `apps/frontend_astro` (usa puerto 4322 si 4321 está ocupado).
 - ✅ Backend: `cargo run` o `cargo watch` en `crates/api_server`.
@@ -61,10 +63,14 @@ Vamos a crear una landing que sea:
 
 ---
 
-🧭 4. ACCIÓN: ¿QUÉ HAGO AHORA?
-1. E2E (Playwright/Cypress) para validar que la landing carga, el formulario envía y el rate-limit se aplica.
-2. Añadir pruebas de integración en `api_server/tests` para el endpoint de leads (incluyendo rate-limit y honeypot).
-3. Refinar sección de confianza (logos / testimonios / métricas) para mejorar la conversión.
+🧭 4. ACCIÓN: ¿Qué hacer AHORA?
+1. ✅ E2E (Playwright) para validar que la landing carga, el formulario envía y el rate-limit se aplica.
+   - Tests implementados: carga de página, envío exitoso, email inválido, email duplicado, honeypot, rate-limit.
+2. ✅ Headers Cache-Control SSR + assets implementados en middleware.
+3. ✅ Monitoreo implementado:
+   - Logging de leads exitosos y fallidos con tracing.
+   - Middleware error_logging para capturar errores 5xx.
+   - Auditoría de errores en tabla audit_logs.
 4. Revisar el despliegue en Caddy/Docker para asegurar que `robots.txt` y `sitemap.xml` son servidos correctamente.
 
 ---

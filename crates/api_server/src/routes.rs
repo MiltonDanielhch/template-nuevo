@@ -20,7 +20,10 @@ use crate::{
             update_user_handler,
         },
     },
-    entry_points::middleware::{audit::audit_middleware, rate_limit::rate_limit_middleware},
+    entry_points::middleware::{
+        audit::audit_middleware, error_logging::error_logging_middleware,
+        rate_limit::rate_limit_middleware,
+    },
 };
 use axum::Router;
 use axum::routing::{get, post, put};
@@ -59,6 +62,10 @@ pub fn create_router(app_state: AppState) -> Router {
         .layer(axum::middleware::from_fn_with_state(
             rate_limiter,
             rate_limit_middleware,
+        ))
+        .layer(axum::middleware::from_fn_with_state(
+            state.clone(),
+            error_logging_middleware,
         ))
         .with_state((*state).clone())
 }

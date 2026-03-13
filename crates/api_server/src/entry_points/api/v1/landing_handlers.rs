@@ -17,6 +17,7 @@ use std::{
     time::{Duration, Instant},
 };
 use tokio::sync::Mutex;
+use tracing::{error, info};
 
 static LEAD_RATE_LIMIT: Lazy<Mutex<HashMap<String, (Instant, u32)>>> =
     Lazy::new(|| Mutex::new(HashMap::new()));
@@ -67,11 +68,27 @@ pub async fn create_lead_handler(
     }
 
     let command = CreateLeadCommand {
-        email: payload.email,
+        email: payload.email.clone(),
         name: payload.name,
     };
 
-    let _lead = state.create_lead.execute(command).await?;
+    match state.create_lead.execute(command).await {
+        Ok(_lead) => {
+            info!(
+                email = %email_key,
+                source = "landing",
+                "New lead captured successfully"
+            );
+        }
+        Err(e) => {
+            error!(
+                email = %email_key,
+                error = %e,
+                "Failed to capture lead"
+            );
+            return Err(e.into());
+        }
+    }
 
     // Devolver fragmento HTML para que HTMX lo reemplace.
     let html = r#"<div class='rounded-2xl border border-green-200 bg-green-50 p-6 text-center'>
