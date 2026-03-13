@@ -11,7 +11,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   const token = cookies.get("auth_token")?.value;
 
   try {
-    const response = await fetch("http://localhost:8081/register", {
+    const response = await fetch("http://localhost:8081/api/v1/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

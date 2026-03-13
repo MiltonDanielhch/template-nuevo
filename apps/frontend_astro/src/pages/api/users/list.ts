@@ -40,7 +40,7 @@ export const GET: APIRoute = async ({ url, request, cookies }) => {
     const params = new URLSearchParams({ page: page.toString(), per_page: perPage.toString() });
     if (search) params.set("search", search);
 
-    const response = await fetch(`http://localhost:8081/users?${params}`, {
+    const response = await fetch(`http://localhost:8081/api/v1/users?${params}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

@@ -25,8 +25,8 @@ use crate::{
         rate_limit::rate_limit_middleware,
     },
 };
-use axum::Router;
 use axum::routing::{get, post, put};
+use axum::Router;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
@@ -34,14 +34,16 @@ pub fn create_router(app_state: AppState) -> Router {
     let state = Arc::new(app_state);
     let rate_limiter = Arc::new(RwLock::new(RateLimiter::new()));
 
-    Router::new()
-        // Auth & User routes
-        .route("/register", post(register_user_handler))
-        .route("/login", post(login_user_handler))
+    let api_v1_router = Router::new()
+        // Auth routes under /api/v1/auth
+        .route("/auth/register", post(register_user_handler))
+        .route("/auth/login", post(login_user_handler))
+        .route("/auth/logout", post(logout_handler))
+        // Landing
         .route("/landing/leads", post(create_lead_handler))
+        // User routes
         .route("/me", get(me_handler))
         .route("/me", put(update_me_handler))
-        .route("/logout", post(logout_handler))
         .route("/users", get(list_users_handler))
         .route("/users/{id}", get(me_handler))
         .route("/users/{id}", put(update_user_handler))
@@ -54,7 +56,10 @@ pub fn create_router(app_state: AppState) -> Router {
         .route("/permissions", get(list_permissions_handler))
         .route("/users/{user_id}/roles", post(assign_role_to_user_handler))
         .route("/users/me/roles", get(get_my_roles_handler))
-        .route("/users/me/permissions", get(get_my_permissions_handler))
+        .route("/users/me/permissions", get(get_my_permissions_handler));
+
+    Router::new()
+        .nest("/api/v1", api_v1_router)
         .layer(axum::middleware::from_fn_with_state(
             state.clone(),
             audit_middleware,

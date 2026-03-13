@@ -4,7 +4,7 @@ export const GET: APIRoute = async ({ cookies }) => {
   const token = cookies.get("auth_token")?.value;
 
   try {
-    const response = await fetch("http://localhost:8081/permissions", {
+    const response = await fetch("http://localhost:8081/api/v1/permissions", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

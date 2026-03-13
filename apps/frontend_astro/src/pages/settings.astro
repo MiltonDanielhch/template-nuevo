@@ -13,7 +13,7 @@ let user = null;
 let userRoles = [];
 
 try {
-  const response = await fetch("http://localhost:8081/me", {
+  const response = await fetch("http://localhost:8081/api/v1/me", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -22,7 +22,7 @@ try {
     user = await response.json();
   }
 
-  const rolesRes = await fetch("http://localhost:8081/users/me/roles", {
+  const rolesRes = await fetch("http://localhost:8081/api/v1/users/me/roles", {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (rolesRes.ok) {

@@ -13,7 +13,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
   try {
     // 1. Registrar al usuario en el backend Rust
-    const registerResponse = await fetch("http://localhost:8081/register", {
+    const registerResponse = await fetch("http://localhost:8081/api/v1/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, username }),
@@ -50,7 +50,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     // 2. Si el registro fue exitoso, hacemos login automáticamente para obtener el token
-    const loginResponse = await fetch("http://localhost:8081/login", {
+    const loginResponse = await fetch("http://localhost:8081/api/v1/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),

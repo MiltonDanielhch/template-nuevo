@@ -6,7 +6,7 @@ export const POST: APIRoute = async ({ params, request, cookies }) => {
   const body = await request.json();
 
   try {
-    const response = await fetch(`http://localhost:8081/roles/${id}`, {
+    const response = await fetch(`http://localhost:8081/api/v1/roles/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export const DELETE: APIRoute = async ({ params, cookies }) => {
   console.log("DELETE role:", id, "token:", token ? "present" : "missing");
 
   try {
-    const response = await fetch(`http://localhost:8081/roles/${id}`, {
+    const response = await fetch(`http://localhost:8081/api/v1/roles/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -11,7 +11,7 @@ export const GET: APIRoute = async ({ cookies }) => {
   }
 
   try {
-    const response = await fetch("http://localhost:8081/me", {
+    const response = await fetch("http://localhost:8081/api/v1/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -42,7 +42,7 @@ export const HEAD: APIRoute = async ({ cookies }) => {
   if (!token) return new Response(null, { status: 401 });
 
   try {
-    const response = await fetch("http://localhost:8081/me", {
+    const response = await fetch("http://localhost:8081/api/v1/me", {
       headers: { Authorization: `Bearer ${token}` },
     });
     return new Response(null, { status: response.ok ? 200 : 401 });

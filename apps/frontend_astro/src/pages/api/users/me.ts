@@ -18,7 +18,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       updateData.password = password.toString();
     }
 
-    const response = await fetch("http://localhost:8081/me", {
+    const response = await fetch("http://localhost:8081/api/v1/me", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

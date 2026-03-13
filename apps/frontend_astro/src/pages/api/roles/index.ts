@@ -4,7 +4,7 @@ export const GET: APIRoute = async ({ cookies }) => {
   const token = cookies.get("auth_token")?.value;
 
   try {
-    const response = await fetch("http://localhost:8081/roles", {
+    const response = await fetch("http://localhost:8081/api/v1/roles", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -29,7 +29,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   const body = await request.json();
 
   try {
-    const response = await fetch("http://localhost:8081/roles", {
+    const response = await fetch("http://localhost:8081/api/v1/roles", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -26,7 +26,7 @@ export const POST: APIRoute = async ({ request, url, cookies }) => {
       updateData.avatar_url = avatar_url.toString();
     }
 
-    const response = await fetch(`http://localhost:8081/users/${id}`, {
+    const response = await fetch(`http://localhost:8081/api/v1/users/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

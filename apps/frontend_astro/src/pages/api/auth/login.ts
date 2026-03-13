@@ -6,7 +6,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   const password = data.get("password");
 
   try {
-    const response = await fetch("http://localhost:8081/login", {
+    const response = await fetch("http://localhost:8081/api/v1/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
