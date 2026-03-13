@@ -2,8 +2,8 @@
 
 | Métrica | Valor |
 | :--- | :--- |
-| **Líneas de Código (Netas)** | 8097 LoC |
-| **Peso Total del Proyecto** | 3.63MB |
+| **Líneas de Código (Netas)** | 8816 LoC |
+| **Peso Total del Proyecto** | 3.67MB |
 | **Estado de Sintonía** | Activa |
 
 ### Mapa de Arquitectura y Pesos
@@ -17,11 +17,11 @@
 │   ├── query-d210c01bfa9798e7ce178f0ae12077cac8203e6607883a8dffed40f3e70977c5.json (0 LoC | 1.19KB)
 │   ├── query-d82cf1da92d2cb100f72bac4f77238c964d4aabeb70b26ea55c5b89f620787d1.json (0 LoC | 1.19KB)
 │   └── query-e20e8388eb12c09c1121cf86d730e498226a5de22f49e9b3e0f921e3442b728c.json (0 LoC | 815.00B)
-├── Cargo.lock (0 LoC | 155.68KB)
+├── Cargo.lock (0 LoC | 155.69KB)
 ├── Cargo.toml (27 LoC | 1023.00B)
 ├── Justfile (0 LoC | 1.69KB)
-├── apps/ [1.72MB]
-│   └── frontend_astro/ [1.72MB]
+├── apps/ [1.74MB]
+│   └── frontend_astro/ [1.74MB]
 │       ├── README.md (0 LoC | 1.60KB)
 │       ├── android/ [1.14MB]
 │       │   ├── app/ [1.08MB]
@@ -210,13 +210,14 @@
 │       ├── package-lock.json (0 LoC | 219.88KB)
 │       ├── package.json (0 LoC | 1.27KB)
 │       ├── postcss.config.cjs (0 LoC | 72.00B)
-│       ├── public/ [35.28KB]
+│       ├── public/ [35.40KB]
 │       │   ├── favicon.ico (0 LoC | 655.00B)
 │       │   ├── favicon.svg (0 LoC | 749.00B)
 │       │   ├── icon-192.png (0 LoC | 10.80KB)
 │       │   ├── icon-512.png (0 LoC | 22.59KB)
-│       │   └── manifest.json (0 LoC | 530.00B)
-│       ├── src/ [148.45KB]
+│       │   ├── manifest.json (0 LoC | 530.00B)
+│       │   └── robots.txt (0 LoC | 118.00B)
+│       ├── src/ [163.95KB]
 │       │   ├── assets/ [4.27KB]
 │       │   │   ├── astro.svg (0 LoC | 2.85KB)
 │       │   │   └── background.svg (0 LoC | 1.42KB)
@@ -245,13 +246,15 @@
 │       │   │   ├── db.ts (42 LoC | 1.29KB)
 │       │   │   └── utils.ts (5 LoC | 169.00B)
 │       │   ├── middleware.ts (5 LoC | 180.00B)
-│       │   ├── pages/ [81.54KB]
-│       │   │   ├── api/ [25.35KB]
+│       │   ├── pages/ [89.23KB]
+│       │   │   ├── api/ [25.93KB]
 │       │   │   │   ├── auth/ [6.30KB]
 │       │   │   │   │   ├── login.ts (51 LoC | 1.67KB)
 │       │   │   │   │   ├── logout.ts (14 LoC | 391.00B)
 │       │   │   │   │   ├── me.ts (45 LoC | 1.42KB)
 │       │   │   │   │   └── register.ts (76 LoC | 2.83KB)
+│       │   │   │   ├── consent/ [592.00B]
+│       │   │   │   │   └── opt-out.ts (24 LoC | 592.00B)
 │       │   │   │   ├── health.ts (16 LoC | 321.00B)
 │       │   │   │   ├── roles/ [4.51KB]
 │       │   │   │   │   ├── [id].ts (58 LoC | 1.85KB)
@@ -264,21 +267,24 @@
 │       │   │   │       ├── list.ts (144 LoC | 6.08KB)
 │       │   │   │       └── me.ts (48 LoC | 1.43KB)
 │       │   │   ├── dashboard.astro (249 LoC | 13.57KB)
-│       │   │   ├── index.astro (18 LoC | 699.00B)
+│       │   │   ├── index.astro (133 LoC | 7.05KB)
 │       │   │   ├── login-nocache.astro (14 LoC | 294.00B)
 │       │   │   ├── login.astro (129 LoC | 4.78KB)
 │       │   │   ├── logout.astro (14 LoC | 295.00B)
 │       │   │   ├── register-nocache.astro (13 LoC | 246.00B)
 │       │   │   ├── register.astro (134 LoC | 4.90KB)
-│       │   │   ├── roles.astro (236 LoC | 10.75KB)
+│       │   │   ├── roles.astro (236 LoC | 10.69KB)
 │       │   │   ├── settings.astro (146 LoC | 6.32KB)
+│       │   │   ├── sitemap.xml.ts (27 LoC | 829.00B)
 │       │   │   └── users.astro (300 LoC | 14.38KB)
-│       │   ├── presentation/ [38.22KB]
-│       │   │   ├── components/ [27.83KB]
+│       │   ├── presentation/ [45.26KB]
+│       │   │   ├── components/ [30.29KB]
 │       │   │   │   ├── auth/ [449.00B]
 │       │   │   │   │   └── Guard.astro (12 LoC | 449.00B)
 │       │   │   │   ├── command/ [4.79KB]
 │       │   │   │   │   └── CommandPalette.astro (92 LoC | 4.79KB)
+│       │   │   │   ├── landing/ [2.46KB]
+│       │   │   │   │   └── LeadForm.astro (68 LoC | 2.46KB)
 │       │   │   │   ├── shared/ [19.91KB]
 │       │   │   │   │   ├── LocalFsCard.astro (90 LoC | 3.97KB)
 │       │   │   │   │   ├── Navbar.astro (81 LoC | 5.63KB)
@@ -288,31 +294,33 @@
 │       │   │   │       ├── Button.astro (56 LoC | 1.51KB)
 │       │   │   │       ├── Card.astro (14 LoC | 220.00B)
 │       │   │   │       └── Input.astro (41 LoC | 992.00B)
-│       │   │   ├── layouts/ [10.39KB]
-│       │   │   │   └── MainLayout.astro (264 LoC | 10.39KB)
+│       │   │   ├── layouts/ [14.98KB]
+│       │   │   │   ├── LandingLayout.astro (97 LoC | 4.55KB)
+│       │   │   │   └── MainLayout.astro (264 LoC | 10.42KB)
 │       │   │   └── pages/ [0.00B]
 │       │   │       └── index.astro (0 LoC | 0.00B)
-│       │   ├── styles/ [6.17KB]
-│       │   │   └── global.css (199 LoC | 6.17KB)
+│       │   ├── styles/ [6.94KB]
+│       │   │   └── global.css (221 LoC | 6.94KB)
 │       │   └── types/ [567.00B]
 │       │       └── htmx.d.ts (24 LoC | 567.00B)
 │       └── tsconfig.json (0 LoC | 259.00B)
 ├── biome.json (0 LoC | 859.00B)
 ├── bun.lock (0 LoC | 4.20KB)
-├── crates/ [149.79KB]
-│   ├── api_server/ [55.87KB]
-│   │   ├── Cargo.toml (39 LoC | 1.53KB)
-│   │   ├── src/ [43.72KB]
-│   │   │   ├── config/ [4.34KB]
-│   │   │   │   ├── di.rs (88 LoC | 3.47KB)
+├── crates/ [162.20KB]
+│   ├── api_server/ [60.56KB]
+│   │   ├── Cargo.toml (40 LoC | 1.55KB)
+│   │   ├── src/ [47.21KB]
+│   │   │   ├── config/ [4.70KB]
+│   │   │   │   ├── di.rs (96 LoC | 3.83KB)
 │   │   │   │   ├── env.rs (21 LoC | 792.00B)
 │   │   │   │   └── mod.rs (4 LoC | 100.00B)
-│   │   │   ├── entry_points/ [29.90KB]
-│   │   │   │   ├── api/ [19.40KB]
+│   │   │   ├── entry_points/ [32.93KB]
+│   │   │   │   ├── api/ [22.43KB]
 │   │   │   │   │   ├── mod.rs (3 LoC | 104.00B)
-│   │   │   │   │   └── v1/ [19.30KB]
+│   │   │   │   │   └── v1/ [22.33KB]
 │   │   │   │   │       ├── errors.rs (58 LoC | 2.56KB)
-│   │   │   │   │       ├── mod.rs (13 LoC | 583.00B)
+│   │   │   │   │       ├── landing_handlers.rs (74 LoC | 3.00KB)
+│   │   │   │   │       ├── mod.rs (14 LoC | 610.00B)
 │   │   │   │   │       ├── role_handlers.rs (180 LoC | 5.82KB)
 │   │   │   │   │       └── user_handlers.rs (325 LoC | 10.34KB)
 │   │   │   │   ├── auth.rs (80 LoC | 2.93KB)
@@ -325,20 +333,23 @@
 │   │   │   ├── errors.rs (41 LoC | 2.00KB)
 │   │   │   ├── lib.rs (20 LoC | 886.00B)
 │   │   │   ├── main.rs (100 LoC | 4.20KB)
-│   │   │   └── routes.rs (59 LoC | 2.42KB)
-│   │   └── tests/ [10.62KB]
-│   │       └── integration_tests.rs (281 LoC | 10.62KB)
-│   ├── core_logic/ [52.43KB]
+│   │   │   └── routes.rs (61 LoC | 2.52KB)
+│   │   └── tests/ [11.80KB]
+│   │       └── integration_tests.rs (318 LoC | 11.80KB)
+│   ├── core_logic/ [57.03KB]
 │   │   ├── Cargo.toml (32 LoC | 1.11KB)
-│   │   └── src/ [51.32KB]
+│   │   └── src/ [55.92KB]
 │   │       ├── adapters/ [3.11KB]
 │   │       │   ├── mod.rs (1 LoC | 15.00B)
 │   │       │   └── proto/ [3.09KB]
 │   │       │       └── mod.rs (73 LoC | 3.09KB)
-│   │       ├── application/ [19.45KB]
+│   │       ├── application/ [20.68KB]
 │   │       │   ├── mod.rs (14 LoC | 577.00B)
-│   │       │   └── use_cases/ [18.89KB]
-│   │       │       ├── mod.rs (10 LoC | 385.00B)
+│   │       │   └── use_cases/ [20.12KB]
+│   │       │       ├── lead/ [1.21KB]
+│   │       │       │   ├── create.rs (30 LoC | 1.04KB)
+│   │       │       │   └── mod.rs (4 LoC | 183.00B)
+│   │       │       ├── mod.rs (11 LoC | 402.00B)
 │   │       │       ├── role/ [6.71KB]
 │   │       │       │   ├── assign.rs (28 LoC | 1.02KB)
 │   │       │       │   ├── create.rs (47 LoC | 1.71KB)
@@ -356,25 +367,28 @@
 │   │       │           ├── mod.rs (19 LoC | 588.00B)
 │   │       │           ├── register.rs (95 LoC | 3.54KB)
 │   │       │           └── update.rs (59 LoC | 1.99KB)
-│   │       ├── domain/ [25.86KB]
-│   │       │   ├── entities/ [10.10KB]
+│   │       ├── domain/ [29.22KB]
+│   │       │   ├── entities/ [11.77KB]
 │   │       │   │   ├── audit.rs (40 LoC | 1.15KB)
-│   │       │   │   ├── mod.rs (21 LoC | 754.00B)
+│   │       │   │   ├── lead.rs (60 LoC | 1.63KB)
+│   │       │   │   ├── mod.rs (23 LoC | 791.00B)
 │   │       │   │   ├── role.rs (147 LoC | 3.99KB)
 │   │       │   │   ├── session.rs (17 LoC | 488.00B)
 │   │       │   │   └── user.rs (116 LoC | 3.75KB)
 │   │       │   ├── errors.rs (29 LoC | 1.06KB)
-│   │       │   ├── interfaces/ [7.43KB]
+│   │       │   ├── interfaces/ [8.00KB]
 │   │       │   │   ├── audit_repo.rs (12 LoC | 461.00B)
 │   │       │   │   ├── hasher.rs (24 LoC | 1.14KB)
-│   │       │   │   ├── mod.rs (24 LoC | 953.00B)
+│   │       │   │   ├── lead_repo.rs (14 LoC | 530.00B)
+│   │       │   │   ├── mod.rs (26 LoC | 1014.00B)
 │   │       │   │   ├── role_repository.rs (52 LoC | 2.58KB)
 │   │       │   │   ├── session_repo.rs (16 LoC | 694.00B)
 │   │       │   │   └── user_repo.rs (36 LoC | 1.65KB)
 │   │       │   ├── mod.rs (16 LoC | 679.00B)
-│   │       │   └── value_objects/ [6.60KB]
+│   │       │   └── value_objects/ [7.73KB]
 │   │       │       ├── email.rs (50 LoC | 1.84KB)
-│   │       │       ├── mod.rs (19 LoC | 855.00B)
+│   │       │       ├── lead_id.rs (35 LoC | 1.08KB)
+│   │       │       ├── mod.rs (21 LoC | 897.00B)
 │   │       │       ├── password_hash.rs (36 LoC | 1.29KB)
 │   │       │       ├── session_token.rs (31 LoC | 1.05KB)
 │   │       │       └── user_id.rs (45 LoC | 1.59KB)
@@ -387,31 +401,33 @@
 │   │           │   └── v1/ [489.00B]
 │   │           │       └── common.rs (15 LoC | 489.00B)
 │   │           └── mod.rs (10 LoC | 161.00B)
-│   └── infra_db/ [41.48KB]
+│   └── infra_db/ [44.61KB]
 │       ├── Cargo.toml (29 LoC | 1.24KB)
 │       ├── examples/ [347.00B]
 │       │   └── generate_hash.rs (11 LoC | 347.00B)
-│       ├── migrations/ [6.25KB]
+│       ├── migrations/ [7.37KB]
 │       │   ├── 20260305135148_create_users_table.sql (43 LoC | 2.15KB)
 │       │   ├── 20260305135149_create_rbac.sql (19 LoC | 643.00B)
 │       │   ├── 20260305135150_create_tokens.sql (11 LoC | 420.00B)
 │       │   ├── 20260305135151_create_audit.sql (14 LoC | 530.00B)
 │       │   ├── 20260305135152_seed_system_data.sql (24 LoC | 1.36KB)
 │       │   ├── 20260305135153_create_sessions.sql (21 LoC | 852.00B)
-│       │   └── 20260305135154_create_user_roles.sql (9 LoC | 360.00B)
-│       └── src/ [33.65KB]
+│       │   ├── 20260305135154_create_user_roles.sql (9 LoC | 360.00B)
+│       │   └── 20260312000000_create_leads.sql (28 LoC | 1.13KB)
+│       └── src/ [35.66KB]
 │           ├── external_services/ [2.92KB]
 │           │   ├── hashing.rs (56 LoC | 2.43KB)
 │           │   └── mod.rs (12 LoC | 502.00B)
-│           ├── lib.rs (21 LoC | 1.17KB)
-│           └── persistence/ [29.57KB]
+│           ├── lib.rs (22 LoC | 1.20KB)
+│           └── persistence/ [31.54KB]
 │               ├── mod.rs (13 LoC | 537.00B)
-│               └── sqlite/ [29.04KB]
+│               └── sqlite/ [31.02KB]
 │                   ├── mod.rs (16 LoC | 736.00B)
-│                   ├── models.rs (83 LoC | 3.09KB)
-│                   └── repositories/ [25.24KB]
-│                       ├── mod.rs (19 LoC | 798.00B)
+│                   ├── models.rs (93 LoC | 3.31KB)
+│                   └── repositories/ [26.99KB]
+│                       ├── mod.rs (21 LoC | 875.00B)
 │                       ├── sqlite_audit_repo.rs (124 LoC | 4.47KB)
+│                       ├── sqlite_lead_repo.rs (52 LoC | 1.68KB)
 │                       ├── sqlite_role_repo.rs (327 LoC | 10.70KB)
 │                       ├── sqlite_session_repo.rs (112 LoC | 4.09KB)
 │                       └── sqlite_user_repo.rs (135 LoC | 5.20KB)
@@ -419,11 +435,12 @@
 │   ├── Caddyfile (0 LoC | 785.00B)
 │   ├── Dockerfile (0 LoC | 1.84KB)
 │   └── podman-compose.yml (53 LoC | 1.61KB)
-├── docs/ [167.29KB]
+├── docs/ [175.34KB]
 │   ├── DECISIONS.md (0 LoC | 17.20KB)
 │   ├── RUST_STANDARDS.md (0 LoC | 3.56KB)
 │   ├── TESTING.md (0 LoC | 4.67KB)
 │   ├── TROUBLESHOOTING.md (0 LoC | 16.80KB)
+│   ├── checklist-landing.md (0 LoC | 4.37KB)
 │   ├── core-iu.md (0 LoC | 5.28KB)
 │   ├── docs-fases/ [93.58KB]
 │   │   ├── docs-backend.md (0 LoC | 17.22KB)
@@ -435,6 +452,7 @@
 │   ├── promps-back.md (0 LoC | 2.52KB)
 │   ├── promps-capacitor.md (0 LoC | 2.00KB)
 │   ├── promps-front.md (0 LoC | 2.64KB)
+│   ├── promps-landing.md (0 LoC | 3.68KB)
 │   ├── promps-tauri.md (0 LoC | 1.64KB)
 │   ├── testing-capacitor.md (0 LoC | 5.22KB)
 │   ├── testing-front.md (0 LoC | 7.12KB)
@@ -453,11 +471,12 @@
 │   └── common/ [373.00B]
 │       └── v1/ [373.00B]
 │           └── common.proto (0 LoC | 373.00B)
-├── roadmaps/ [24.35KB]
+├── roadmaps/ [29.66KB]
 │   ├── backend.md (0 LoC | 10.16KB)
 │   ├── capacitor.md (0 LoC | 3.78KB)
 │   ├── frontend.md (0 LoC | 4.40KB)
 │   ├── genesis.md (0 LoC | 3.39KB)
+│   ├── landing-page.md (0 LoC | 5.30KB)
 │   ├── master.md (0 LoC | 605.00B)
 │   └── tauri.md (0 LoC | 2.04KB)
 ├── src-tauri/ [1.39MB]

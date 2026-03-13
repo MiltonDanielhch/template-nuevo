@@ -14,11 +14,33 @@
 # Bloque HTTP (Puerto 80 interno -> 9080 externo)
 :80 {
     log
+
+    @staticAssets {
+        path *.js *.css *.svg *.png *.jpg *.jpeg *.webp *.woff2 *.woff *.ttf
+    }
+    header @staticAssets Cache-Control "public, max-age=31536000, immutable"
+
+    @html {
+        path /
+    }
+    header @html Cache-Control "public, max-age=60"
+
     reverse_proxy 10.89.0.19:8080
 }
 
 # Bloque HTTPS (Puerto 443 interno -> 9443 externo)
 :443 {
     tls internal
+
+    @staticAssets {
+        path *.js *.css *.svg *.png *.jpg *.jpeg *.webp *.woff2 *.woff *.ttf
+    }
+    header @staticAssets Cache-Control "public, max-age=31536000, immutable"
+
+    @html {
+        path /
+    }
+    header @html Cache-Control "public, max-age=60"
+
     reverse_proxy 10.89.0.19:8080
 }

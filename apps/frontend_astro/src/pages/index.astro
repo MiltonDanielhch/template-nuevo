@@ -1,12 +1,14 @@
 ---
+import { getLandingTranslations, getLanguage } from "../lib/i18n";
 import LeadForm from "../presentation/components/landing/LeadForm.astro";
 import LandingLayout from "../presentation/layouts/LandingLayout.astro";
+
+const langParam = Astro.url.searchParams.get("lang");
+const lang = langParam ?? getLanguage(Astro.request.headers.get("accept-language"));
+const t = getLandingTranslations(lang);
 ---
 
-<LandingLayout
-  title="Laboratorio 3026"
-  description="Herramienta moderna para gestionar usuarios, roles y permisos con UX ligera y seguridad de última generación."
->
+<LandingLayout title="Laboratorio 3026" description={t.hero.subheading}>
   <header class="relative">
     <div class="mx-auto flex items-center justify-between px-6 py-6 max-w-6xl">
       <div class="flex items-center gap-3">
@@ -15,9 +17,9 @@ import LandingLayout from "../presentation/layouts/LandingLayout.astro";
       </div>
 
       <nav class="flex items-center gap-4">
-        <a href="#features" class="text-sm font-medium text-text-muted hover:text-text">Características</a>
-        <a href="#leads" class="text-sm font-medium text-text-muted hover:text-text">Regístrate</a>
-        <a href="/login" class="btn-outline btn-sm">Iniciar sesión</a>
+        <a href="#features" class="text-sm font-medium text-text-muted hover:text-text">{t.nav.features}</a>
+        <a href="#leads" class="text-sm font-medium text-text-muted hover:text-text">{t.nav.register}</a>
+        <a href="/login" class="btn-outline btn-sm">{t.nav.login}</a>
       </nav>
     </div>
   </header>
@@ -27,25 +29,28 @@ import LandingLayout from "../presentation/layouts/LandingLayout.astro";
       <div class="space-y-6">
         <p class="inline-flex items-center gap-2 rounded-full bg-primary-100 px-4 py-2 text-sm font-semibold text-primary-700">
           <span class="h-2 w-2 rounded-full bg-primary-600"></span>
-          Lanzamiento exclusivo
+          {t.hero.badge}
         </p>
         <h1 class="text-4xl font-bold tracking-tight text-text sm:text-5xl">
-          Gestiona usuarios y roles con un stack moderno, seguro y ligero.
+          {t.hero.heading}
         </h1>
-        <p class="text-lg text-text-muted">
-          Radar de permisos, autenticación basada en tokens y experiencia HTMX para interfaces que responden como apps nativas sin perder SEO.
-        </p>
+        <p class="text-lg text-text-muted">{t.hero.subheading}</p>
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <a href="/login" class="btn-primary w-full sm:w-auto">Iniciar sesión</a>
-          <a href="#leads" class="btn-outline w-full sm:w-auto">Quiero una demo</a>
+          <a href="/login" class="btn-primary w-full sm:w-auto">{t.hero.primaryCta}</a>
+          <a href="#leads" class="btn-outline w-full sm:w-auto">{t.hero.secondaryCta}</a>
         </div>
       </div>
 
       <div class="rounded-3xl border border-border bg-surface/60 p-8 shadow-lg backdrop-blur">
+        <img
+          src="/images/hero-illustration.svg"
+          alt="Ilustración de la interfaz"
+          class="mb-6 w-full rounded-2xl border border-border bg-white/10"
+        />
         <div class="flex items-center justify-between mb-6">
           <div>
-            <p class="text-sm font-semibold text-text-muted">Regístrate y recibe acceso anticipado</p>
-            <p class="text-xs text-text-muted">(No spam, solo novedades y lanzamientos)</p>
+            <p class="text-sm font-semibold text-text-muted">{t.form.title}</p>
+            <p class="text-xs text-text-muted">{t.form.subtitle}</p>
           </div>
           <div class="h-9 w-9 rounded-xl bg-primary-500/15 flex items-center justify-center text-primary-700 font-semibold">🚀</div>
         </div>
@@ -55,89 +60,56 @@ import LandingLayout from "../presentation/layouts/LandingLayout.astro";
 
     <section id="features" class="py-16">
       <div class="text-center">
-        <h2 class="text-3xl font-bold text-text">Lo que obtienes</h2>
-        <p class="mx-auto mt-4 max-w-2xl text-base text-text-muted">
-          Todo lo necesario para arrancar una plataforma con usuarios, roles y acceso segmentado, listo para escalar.
-        </p>
+        <h2 class="text-3xl font-bold text-text">{t.features.title}</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-base text-text-muted">{t.features.subtitle}</p>
       </div>
 
       <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div class="rounded-2xl border border-border bg-surface/70 p-6 shadow-sm backdrop-blur transition hover:-translate-y-1 hover:shadow-md">
-          <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
-            <span class="text-xl">🔒</span>
+        {t.features.items.map((feature) => (
+          <div class="rounded-2xl border border-border bg-surface/70 p-6 shadow-sm backdrop-blur transition hover:-translate-y-1 hover:shadow-md">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+              <span class="text-xl">{feature.icon}</span>
+            </div>
+            <h3 class="text-lg font-semibold text-text">{feature.title}</h3>
+            <p class="mt-2 text-sm text-text-muted">{feature.description}</p>
           </div>
-          <h3 class="text-lg font-semibold text-text">Autenticación segura</h3>
-          <p class="mt-2 text-sm text-text-muted">
-            Login con tokens, gestión de sesión y protección RBAC lista para producción.
-          </p>
-        </div>
-        <div class="rounded-2xl border border-border bg-surface/70 p-6 shadow-sm backdrop-blur transition hover:-translate-y-1 hover:shadow-md">
-          <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
-            <span class="text-xl">⚡</span>
-          </div>
-          <h3 class="text-lg font-semibold text-text">Interfaz ligera</h3>
-          <p class="mt-2 text-sm text-text-muted">
-            HTMX + Astro brindan navegación instantánea sin sacrificar SEO ni accesibilidad.
-          </p>
-        </div>
-        <div class="rounded-2xl border border-border bg-surface/70 p-6 shadow-sm backdrop-blur transition hover:-translate-y-1 hover:shadow-md">
-          <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
-            <span class="text-xl">🧩</span>
-          </div>
-          <h3 class="text-lg font-semibold text-text">Escalable y plasmable</h3>
-          <p class="mt-2 text-sm text-text-muted">
-            Arquitectura hexagonal en backend + componentes reutilizables en frontend.
-          </p>
-        </div>
+        ))}
       </div>
     </section>
 
     <section class="py-16">
       <div class="mx-auto max-w-6xl px-6">
         <div class="text-center">
-          <p class="text-sm font-semibold uppercase tracking-wide text-text-muted">Confían en nosotros</p>
-          <p class="mt-2 text-2xl font-bold text-text">Proyectos reales, resultados reales</p>
+          <p class="text-sm font-semibold uppercase tracking-wide text-text-muted">{t.trust.label}</p>
+          <p class="mt-2 text-2xl font-bold text-text">{t.trust.heading}</p>
         </div>
 
         <div class="mt-10 grid gap-6 sm:grid-cols-3">
-          <div class="flex items-center justify-center rounded-2xl border border-border bg-surface/70 p-6 shadow-sm backdrop-blur">
-            <span class="text-4xl">🏥</span>
-            <div class="ml-4 text-left">
-              <p class="text-sm font-semibold text-text">Salud</p>
-              <p class="text-xs text-text-muted">Gestión de accesos a servicios críticos.</p>
+          {t.trust.items.map((item) => (
+            <div class="flex items-center justify-center rounded-2xl border border-border bg-surface/70 p-6 shadow-sm backdrop-blur">
+              <span class="text-4xl">{item.icon}</span>
+              <div class="ml-4 text-left">
+                <p class="text-sm font-semibold text-text">{item.title}</p>
+                <p class="text-xs text-text-muted">{item.subtitle}</p>
+              </div>
             </div>
-          </div>
-          <div class="flex items-center justify-center rounded-2xl border border-border bg-surface/70 p-6 shadow-sm backdrop-blur">
-            <span class="text-4xl">🛡️</span>
-            <div class="ml-4 text-left">
-              <p class="text-sm font-semibold text-text">Fintech</p>
-              <p class="text-xs text-text-muted">Roles y permisos para productos regulados.</p>
-            </div>
-          </div>
-          <div class="flex items-center justify-center rounded-2xl border border-border bg-surface/70 p-6 shadow-sm backdrop-blur">
-            <span class="text-4xl">📦</span>
-            <div class="ml-4 text-left">
-              <p class="text-sm font-semibold text-text">SaaS</p>
-              <p class="text-xs text-text-muted">Escalando con control y visibilidad.</p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
-
   </main>
 
   <footer class="border-t border-border bg-background/80 py-10">
     <div class="mx-auto flex flex-col gap-6 px-6 max-w-6xl md:flex-row md:items-center md:justify-between">
       <div>
-        <p class="text-base font-semibold text-text">Laboratorio 3026</p>
-        <p class="mt-2 text-sm text-text-muted">Construido con Astro, HTMX y Rust.</p>
+        <p class="text-base font-semibold text-text">{t.footer.title}</p>
+        <p class="mt-2 text-sm text-text-muted">{t.footer.subtitle}</p>
       </div>
 
       <div class="flex flex-wrap items-center gap-4 text-sm text-text-muted">
-        <a href="#" class="hover:text-text">Privacidad</a>
-        <a href="#" class="hover:text-text">Términos</a>
-        <a href="mailto:soporte@laboratorio3026.com" class="hover:text-text">Contacto</a>
+        <a href="#" class="hover:text-text">{t.footer.privacy}</a>
+        <a href="#" class="hover:text-text">{t.footer.terms}</a>
+        <a href="mailto:soporte@laboratorio3026.com" class="hover:text-text">{t.footer.contact}</a>
       </div>
     </div>
   </footer>
